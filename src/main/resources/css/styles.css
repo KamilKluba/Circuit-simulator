@@ -1,0 +1,8 @@
+.background{
+    -fx-background-image: url("../graphics/background.png");
+    -fx-background-repeat: repeat;
+}
+
+.background_components{
+    -fx-background-color: #eeeeee;
+}
