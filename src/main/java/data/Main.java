@@ -30,14 +30,15 @@ public class Main extends Application {
         FXMLLoader loaderStartWindow = new FXMLLoader(getClass().getResource("/fxml/StartWindow.fxml"));
         flowPane = loaderStartWindow.load();
         startWindowController = loaderStartWindow.getController();
-        startWindowController.myInitialize(this);
 
         FXMLLoader loaderMainWindow = new FXMLLoader(getClass().getResource("/fxml/MainWindow.fxml"));
         anchorPane = loaderMainWindow.load();
         mainWindowController = loaderMainWindow.getController();
 
-
         scene = new Scene(flowPane);
+
+        startWindowController.myInitialize(this);
+        mainWindowController.myInitialize(this);
 
         this.primaryStage = primaryStage;
         primaryStage.setMinHeight(400);

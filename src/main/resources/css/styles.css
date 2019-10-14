@@ -6,3 +6,11 @@
 .background_components{
     -fx-background-color: #eeeeee;
 }
+
+.table-column{
+    -fx-alignment: CENTER;
+}
+
+.table-cell{
+    -fx-font-size: 25;
+}

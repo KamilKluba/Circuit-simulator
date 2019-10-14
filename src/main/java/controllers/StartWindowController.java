@@ -1,6 +1,7 @@
 package controllers;
 
 import data.Main;
+import data.Sizes;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -27,8 +28,8 @@ public class StartWindowController {
 
     @FXML
     private void initialize(){
-        imageRight = new Image(getClass().getResource("/graphics/and_gate_right.png").toExternalForm(), 75, 75, false, false, true);
-        imageLeft = new Image(getClass().getResource("/graphics/and_gate_left.png").toExternalForm(), 75, 75, false, false, true);
+        imageRight = new Image(getClass().getResource("/graphics/or2_gate_right.png").toExternalForm(), Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false, true);
+        imageLeft = new Image(getClass().getResource("/graphics/or2_gate_left.png").toExternalForm(), Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false, true);
 
         gc = canvas.getGraphicsContext2D();
     }
