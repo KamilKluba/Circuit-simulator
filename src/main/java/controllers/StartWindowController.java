@@ -3,15 +3,16 @@ package controllers;
 import data.Main;
 import data.Sizes;
 import javafx.fxml.FXML;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 
-import javax.swing.*;
 import java.io.File;
 
 public class StartWindowController {
@@ -28,8 +29,12 @@ public class StartWindowController {
 
     @FXML
     private void initialize(){
-        imageRight = new Image(getClass().getResource("/graphics/or2_gate_right.png").toExternalForm(), Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false, true);
-        imageLeft = new Image(getClass().getResource("/graphics/or2_gate_left.png").toExternalForm(), Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false, true);
+        imageRight = new Image(getClass().getResource("/graphics/or2_gate_off.png").toExternalForm(), Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false);
+        ImageView imageView = new ImageView(new Image(getClass().getResource("/graphics/or2_gate_off.png").toExternalForm(), Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false));
+        imageView.setRotate(180);
+        SnapshotParameters snapshotParameters = new SnapshotParameters();
+        snapshotParameters.setFill(Color.TRANSPARENT);
+        imageLeft = imageView.snapshot(snapshotParameters, null);
 
         gc = canvas.getGraphicsContext2D();
     }

@@ -1,6 +1,8 @@
 package data;
 
 import gates.Gate;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 public class Line {
@@ -76,5 +78,10 @@ public class Line {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    //this method is implemented only to show line in tableview
+    public int getArrayListInputSize(){
+        return 2;
     }
 }

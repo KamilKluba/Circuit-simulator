@@ -9,7 +9,7 @@ public class Or2 extends Gate {
 
     public Or2(){
         name = "Or 2";
-        image = new ImageView(new Image(getClass().getResource("/graphics/or2_gate_right.png").toExternalForm(), Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false));
+        imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/or2_gate_off.png").toExternalForm(), Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false));
         for (int i = 0; i < 2; i++) {
             arrayListInputs.add(new Boolean(false));
         }
@@ -23,6 +23,8 @@ public class Or2 extends Gate {
             arrayListInputs.add(new Boolean(false));
         }
 
-        image = new ImageView(new Image(getClass().getResource("/graphics/or2_gate_right.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
+        imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/or2_gate_off.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
+        imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/or2_gate_on.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
+        imageViewSelected = new ImageView(new Image(getClass().getResource("/graphics/or2_gate_selected.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
     }
 }
