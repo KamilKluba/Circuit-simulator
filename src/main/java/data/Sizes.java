@@ -7,5 +7,5 @@ public class Sizes {
     public static double baseGateYSize = 200.0;
     public static double baseGateXShift = baseGateXSize * 0.5;
     public static double baseGateYShift = baseGateYSize * 0.5;
-    public static double baseLineWidth = 8.0;
+    public static double baseLineWidth = 6.0;
 }

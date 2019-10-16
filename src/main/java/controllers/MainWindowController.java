@@ -2,6 +2,7 @@ package controllers;
 
 import data.Line;
 import data.Main;
+import data.Point;
 import data.Sizes;
 import gates.And.And2;
 import gates.And.Or2;
@@ -32,6 +33,7 @@ public class MainWindowController {
     private GraphicsContext graphicsContext;
     private ArrayList<Gate> arrayListPossibleGates = new ArrayList<>();
     private boolean coveredError = false;
+    private boolean createNewLineOnCLick = false;
 
     @FXML private Canvas canvas;
     @FXML private TextField textFieldFilterGate;
@@ -42,6 +44,7 @@ public class MainWindowController {
     @FXML private Button buttonDeleteGate;
     @FXML private Button buttonRotate;
     @FXML private ImageView imageViewLine;
+    @FXML private Button buttonNewLine;
 
     @FXML
     public void initialize(){
@@ -89,6 +92,11 @@ public class MainWindowController {
 
     }
 
+    public void actionNewLine(){
+        createNewLineOnCLick = true;
+        tableViewComponents.getSelectionModel().clearSelection();
+    }
+
     public void actionRotate(){
         for(Gate g : arrayListCreatedGates){
             if(g.isSelected()){
@@ -99,11 +107,13 @@ public class MainWindowController {
     }
 
     public void actionCanvasMouseClicked(double x, double y){
-        if(!checkIfCover(x, y) && tableViewComponents.getSelectionModel().getSelectedItem() != null) {
+        Gate selectedGate = tableViewComponents.getSelectionModel().getSelectedItem();
+        System.out.println(checkIfCover(x, y) + " " + selectedGate + " " + createNewLineOnCLick);
+
+        if(!checkIfCover(x, y) && selectedGate != null && !createNewLineOnCLick) {
             System.out.println("Halo1");
             try {
-                Gate gate = tableViewComponents.getSelectionModel().getSelectedItem();
-                String name = gate.getName();
+                String name = selectedGate.getName();
                 tableViewComponents.getSelectionModel().clearSelection();
 
                 if (name.equals("And 2")) {
@@ -118,18 +128,26 @@ public class MainWindowController {
             }
             coveredError = false;
         }
-        else if(tableViewComponents.getSelectionModel().getSelectedItem() != null){
+        else if(checkIfCover(x, y) && selectedGate == null && createNewLineOnCLick){
+            ///////////////////////////////////////////////////////////////////////////ZMIEN TO CHECK IF COVER!!!///////////////////////////////////////////////////////////////////////
             System.out.println("Halo2");
+            Gate g = getCoveredGate(x, y);
+            arrayListCreatedLines.add(new Line(0, 0, g.getArrayListPointsInputs().get(0).getX(), g.getArrayListPointsInputs().get(0).getY(), g, null, Color.BLACK));
+            arrayListCreatedLines.add(new Line(100, 200, g.getArrayListPointsInputs().get(1).getX(), g.getArrayListPointsInputs().get(1).getY(), g, null, Color.BLACK));
+        }
+        else if(selectedGate != null){
+            System.out.println("Halo3");
             coveredError = true;
             actionCanvasMouseMoved(x, y);
         }
         else{
-            System.out.println("Halo3");
+            System.out.println("Halo4");
             for(Gate g : arrayListCreatedGates){
                 g.select(x, y);
             }
         }
 
+        createNewLineOnCLick = false;
         repaint();
     }
 
@@ -142,12 +160,12 @@ public class MainWindowController {
             double shiftX = Sizes.baseGateXShift;
             double shiftY = Sizes.baseGateYShift;
             for (Gate g : arrayListCreatedGates) {
-                graphicsContext.strokeLine(g.getX() - shiftX, g.getY() - shiftY, g.getX() - shiftX, g.getY() + shiftY);
-                graphicsContext.strokeLine(g.getX() - shiftX, g.getY() + shiftY, g.getX() + shiftX, g.getY() + shiftY);
-                graphicsContext.strokeLine(g.getX() + shiftX, g.getY() + shiftY, g.getX() + shiftX, g.getY() - shiftY);
-                graphicsContext.strokeLine(g.getX() + shiftX, g.getY() - shiftY, g.getX() - shiftX, g.getY() - shiftY);
+                Point pointCenter = g.getPointCenter();
+                graphicsContext.strokeLine(pointCenter.getX() - shiftX, pointCenter.getY() - shiftY, pointCenter.getX() - shiftX, pointCenter.getY() + shiftY);
+                graphicsContext.strokeLine(pointCenter.getX() - shiftX, pointCenter.getY() + shiftY, pointCenter.getX() + shiftX, pointCenter.getY() + shiftY);
+                graphicsContext.strokeLine(pointCenter.getX() + shiftX, pointCenter.getY() + shiftY, pointCenter.getX() + shiftX, pointCenter.getY() - shiftY);
+                graphicsContext.strokeLine(pointCenter.getX() + shiftX, pointCenter.getY() - shiftY, pointCenter.getX() - shiftX, pointCenter.getY() - shiftY);
             }
-
             if(checkIfCover(x, y)){
                 graphicsContext.setStroke(Color.RED);
             }
@@ -166,12 +184,25 @@ public class MainWindowController {
         double yShift = Sizes.baseGateYShift;
 
         for(Gate g : arrayListCreatedGates) {
-            if (Math.abs(x - g.getX()) <= Sizes.baseGateXSize &&
-                    Math.abs(y - g.getY()) <= Sizes.baseGateYSize) {
+            if (Math.abs(x - g.getPointCenter().getX()) <= Sizes.baseGateXSize &&
+                    Math.abs(y - g.getPointCenter().getY()) <= Sizes.baseGateYSize) {
                 return true;
             }
         }
         return false;
+    }
+
+    private Gate getCoveredGate(double x, double y){
+        double xShift = Sizes.baseGateXShift;
+        double yShift = Sizes.baseGateYShift;
+
+        for(Gate g : arrayListCreatedGates) {
+            if (Math.abs(x - g.getPointCenter().getX()) <= Sizes.baseGateXShift &&
+                    Math.abs(y - g.getPointCenter().getY()) <= Sizes.baseGateYShift) {
+                return g;
+            }
+        }
+        return null;
     }
 
     private void repaint(){

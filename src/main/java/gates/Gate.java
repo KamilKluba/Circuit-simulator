@@ -1,6 +1,7 @@
 package gates;
 
 import data.Line;
+import data.Point;
 import data.Sizes;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
@@ -16,19 +17,24 @@ public class Gate {
     protected boolean output = false;
     protected boolean selected = false;
     protected Color color = Color.BLACK;
-    protected double x;
-    protected double y;
+    protected Point pointCenter;
+    protected Point pointOutput;
+    protected ArrayList<Point> arrayListPointsInputs = new ArrayList<>();
     protected int rotation = 0; //0 - right, 1 - down, 2 - left, 3 - up
     protected ImageView imageViewOff;
     protected ImageView imageViewOn;
     protected ImageView imageViewSelected;
 
 
+
     public Gate(){}
 
     public Gate(double x, double y){
-        this.x = x;
-        this.y = y;
+        pointCenter = new Point(x, y);
+
+        pointOutput = new Point(x + 100, y);
+        arrayListPointsInputs.add(new Point(x - 100, y - 30));
+        arrayListPointsInputs.add(new Point(x - 100, y + 30));
     }
 
     public void setOutput(){
@@ -59,20 +65,20 @@ public class Gate {
         return name;
     }
 
-    public void setX(double x){
-        this.x = x;
+    public ArrayList<Line> getArrayListLines() {
+        return arrayListLines;
     }
 
-    public double getX(){
-        return x;
+    public Point getPointCenter() {
+        return pointCenter;
     }
 
-    public void setY(double y){
-        this.y = y;
+    public Point getPointOutput() {
+        return pointOutput;
     }
 
-    public double getY(){
-        return y;
+    public ArrayList<Point> getArrayListPointsInputs() {
+        return arrayListPointsInputs;
     }
 
     public boolean isSelected(){
@@ -80,9 +86,7 @@ public class Gate {
     }
 
     public void select(double x, double y) {
-        selected = (Math.abs(x - this.x) <= Sizes.baseGateXShift && Math.abs(y - this.y) <= Sizes.baseGateYShift);
-
-
+        selected = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseGateXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseGateYShift);
     }
 
     public void rotate(){
@@ -98,13 +102,13 @@ public class Gate {
 
     public void draw(GraphicsContext graphicsContext){
         if(selected){
-            graphicsContext.drawImage(imageViewSelected.getImage(), x - Sizes.baseGateXShift, y - Sizes.baseGateYShift);
+            graphicsContext.drawImage(imageViewSelected.getImage(), pointCenter.getX() - Sizes.baseGateXShift, pointCenter.getY() - Sizes.baseGateYShift);
         }
         else if(output) {
-            graphicsContext.drawImage(imageViewOn.getImage(), x - Sizes.baseGateXShift, y - Sizes.baseGateYShift);
+            graphicsContext.drawImage(imageViewOn.getImage(), pointCenter.getX() - Sizes.baseGateXShift, pointCenter.getY() - Sizes.baseGateYShift);
         }
         else {
-            graphicsContext.drawImage(imageViewOff.getImage(), x - Sizes.baseGateXShift, y - Sizes.baseGateYShift);
+            graphicsContext.drawImage(imageViewOff.getImage(), pointCenter.getX() - Sizes.baseGateXShift, pointCenter.getY() - Sizes.baseGateYShift);
         }
     }
 }
