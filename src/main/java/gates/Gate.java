@@ -109,34 +109,50 @@ public class Gate {
         }
 
         if(rotation == 0){
-            arrayListLines.get(0).setX2(pointCenter.getX() - 93);
-            arrayListLines.get(0).setY2(pointCenter.getY() - 30);
-            arrayListLines.get(1).setX2(pointCenter.getX() - 93);
-            arrayListLines.get(1).setY2(pointCenter.getY() + 30);
+            if(arrayListLines.size() > 0) {
+                arrayListLines.get(0).setX2(pointCenter.getX() - 93);
+                arrayListLines.get(0).setY2(pointCenter.getY() - 30);
+                if(arrayListLines.size() > 1) {
+                    arrayListLines.get(1).setX2(pointCenter.getX() - 93);
+                    arrayListLines.get(1).setY2(pointCenter.getY() + 30);
+                }
+            }
             pointOutput.setX(pointCenter.getX() + 93);
             pointOutput.setY(pointCenter.getY());
         }
         else if(rotation == 1){
-            arrayListLines.get(0).setX2(pointCenter.getX() + 30);
-            arrayListLines.get(0).setY2(pointCenter.getY() - 93);
-            arrayListLines.get(1).setX2(pointCenter.getX() - 30);
-            arrayListLines.get(1).setY2(pointCenter.getY() - 93);
+            if(arrayListLines.size() > 0) {
+                arrayListLines.get(0).setX2(pointCenter.getX() + 30);
+                arrayListLines.get(0).setY2(pointCenter.getY() - 93);
+                if (arrayListLines.size() > 1) {
+                    arrayListLines.get(1).setX2(pointCenter.getX() - 30);
+                    arrayListLines.get(1).setY2(pointCenter.getY() - 93);
+                }
+            }
             pointOutput.setX(pointCenter.getX());
             pointOutput.setY(pointCenter.getY() + 93);
         }
         else if(rotation == 2){
-            arrayListLines.get(0).setX2(pointCenter.getX() + 93);
-            arrayListLines.get(0).setY2(pointCenter.getY() + 30);
-            arrayListLines.get(1).setX2(pointCenter.getX() + 93);
-            arrayListLines.get(1).setY2(pointCenter.getY() - 30);
+            if(arrayListLines.size() > 0) {
+                arrayListLines.get(0).setX2(pointCenter.getX() + 93);
+                arrayListLines.get(0).setY2(pointCenter.getY() + 30);
+                if (arrayListLines.size() > 1) {
+                    arrayListLines.get(1).setX2(pointCenter.getX() + 93);
+                    arrayListLines.get(1).setY2(pointCenter.getY() - 30);
+                }
+            }
             pointOutput.setX(pointCenter.getX() - 93);
             pointOutput.setY(pointCenter.getY());
         }
         else if(rotation == 3){
-            arrayListLines.get(0).setX2(pointCenter.getX() - 30);
-            arrayListLines.get(0).setY2(pointCenter.getY() + 93);
-            arrayListLines.get(1).setX2(pointCenter.getX() + 30);
-            arrayListLines.get(1).setY2(pointCenter.getY() + 93);
+            if (arrayListLines.size() > 0) {
+                arrayListLines.get(0).setX2(pointCenter.getX() - 30);
+                arrayListLines.get(0).setY2(pointCenter.getY() + 93);
+                if (arrayListLines.size() > 1) {
+                    arrayListLines.get(1).setX2(pointCenter.getX() + 30);
+                    arrayListLines.get(1).setY2(pointCenter.getY() + 93);
+                }
+            }
             pointOutput.setX(pointCenter.getX());
             pointOutput.setY(pointCenter.getY() - 93);
         }
