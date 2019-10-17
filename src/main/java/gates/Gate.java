@@ -12,9 +12,8 @@ import java.util.ArrayList;
 
 public class Gate {
     protected String name;
-    protected ArrayList<Boolean> arrayListInputs = new ArrayList<>();
-    protected ArrayList<Line> arrayListLines = new ArrayList();
-    protected boolean output = false;
+    protected ArrayList<Line> arrayListLines = new ArrayList<>();
+    protected Line lineOutput;
     protected boolean selected = false;
     protected Color color = Color.BLACK;
     protected Point pointCenter;
@@ -27,26 +26,35 @@ public class Gate {
 
 
 
-    public Gate(){}
+    public Gate(){
+    }
 
     public Gate(double x, double y){
-        pointCenter = new Point(x, y);
+        pointCenter = new Point("Center", x, y);
 
-        pointOutput = new Point(x + 100, y);
-        arrayListPointsInputs.add(new Point(x - 100, y - 30));
-        arrayListPointsInputs.add(new Point(x - 100, y + 30));
+        pointOutput = new Point("Output", x + 100, y);
+        arrayListPointsInputs.add(new Point("Input1", x - 93, y - 30));
+        arrayListPointsInputs.add(new Point("Input2", x - 93, y + 30));
     }
 
     public void setOutput(){
 
     }
 
-    public ArrayList<Boolean> getArrayListInputs() {
-        return arrayListInputs;
+    public ArrayList<Line> getArrayListLines() {
+        return arrayListLines;
     }
 
     public Integer getArrayListInputsSize(){
-        return arrayListInputs.size();
+        return 2;
+    }
+
+    public void setLineOutput(Line lineOutput) {
+        this.lineOutput = lineOutput;
+    }
+
+    public Line getLineOutput() {
+        return lineOutput;
     }
 
     public ImageView getImageViewOff(){
@@ -63,10 +71,6 @@ public class Gate {
 
     public String getName(){
         return name;
-    }
-
-    public ArrayList<Line> getArrayListLines() {
-        return arrayListLines;
     }
 
     public Point getPointCenter() {
@@ -98,17 +102,65 @@ public class Gate {
         imageViewOn.setImage(imageViewOn.snapshot(snapshotParameters, null));
         imageViewSelected.setRotate(90);
         imageViewSelected.setImage(imageViewSelected.snapshot(snapshotParameters, null));
+
+        rotation++;
+        if(rotation == 4){
+            rotation = 0;
+        }
+
+        if(rotation == 0){
+            arrayListLines.get(0).setX2(pointCenter.getX() - 93);
+            arrayListLines.get(0).setY2(pointCenter.getY() - 30);
+            arrayListLines.get(1).setX2(pointCenter.getX() - 93);
+            arrayListLines.get(1).setY2(pointCenter.getY() + 30);
+            pointOutput.setX(pointCenter.getX() + 93);
+            pointOutput.setY(pointCenter.getY());
+        }
+        else if(rotation == 1){
+            arrayListLines.get(0).setX2(pointCenter.getX() + 30);
+            arrayListLines.get(0).setY2(pointCenter.getY() - 93);
+            arrayListLines.get(1).setX2(pointCenter.getX() - 30);
+            arrayListLines.get(1).setY2(pointCenter.getY() - 93);
+            pointOutput.setX(pointCenter.getX());
+            pointOutput.setY(pointCenter.getY() + 93);
+        }
+        else if(rotation == 2){
+            arrayListLines.get(0).setX2(pointCenter.getX() + 93);
+            arrayListLines.get(0).setY2(pointCenter.getY() + 30);
+            arrayListLines.get(1).setX2(pointCenter.getX() + 93);
+            arrayListLines.get(1).setY2(pointCenter.getY() - 30);
+            pointOutput.setX(pointCenter.getX() - 93);
+            pointOutput.setY(pointCenter.getY());
+        }
+        else if(rotation == 3){
+            arrayListLines.get(0).setX2(pointCenter.getX() - 30);
+            arrayListLines.get(0).setY2(pointCenter.getY() + 93);
+            arrayListLines.get(1).setX2(pointCenter.getX() + 30);
+            arrayListLines.get(1).setY2(pointCenter.getY() + 93);
+            pointOutput.setX(pointCenter.getX());
+            pointOutput.setY(pointCenter.getY() - 93);
+        }
     }
 
     public void draw(GraphicsContext graphicsContext){
         if(selected){
             graphicsContext.drawImage(imageViewSelected.getImage(), pointCenter.getX() - Sizes.baseGateXShift, pointCenter.getY() - Sizes.baseGateYShift);
         }
-        else if(output) {
+        else if(lineOutput != null && lineOutput.isSignal()){
             graphicsContext.drawImage(imageViewOn.getImage(), pointCenter.getX() - Sizes.baseGateXShift, pointCenter.getY() - Sizes.baseGateYShift);
         }
         else {
             graphicsContext.drawImage(imageViewOff.getImage(), pointCenter.getX() - Sizes.baseGateXShift, pointCenter.getY() - Sizes.baseGateYShift);
+        }
+    }
+
+    public void move(double x, double y, double mousePressX, double mousePressY){
+        pointCenter.setX(pointCenter.getX() + x - mousePressX);
+        pointCenter.setY(pointCenter.getY() + y - mousePressY);
+
+        for(Line l : arrayListLines){
+            l.setX2(l.getX2() + x - mousePressX);
+            l.setY2(l.getY2() + y - mousePressY);
         }
     }
 }

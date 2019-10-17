@@ -10,17 +10,14 @@ import gates.Gate;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 import java.io.File;
@@ -34,6 +31,9 @@ public class MainWindowController {
     private ArrayList<Gate> arrayListPossibleGates = new ArrayList<>();
     private boolean coveredError = false;
     private boolean createNewLineOnCLick = false;
+    private Point pointMousePressed = new Point();
+    private Line lineBuffer;
+    private boolean waitForGate2 = false;
 
     @FXML private Canvas canvas;
     @FXML private TextField textFieldFilterGate;
@@ -45,6 +45,8 @@ public class MainWindowController {
     @FXML private Button buttonRotate;
     @FXML private ImageView imageViewLine;
     @FXML private Button buttonNewLine;
+    @FXML private ScrollPane scrollPaneWorkspace;
+    @FXML private Pane paneWorkspace;
 
     @FXML
     public void initialize(){
@@ -69,11 +71,15 @@ public class MainWindowController {
 
         canvas.setOnMouseClicked(e -> actionCanvasMouseClicked(e.getX(), e.getY()));
         canvas.setOnMouseMoved(e -> actionCanvasMouseMoved(e.getX(), e.getY()));
+        canvas.setOnMouseDragged(e -> actionCanvasMouseDragged(e.getX(), e.getY()));
+        canvas.setOnMousePressed(e -> actionCanvasMousePressed(e.getX(), e.getY()));
     }
 
     public void myInitialize(Main main){
         this.main = main;
         main.getScene().setOnKeyPressed(e -> actionCanvasKeyPressed(e.getCode()));
+        main.getScene().setOnKeyTyped(e -> actionCanvasKeyTyped(e.getCode()));
+        main.getScene().setOnKeyReleased(e -> actionCanvasKeyReleased(e.getCode()));
     }
 
     public void loadCircuit(File file){
@@ -111,29 +117,14 @@ public class MainWindowController {
         System.out.println(checkIfCover(x, y) + " " + selectedGate + " " + createNewLineOnCLick);
 
         if(!checkIfCover(x, y) && selectedGate != null && !createNewLineOnCLick) {
-            System.out.println("Halo1");
-            try {
-                String name = selectedGate.getName();
-                tableViewComponents.getSelectionModel().clearSelection();
-
-                if (name.equals("And 2")) {
-                    Gate newGate = new And2(x, y);
-                    arrayListCreatedGates.add(newGate);
-                } else if (name.equals("Or 2")) {
-                    Gate newGate = new Or2(x, y);
-                    arrayListCreatedGates.add(newGate);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            coveredError = false;
+            createNewGate(x, y, selectedGate);
         }
-        else if(checkIfCover(x, y) && selectedGate == null && createNewLineOnCLick){
-            ///////////////////////////////////////////////////////////////////////////ZMIEN TO CHECK IF COVER!!!///////////////////////////////////////////////////////////////////////
-            System.out.println("Halo2");
-            Gate g = getCoveredGate(x, y);
-            arrayListCreatedLines.add(new Line(0, 0, g.getArrayListPointsInputs().get(0).getX(), g.getArrayListPointsInputs().get(0).getY(), g, null, Color.BLACK));
-            arrayListCreatedLines.add(new Line(100, 200, g.getArrayListPointsInputs().get(1).getX(), g.getArrayListPointsInputs().get(1).getY(), g, null, Color.BLACK));
+        else if(checkIfCover(x, y) && selectedGate == null && (createNewLineOnCLick || waitForGate2)){
+            createNewLine(x, y);
+        }
+        else if(!checkIfCover(x, y) && selectedGate == null && (createNewLineOnCLick || waitForGate2)){
+            lineBuffer = null;
+            waitForGate2 = false;
         }
         else if(selectedGate != null){
             System.out.println("Halo3");
@@ -156,7 +147,7 @@ public class MainWindowController {
             repaint();
 
             graphicsContext.setStroke(Color.RED);
-            graphicsContext.setLineWidth(1);
+            graphicsContext.setLineWidth(Sizes.baseLineContourWidth);
             double shiftX = Sizes.baseGateXShift;
             double shiftY = Sizes.baseGateYShift;
             for (Gate g : arrayListCreatedGates) {
@@ -177,6 +168,28 @@ public class MainWindowController {
             graphicsContext.strokeLine(x + shiftX, y + shiftY, x + shiftX, y - shiftY);
             graphicsContext.strokeLine(x + shiftX, y - shiftY, x - shiftX, y - shiftY);
         }
+        else if(waitForGate2){
+            repaint();
+            graphicsContext.strokeLine(lineBuffer.getX1(), lineBuffer.getY1(), x, y);
+        }
+    }
+
+    private void actionCanvasMouseDragged(double x, double y){
+        for(Gate g : arrayListCreatedGates){
+            if(g.isSelected()){
+                g.move(x, y, pointMousePressed.getX(), pointMousePressed.getY());
+            }
+        }
+
+        repaint();
+
+        pointMousePressed.setX(x);
+        pointMousePressed.setY(y);
+    }
+
+    private void actionCanvasMousePressed(double x, double y){
+        pointMousePressed.setX(x);
+        pointMousePressed.setY(y);
     }
 
     private boolean checkIfCover(double x, double y){
@@ -211,6 +224,8 @@ public class MainWindowController {
             g.draw(graphicsContext);
         }
 
+        graphicsContext.setLineWidth(Sizes.baseLineWidth);
+        graphicsContext.setStroke(Color.BLACK);
         for(Line l : arrayListCreatedLines){
             graphicsContext.strokeLine(l.getX1(), l.getY1(), l.getX2(), l.getY2());
         }
@@ -222,6 +237,92 @@ public class MainWindowController {
             repaint();
             tableViewComponents.getSelectionModel().clearSelection();
         }
+        else if(code == KeyCode.CONTROL){
+            scrollPaneWorkspace.setPannable(true);
+        }
+    }
+
+    private void actionCanvasKeyTyped(KeyCode code){
+
+    }
+
+    private void actionCanvasKeyReleased(KeyCode code){
+        if(code == KeyCode.CONTROL){
+            scrollPaneWorkspace.setPannable(false);
+        }
+    }
+
+    private void createNewGate(double x, double y, Gate selectedGate){
+        System.out.println("Halo1");
+        try {
+            String name = selectedGate.getName();
+            tableViewComponents.getSelectionModel().clearSelection();
+
+            if (name.equals("And 2")) {
+                Gate newGate = new And2(x, y);
+                arrayListCreatedGates.add(newGate);
+            } else if (name.equals("Or 2")) {
+                Gate newGate = new Or2(x, y);
+                arrayListCreatedGates.add(newGate);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        coveredError = false;
+    }
+
+    private void createNewLine(double x, double y){
+        Gate g = getCoveredGate(x, y);
+        ComboBox<Point> comboBoxNewLineHook = new ComboBox<>();
+        comboBoxNewLineHook.setPrefSize(150, 30);
+        comboBoxNewLineHook.setLayoutX(x - 75);
+        comboBoxNewLineHook.setLayoutY(y);
+        comboBoxNewLineHook.promptTextProperty().setValue("Wybierz pin");
+        comboBoxNewLineHook.getItems().add(g.getPointOutput());
+        for(Point p : g.getArrayListPointsInputs()){
+            comboBoxNewLineHook.getItems().add(p);
+        }
+        paneWorkspace.getChildren().add(comboBoxNewLineHook);
+
+        if(!waitForGate2) {
+            waitForGate2 = true;
+            comboBoxNewLineHook.setOnAction(e -> chooseNewLineHook1(x, y, g, comboBoxNewLineHook));
+        }
+        else{
+            waitForGate2 = false;
+            comboBoxNewLineHook.setOnAction(e -> chooseNewLineHook2(x, y, g, comboBoxNewLineHook));
+        }
+        System.out.println("Halo2");
+    }
+
+    private void chooseNewLineHook1(double x, double y, Gate g, ComboBox<Point> comboBoxNewLineHook){
+        Point p = comboBoxNewLineHook.getSelectionModel().getSelectedItem();
+        lineBuffer = new Line(p.getX(), p.getY(), x, y, g, null, Color.BLACK);
+        if(p.getName().contains("Output")){
+            g.setLineOutput(lineBuffer);
+        }
+        else if(p.getName().contains("Input")){
+            g.getArrayListLines().add(lineBuffer);
+        }
+        paneWorkspace.getChildren().remove(comboBoxNewLineHook);
+        repaint();
+    }
+
+    private void chooseNewLineHook2(double x, double y, Gate g, ComboBox<Point> comboBoxNewLineHook){
+        Point p = comboBoxNewLineHook.getSelectionModel().getSelectedItem();
+        lineBuffer.setX2(comboBoxNewLineHook.getSelectionModel().getSelectedItem().getX());
+        lineBuffer.setY2(comboBoxNewLineHook.getSelectionModel().getSelectedItem().getY());
+        lineBuffer.setGate2(g);
+        if(p.getName().contains("Output")){
+            g.setLineOutput(lineBuffer);
+        }
+        else if(p.getName().contains("Input")){
+            g.getArrayListLines().add(lineBuffer);
+        }
+        arrayListCreatedLines.add(lineBuffer);
+
+        paneWorkspace.getChildren().remove(comboBoxNewLineHook);
+        repaint();
     }
 }
 

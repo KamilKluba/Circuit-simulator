@@ -10,6 +10,7 @@ public class Line {
     private double y1;
     private double x2;
     private double y2;
+    private boolean signal = false;
     private Gate gate1;
     private Gate gate2;
     private Color color;
@@ -54,6 +55,14 @@ public class Line {
 
     public void setY2(double y2) {
         this.y2 = y2;
+    }
+
+    public boolean isSignal() {
+        return signal;
+    }
+
+    public void setSignal(boolean signal) {
+        this.signal = signal;
     }
 
     public Gate getGate1() {

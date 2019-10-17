@@ -44,6 +44,7 @@ public class Main extends Application {
         primaryStage.setMinHeight(400);
         primaryStage.setMinWidth(600);
         primaryStage.setScene(scene);
+        primaryStage.setTitle("Symulator układów cyfrowych");
         primaryStage.show();
     }
 

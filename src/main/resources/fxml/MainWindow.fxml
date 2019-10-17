@@ -22,9 +22,9 @@
       </Label>
    </bottom>
    <center>
-      <ScrollPane pannable="true" prefHeight="200.0" prefWidth="200.0" styleClass="background" stylesheets="@../css/styles.css" BorderPane.alignment="CENTER">
+      <ScrollPane fx:id="scrollPaneWorkspace" prefHeight="200.0" prefWidth="200.0" styleClass="background" stylesheets="@../css/styles.css" BorderPane.alignment="CENTER">
          <content>
-            <Pane prefHeight="1500.0" prefWidth="2500.0" styleClass="background" stylesheets="@../css/styles.css">
+            <Pane fx:id="paneWorkspace" prefHeight="1500.0" prefWidth="2500.0" styleClass="background" stylesheets="@../css/styles.css">
                <children>
                   <Canvas fx:id="canvas" height="1500.0" layoutY="14.0" width="2500.0" />
                </children>

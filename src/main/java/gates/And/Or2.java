@@ -10,18 +10,12 @@ public class Or2 extends Gate {
     public Or2(){
         name = "Or 2";
         imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/or2_gate_off.png").toExternalForm(), Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false));
-        for (int i = 0; i < 2; i++) {
-            arrayListInputs.add(new Boolean(false));
-        }
     }
 
     public Or2(double x, double y) {
         super(x, y);
 
         name = "Or 2";
-        for (int i = 0; i < 2; i++) {
-            arrayListInputs.add(new Boolean(false));
-        }
 
         imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/or2_gate_off.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
         imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/or2_gate_on.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
