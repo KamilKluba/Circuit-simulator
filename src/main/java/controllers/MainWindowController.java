@@ -10,6 +10,7 @@ import gates.Gate;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -114,7 +115,7 @@ public class MainWindowController {
 
     public void actionCanvasMouseClicked(double x, double y){
         Gate selectedGate = tableViewComponents.getSelectionModel().getSelectedItem();
-        System.out.println(checkIfCover(x, y) + " " + selectedGate + " " + createNewLineOnCLick);
+        System.out.println("Click parameters: " + checkIfCover(x, y) + " " + selectedGate + " " + createNewLineOnCLick + " " + waitForGate2);
 
         if(!checkIfCover(x, y) && selectedGate != null && !createNewLineOnCLick) {
             createNewGate(x, y, selectedGate);
@@ -127,12 +128,12 @@ public class MainWindowController {
             waitForGate2 = false;
         }
         else if(selectedGate != null){
-            System.out.println("Halo3");
+            System.out.println("Covered gate while trying to create new one");
             coveredError = true;
             actionCanvasMouseMoved(x, y);
         }
         else{
-            System.out.println("Halo4");
+            System.out.println("No special action, trying to select a gate");
             for(Gate g : arrayListCreatedGates){
                 g.select(x, y);
             }
@@ -197,8 +198,8 @@ public class MainWindowController {
         double yShift = Sizes.baseGateYShift;
 
         for(Gate g : arrayListCreatedGates) {
-            if (Math.abs(x - g.getPointCenter().getX()) <= Sizes.baseGateXSize &&
-                    Math.abs(y - g.getPointCenter().getY()) <= Sizes.baseGateYSize) {
+            if (Math.abs(x - g.getPointCenter().getX()) <= Sizes.baseGateXShift &&
+                    Math.abs(y - g.getPointCenter().getY()) <= Sizes.baseGateYShift) {
                 return true;
             }
         }
@@ -220,8 +221,19 @@ public class MainWindowController {
 
     private void repaint(){
         graphicsContext.clearRect(0, 0, canvas.getWidth() + 1, canvas.getHeight() + 1);
+
+        double shiftX = Sizes.baseGateXShift;
+        double shiftY = Sizes.baseGateYShift;
         for(Gate g : arrayListCreatedGates){
             g.draw(graphicsContext);
+
+            graphicsContext.setStroke(Color.BLUE);
+            graphicsContext.setLineWidth(Sizes.baseLineContourWidth);
+            Point pointCenter = g.getPointCenter();
+            graphicsContext.strokeLine(pointCenter.getX() - shiftX, pointCenter.getY() - shiftY, pointCenter.getX() - shiftX, pointCenter.getY() + shiftY);
+            graphicsContext.strokeLine(pointCenter.getX() - shiftX, pointCenter.getY() + shiftY, pointCenter.getX() + shiftX, pointCenter.getY() + shiftY);
+            graphicsContext.strokeLine(pointCenter.getX() + shiftX, pointCenter.getY() + shiftY, pointCenter.getX() + shiftX, pointCenter.getY() - shiftY);
+            graphicsContext.strokeLine(pointCenter.getX() + shiftX, pointCenter.getY() - shiftY, pointCenter.getX() - shiftX, pointCenter.getY() - shiftY);
         }
 
         graphicsContext.setLineWidth(Sizes.baseLineWidth);
@@ -253,7 +265,7 @@ public class MainWindowController {
     }
 
     private void createNewGate(double x, double y, Gate selectedGate){
-        System.out.println("Halo1");
+        System.out.println("Create new gate");
         try {
             String name = selectedGate.getName();
             tableViewComponents.getSelectionModel().clearSelection();
@@ -284,15 +296,19 @@ public class MainWindowController {
         }
         paneWorkspace.getChildren().add(comboBoxNewLineHook);
 
+        canvas.setOnMouseClicked(e -> {
+            paneWorkspace.getChildren().remove(comboBoxNewLineHook);
+            canvas.setOnMouseClicked(f -> actionCanvasMouseClicked(f.getX(), f.getY()));
+            System.out.println("Click on canvas while combo is on");
+        });
+
         if(!waitForGate2) {
-            waitForGate2 = true;
             comboBoxNewLineHook.setOnAction(e -> chooseNewLineHook1(x, y, g, comboBoxNewLineHook));
         }
         else{
-            waitForGate2 = false;
             comboBoxNewLineHook.setOnAction(e -> chooseNewLineHook2(x, y, g, comboBoxNewLineHook));
         }
-        System.out.println("Halo2");
+        System.out.println("Create new line");
     }
 
     private void chooseNewLineHook1(double x, double y, Gate g, ComboBox<Point> comboBoxNewLineHook){
@@ -304,6 +320,9 @@ public class MainWindowController {
         else if(p.getName().contains("Input")){
             g.getArrayListLines().add(lineBuffer);
         }
+
+        canvas.setOnMouseClicked(e -> actionCanvasMouseClicked(e.getX(), e.getY()));
+        waitForGate2 = true;
         paneWorkspace.getChildren().remove(comboBoxNewLineHook);
         repaint();
     }
@@ -321,6 +340,8 @@ public class MainWindowController {
         }
         arrayListCreatedLines.add(lineBuffer);
 
+        canvas.setOnMouseClicked(e -> actionCanvasMouseClicked(e.getX(), e.getY()));
+        waitForGate2 = false;
         paneWorkspace.getChildren().remove(comboBoxNewLineHook);
         repaint();
     }

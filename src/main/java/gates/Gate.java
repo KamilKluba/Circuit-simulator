@@ -174,9 +174,17 @@ public class Gate {
         pointCenter.setX(pointCenter.getX() + x - mousePressX);
         pointCenter.setY(pointCenter.getY() + y - mousePressY);
 
+        pointOutput.setX(pointOutput.getX() + x - mousePressX);
+        pointOutput.setY(pointOutput.getY() + y - mousePressY);
+
         for(Line l : arrayListLines){
             l.setX2(l.getX2() + x - mousePressX);
             l.setY2(l.getY2() + y - mousePressY);
+        }
+
+        for(Point p : arrayListPointsInputs){
+            p.setX(p.getX() + x - mousePressX);
+            p.setY(p.getY() + y - mousePressY);
         }
     }
 }
