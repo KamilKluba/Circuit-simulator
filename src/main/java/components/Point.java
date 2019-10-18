@@ -1,4 +1,4 @@
-package data;
+package components;
 
 public class Point {
     private String name;

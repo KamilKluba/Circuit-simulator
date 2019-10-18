@@ -1,7 +1,7 @@
-package gates.And;
+package components.gates.or;
 
+import components.gates.Gate;
 import data.Sizes;
-import gates.Gate;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 

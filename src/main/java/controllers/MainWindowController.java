@@ -1,16 +1,15 @@
 package controllers;
 
-import data.Line;
+import components.Line;
 import data.Main;
-import data.Point;
+import components.Point;
 import data.Sizes;
-import gates.And.And2;
-import gates.And.Or2;
-import gates.Gate;
+import components.gates.and.And2;
+import components.gates.or.Or2;
+import components.gates.Gate;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
@@ -35,6 +34,7 @@ public class MainWindowController {
     private Point pointMousePressed = new Point();
     private Line lineBuffer;
     private boolean waitForGate2 = false;
+    private boolean waitForPlaceGate = false;
 
     @FXML private Canvas canvas;
     @FXML private TextField textFieldFilterGate;
@@ -115,15 +115,16 @@ public class MainWindowController {
 
     public void actionCanvasMouseClicked(double x, double y){
         Gate selectedGate = tableViewComponents.getSelectionModel().getSelectedItem();
-        System.out.println("Click parameters: " + checkIfCover(x, y) + " " + selectedGate + " " + createNewLineOnCLick + " " + waitForGate2);
+        System.out.println("Click parameters: coverTotal:" + checkIfCoverTotal(x, y) + ", coverHalf:" + checkIfCoverHalf(x, y) + " selGate:" + selectedGate + ", newLineOnClick:" + createNewLineOnCLick + ", waitForGate2:" + waitForGate2);
 
-        if(!checkIfCover(x, y) && selectedGate != null && !createNewLineOnCLick) {
+        if(!checkIfCoverTotal(x, y) && selectedGate != null && !createNewLineOnCLick) {
             createNewGate(x, y, selectedGate);
+            waitForPlaceGate = false;
         }
-        else if(checkIfCover(x, y) && selectedGate == null && (createNewLineOnCLick || waitForGate2)){
+        else if(checkIfCoverHalf(x, y) && selectedGate == null && (createNewLineOnCLick || waitForGate2)){
             createNewLine(x, y);
         }
-        else if(!checkIfCover(x, y) && selectedGate == null && (createNewLineOnCLick || waitForGate2)){
+        else if(!checkIfCoverHalf(x, y) && selectedGate == null && (createNewLineOnCLick || waitForGate2)){
             lineBuffer = null;
             waitForGate2 = false;
         }
@@ -144,9 +145,8 @@ public class MainWindowController {
     }
 
     private void actionCanvasMouseMoved(double x, double y){
+        repaint();
         if(coveredError) {
-            repaint();
-
             graphicsContext.setStroke(Color.RED);
             graphicsContext.setLineWidth(Sizes.baseLineContourWidth);
             double shiftX = Sizes.baseGateXShift;
@@ -158,7 +158,7 @@ public class MainWindowController {
                 graphicsContext.strokeLine(pointCenter.getX() + shiftX, pointCenter.getY() + shiftY, pointCenter.getX() + shiftX, pointCenter.getY() - shiftY);
                 graphicsContext.strokeLine(pointCenter.getX() + shiftX, pointCenter.getY() - shiftY, pointCenter.getX() - shiftX, pointCenter.getY() - shiftY);
             }
-            if(checkIfCover(x, y)){
+            if(checkIfCoverTotal(x, y)){
                 graphicsContext.setStroke(Color.RED);
             }
             else{
@@ -170,8 +170,15 @@ public class MainWindowController {
             graphicsContext.strokeLine(x + shiftX, y - shiftY, x - shiftX, y - shiftY);
         }
         else if(waitForGate2){
-            repaint();
             graphicsContext.strokeLine(lineBuffer.getX1(), lineBuffer.getY1(), x, y);
+        }
+        else if(waitForPlaceGate){
+            String newGateName = tableViewComponents.getSelectionModel().getSelectedItem().getName();
+            Gate g;
+            if(newGateName.equals("And 2")){
+                g = new And2(x, y);
+                g.draw(graphicsContext);
+            }
         }
     }
 
@@ -193,7 +200,20 @@ public class MainWindowController {
         pointMousePressed.setY(y);
     }
 
-    private boolean checkIfCover(double x, double y){
+    private boolean checkIfCoverTotal(double x, double y){
+        double xShift = Sizes.baseGateXShift;
+        double yShift = Sizes.baseGateYShift;
+
+        for(Gate g : arrayListCreatedGates) {
+            if (Math.abs(x - g.getPointCenter().getX()) <= Sizes.baseGateXSize &&
+                    Math.abs(y - g.getPointCenter().getY()) <= Sizes.baseGateYSize) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkIfCoverHalf(double x, double y){
         double xShift = Sizes.baseGateXShift;
         double yShift = Sizes.baseGateYShift;
 

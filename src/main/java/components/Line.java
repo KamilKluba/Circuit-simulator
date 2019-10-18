@@ -1,8 +1,6 @@
-package data;
+package components;
 
-import gates.Gate;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import components.gates.Gate;
 import javafx.scene.paint.Color;
 
 public class Line {

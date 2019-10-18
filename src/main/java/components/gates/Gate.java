@@ -1,7 +1,7 @@
-package gates;
+package components.gates;
 
-import data.Line;
-import data.Point;
+import components.Line;
+import components.Point;
 import data.Sizes;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
@@ -177,9 +177,16 @@ public class Gate {
         pointOutput.setX(pointOutput.getX() + x - mousePressX);
         pointOutput.setY(pointOutput.getY() + y - mousePressY);
 
+        System.out.println("Liczba linii: "  +arrayListLines.size());
         for(Line l : arrayListLines){
-            l.setX2(l.getX2() + x - mousePressX);
-            l.setY2(l.getY2() + y - mousePressY);
+            if(l.getGate1().equals(this)) {
+                l.setX1(l.getX1() + x - mousePressX);
+                l.setY1(l.getY1() + y - mousePressY);
+            }
+            else{
+                l.setX2(l.getX2() + x - mousePressX);
+                l.setY2(l.getY2() + y - mousePressY);
+            }
         }
 
         for(Point p : arrayListPointsInputs){
