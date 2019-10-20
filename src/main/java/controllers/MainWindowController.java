@@ -1,6 +1,7 @@
 package controllers;
 
 import components.Line;
+import components.TableComponent;
 import data.Main;
 import components.Point;
 import data.Sizes;
@@ -22,53 +23,50 @@ import javafx.scene.paint.Color;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 public class MainWindowController {
     private Main main;
     private ArrayList<Gate> arrayListCreatedGates = new ArrayList<>();
     private ArrayList<Line> arrayListCreatedLines = new ArrayList<>();
     private GraphicsContext graphicsContext;
-    private ArrayList<Gate> arrayListPossibleGates = new ArrayList<>();
+    private ArrayList<TableComponent> arrayListPossibleComponents = new ArrayList<>();
     private boolean coveredError = false;
-    private boolean createNewLineOnCLick = false;
     private Point pointMousePressed = new Point();
     private Line lineBuffer;
     private boolean waitForGate2 = false;
     private boolean waitForPlaceGate = false;
 
     @FXML private Canvas canvas;
-    @FXML private TextField textFieldFilterGate;
-    @FXML private TableView<Gate> tableViewComponents;
-    @FXML private TableColumn<Gate, ImageView> tableColumnComponentsPictures;
-    @FXML private TableColumn<Gate, Integer> tableColumnComponentnputsNumber;
+    @FXML private TextField textFieldFilterComponents;
+    @FXML private TableView<TableComponent> tableViewComponents;
+    @FXML private TableColumn<TableComponent, ImageView> tableColumnComponentsPictures;
+    @FXML private TableColumn<TableComponent, Integer> tableColumnComponentInputsNumber;
     @FXML private Button buttonAddGate;
     @FXML private Button buttonDeleteGate;
     @FXML private Button buttonRotate;
-    @FXML private ImageView imageViewLine;
-    @FXML private Button buttonNewLine;
     @FXML private ScrollPane scrollPaneWorkspace;
     @FXML private Pane paneWorkspace;
 
     @FXML
     public void initialize(){
-        arrayListPossibleGates.add(new And2());
-        arrayListPossibleGates.add(new Or2());
+        arrayListPossibleComponents.add(new TableComponent("Linia", 2,
+                                        new ImageView(new Image(getClass().getResource("/graphics/line_off.png").toExternalForm(),
+                                                    Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent("And 2", 2,
+                                        new ImageView(new Image(getClass().getResource("/graphics/and2_gate_off.png").toExternalForm(),
+                                                    Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent("Or 2", 2,
+                                        new ImageView(new Image(getClass().getResource("/graphics/or2_gate_off.png").toExternalForm(),
+                                                    Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
 
-        ObservableList<Gate> ol = FXCollections.observableList(arrayListPossibleGates);
+        ObservableList<TableComponent> ol = FXCollections.observableList(arrayListPossibleComponents);
         tableViewComponents.setItems(ol);
 
-        tableColumnComponentsPictures.setCellValueFactory(new PropertyValueFactory<>("imageViewOff"));
-        tableColumnComponentnputsNumber.setCellValueFactory(new PropertyValueFactory<>("arrayListInputsSize"));
+        tableColumnComponentsPictures.setCellValueFactory(new PropertyValueFactory<>("imageView"));
+        tableColumnComponentInputsNumber.setCellValueFactory(new PropertyValueFactory<>("InputsNumber"));
 
         graphicsContext = canvas.getGraphicsContext2D();
-
-        Image image = new Image(getClass().getResource("/graphics/or2_gate_off.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false);
-        graphicsContext.setStroke(Color.BLACK);
-        graphicsContext.setLineWidth(Sizes.baseLineWidth);
-        graphicsContext.strokeLine(200, 200, 700, 400);
-        graphicsContext.drawImage(image, 500, 500);
-
-        imageViewLine.setImage(new Image(getClass().getResource("/graphics/line_off.png").toExternalForm()));
 
         canvas.setOnMouseClicked(e -> actionCanvasMouseClicked(e.getX(), e.getY()));
         canvas.setOnMouseMoved(e -> actionCanvasMouseMoved(e.getX(), e.getY()));
@@ -95,13 +93,23 @@ public class MainWindowController {
 
     }
 
-    public void actionFilterGate(){
+    public void actionFilterComponents(){
+        String insertedText = textFieldFilterComponents.getText();
+        ArrayList<TableComponent> arrayListFilteredGates = new ArrayList<>();
 
+        for(TableComponent tc : arrayListPossibleComponents){
+            if(Pattern.compile(Pattern.quote(insertedText), Pattern.CASE_INSENSITIVE).matcher(tc.getName()).find()){
+                arrayListFilteredGates.add(tc);
+            }
+        }
+
+        ObservableList<TableComponent> ol = FXCollections.observableList(arrayListFilteredGates);
+        tableViewComponents.setItems(ol);
     }
 
-    public void actionNewLine(){
-        createNewLineOnCLick = true;
-        tableViewComponents.getSelectionModel().clearSelection();
+    public void actionClearTextFilterComponents(){
+        textFieldFilterComponents.clear();
+        actionFilterComponents();
     }
 
     public void actionRotate(){
@@ -114,21 +122,27 @@ public class MainWindowController {
     }
 
     public void actionCanvasMouseClicked(double x, double y){
-        Gate selectedGate = tableViewComponents.getSelectionModel().getSelectedItem();
-        System.out.println("Click parameters: coverTotal:" + checkIfCoverTotal(x, y) + ", coverHalf:" + checkIfCoverHalf(x, y) + " selGate:" + selectedGate + ", newLineOnClick:" + createNewLineOnCLick + ", waitForGate2:" + waitForGate2);
+        String selectedItemName = null;
 
-        if(!checkIfCoverTotal(x, y) && selectedGate != null && !createNewLineOnCLick) {
-            createNewGate(x, y, selectedGate);
+        try{
+            selectedItemName = tableViewComponents.getSelectionModel().getSelectedItem().getName();
+        } catch (Exception e){}
+
+        System.out.println("Click parameters: coverTotal:" + checkIfCoverTotal(x, y) + ", coverHalf:" + checkIfCoverHalf(x, y) +
+                            " selItemName:" + selectedItemName + ", waitForGate2:" + waitForGate2);
+
+        if(!checkIfCoverTotal(x, y) && selectedItemName != null && !selectedItemName.equals("Linia")) {
+            createNewGate(x, y, selectedItemName);
             waitForPlaceGate = false;
         }
-        else if(checkIfCoverHalf(x, y) && selectedGate == null && (createNewLineOnCLick || waitForGate2)){
+        else if(checkIfCoverHalf(x, y) && (waitForGate2 || (selectedItemName != null && selectedItemName.equals("Linia")))){
             createNewLine(x, y);
         }
-        else if(!checkIfCoverHalf(x, y) && selectedGate == null && (createNewLineOnCLick || waitForGate2)){
+        else if(!checkIfCoverHalf(x, y) && (waitForGate2 || (selectedItemName != null && selectedItemName.equals("Linia")))){
             lineBuffer = null;
             waitForGate2 = false;
         }
-        else if(selectedGate != null){
+        else if(selectedItemName != null){
             System.out.println("Covered gate while trying to create new one");
             coveredError = true;
             actionCanvasMouseMoved(x, y);
@@ -138,9 +152,9 @@ public class MainWindowController {
             for(Gate g : arrayListCreatedGates){
                 g.select(x, y);
             }
+            coveredError = false;
         }
 
-        createNewLineOnCLick = false;
         repaint();
     }
 
@@ -247,13 +261,6 @@ public class MainWindowController {
         for(Gate g : arrayListCreatedGates){
             g.draw(graphicsContext);
 
-            graphicsContext.setStroke(Color.BLUE);
-            graphicsContext.setLineWidth(Sizes.baseLineContourWidth);
-            Point pointCenter = g.getPointCenter();
-            graphicsContext.strokeLine(pointCenter.getX() - shiftX, pointCenter.getY() - shiftY, pointCenter.getX() - shiftX, pointCenter.getY() + shiftY);
-            graphicsContext.strokeLine(pointCenter.getX() - shiftX, pointCenter.getY() + shiftY, pointCenter.getX() + shiftX, pointCenter.getY() + shiftY);
-            graphicsContext.strokeLine(pointCenter.getX() + shiftX, pointCenter.getY() + shiftY, pointCenter.getX() + shiftX, pointCenter.getY() - shiftY);
-            graphicsContext.strokeLine(pointCenter.getX() + shiftX, pointCenter.getY() - shiftY, pointCenter.getX() - shiftX, pointCenter.getY() - shiftY);
         }
 
         graphicsContext.setLineWidth(Sizes.baseLineWidth);
@@ -284,16 +291,14 @@ public class MainWindowController {
         }
     }
 
-    private void createNewGate(double x, double y, Gate selectedGate){
+    private void createNewGate(double x, double y, String newGateName){
         System.out.println("Create new gate");
+        tableViewComponents.getSelectionModel().clearSelection();
         try {
-            String name = selectedGate.getName();
-            tableViewComponents.getSelectionModel().clearSelection();
-
-            if (name.equals("And 2")) {
+            if (newGateName.equals("And 2")) {
                 Gate newGate = new And2(x, y);
                 arrayListCreatedGates.add(newGate);
-            } else if (name.equals("Or 2")) {
+            } else if (newGateName.equals("Or 2")) {
                 Gate newGate = new Or2(x, y);
                 arrayListCreatedGates.add(newGate);
             }
@@ -304,6 +309,7 @@ public class MainWindowController {
     }
 
     private void createNewLine(double x, double y){
+        tableViewComponents.getSelectionModel().clearSelection();
         Gate g = getCoveredGate(x, y);
         ComboBox<Point> comboBoxNewLineHook = new ComboBox<>();
         comboBoxNewLineHook.setPrefSize(150, 30);
@@ -311,7 +317,7 @@ public class MainWindowController {
         comboBoxNewLineHook.setLayoutY(y);
         comboBoxNewLineHook.promptTextProperty().setValue("Wybierz pin");
         comboBoxNewLineHook.getItems().add(g.getPointOutput());
-        for(Point p : g.getArrayListPointsInputs()){
+        for(Point p : g.getArrayPointsInputs()){
             comboBoxNewLineHook.getItems().add(p);
         }
         paneWorkspace.getChildren().add(comboBoxNewLineHook);
@@ -338,7 +344,8 @@ public class MainWindowController {
             g.setLineOutput(lineBuffer);
         }
         else if(p.getName().contains("Input")){
-            g.getArrayListLines().add(lineBuffer);
+            int inputNumber = Integer.parseInt(p.getName().split("Input")[1]);
+            g.getArrayLines()[inputNumber - 1] = lineBuffer;
         }
 
         canvas.setOnMouseClicked(e -> actionCanvasMouseClicked(e.getX(), e.getY()));
@@ -356,7 +363,8 @@ public class MainWindowController {
             g.setLineOutput(lineBuffer);
         }
         else if(p.getName().contains("Input")){
-            g.getArrayListLines().add(lineBuffer);
+            int inputNumber = Integer.parseInt(p.getName().split("Input")[1]);
+            g.getArrayLines()[inputNumber - 1] = lineBuffer;
         }
         arrayListCreatedLines.add(lineBuffer);
 
