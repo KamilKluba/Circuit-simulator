@@ -37,8 +37,8 @@
             <TextField fx:id="textFieldFilterComponents" layoutX="14.0" layoutY="179.0" onKeyReleased="#actionFilterComponents" onMousePressed="#actionClearTextFilterComponents" prefHeight="30.0" prefWidth="150.0" promptText="Filtruj komponenty" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="90.0" />
             <TableView fx:id="tableViewComponents" layoutY="120.0" prefHeight="350.0" prefWidth="200.0" styleClass="table-column" stylesheets="@../css/styles.css" AnchorPane.topAnchor="130.0">
               <columns>
-                <TableColumn fx:id="tableColumnComponentsPictures" minWidth="100.0" prefWidth="-1.0" text="Rodzaj:" />
-                  <TableColumn fx:id="tableColumnComponentInputsNumber" minWidth="100.0" prefWidth="100.0" text="Liczba wejść:" />
+                <TableColumn fx:id="tableColumnComponentsPictures" editable="false" minWidth="92.0" prefWidth="-1.0" sortable="false" text="Rodzaj:" />
+                  <TableColumn fx:id="tableColumnComponentInputsNumber" editable="false" minWidth="92.0" prefWidth="-1.0" sortable="false" text="Liczba wejść:" />
               </columns>
             </TableView>
             <Button fx:id="buttonAddGate" layoutX="14.0" layoutY="588.0" mnemonicParsing="false" onAction="#actionAddGate" prefWidth="85.0" text="Dodaj" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" />

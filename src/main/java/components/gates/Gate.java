@@ -2,6 +2,7 @@ package components.gates;
 
 import components.Line;
 import components.Point;
+import data.Names;
 import data.Sizes;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
@@ -31,8 +32,8 @@ public class Gate {
     }
 
     public Gate(double x, double y){
-        pointCenter = new Point("Center", x, y);
-        pointOutput = new Point("Output", x + 100, y);
+        pointCenter = new Point(Names.pointCenterName, x, y);
+        pointOutput = new Point(Names.pointOutputName, x + 93, y);
     }
 
     public void setOutput(){
@@ -178,6 +179,7 @@ public class Gate {
         if(selected){
             graphicsContext.drawImage(imageViewSelected.getImage(), pointCenter.getX() - Sizes.baseGateXShift, pointCenter.getY() - Sizes.baseGateYShift);
         }
+        //THERE IS A BUG HERE PROBABLY, CHECK IT LATER///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         else if(lineOutput != null && lineOutput.isSignal()){
             graphicsContext.drawImage(imageViewOn.getImage(), pointCenter.getX() - Sizes.baseGateXShift, pointCenter.getY() - Sizes.baseGateYShift);
         }
