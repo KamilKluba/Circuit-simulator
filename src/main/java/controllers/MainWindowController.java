@@ -302,9 +302,9 @@ public class MainWindowController {
         coveredError = false;
     }
 
-    public void createNewLine(String selectedComponentName, double x, double y) {
-        Gate g = null;
-        Switch s = null;
+    public void createNewLine(double x, double y) {
+        Gate g = getCoveredGate(x, y);
+        Switch s = getCoveredSwitch(x, y);
 
         tableViewComponents.getSelectionModel().clearSelection();
         comboBoxNewLineHook = new ComboBox<>();
@@ -312,15 +312,13 @@ public class MainWindowController {
         comboBoxNewLineHook.setLayoutX(x - 75);
         comboBoxNewLineHook.setLayoutY(y);
         comboBoxNewLineHook.promptTextProperty().setValue("Wybierz pin");
-        if (selectedComponentName.contains(Names.gateSearchName)) {
-            g = getCoveredGate(x, y);
+        if (g != null) {
             comboBoxNewLineHook.getItems().add(g.getPointOutput());
             for (Point p : g.getArrayPointsInputs()) {
                 comboBoxNewLineHook.getItems().add(p);
             }
         }
-        else if(selectedComponentName.contains(Names.switchName)){
-            s = getCoveredSwitch(x, y);
+        if(s != null){
             comboBoxNewLineHook.getItems().add(s.getPointLineHook());
         }
         paneWorkspace.getChildren().add(comboBoxNewLineHook);

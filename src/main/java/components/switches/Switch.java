@@ -24,7 +24,8 @@ public abstract class Switch {
     }
 
     public Switch(double x, double y){
-        this.pointCenter = new Point("Output", x, y);
+        this.pointCenter = new Point("Center", x, y);
+        this.pointLineHook = new Point("Output", x, y - 35);
     }
 
     public Point getPointCenter() {

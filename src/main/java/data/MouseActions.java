@@ -112,7 +112,7 @@ public class MouseActions {
         //Clicked on a existing gate (1 or 2), and creating a line
         if(mwc.checkIfCoverHalf(selectedItemName, x, y) && (mwc.isWaitForGate2() || selectedItemName.equals(Names.lineName))){
             System.out.println("Creating line");
-            mwc.createNewLine(selectedItemName, x, y);
+            mwc.createNewLine(x, y);
             mwc.setCoveredError(false);
         }
         //Clicked on a free space while creating line
