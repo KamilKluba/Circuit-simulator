@@ -9,8 +9,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
-
 public class Gate {
     protected double inputsNumber;
     protected String name;

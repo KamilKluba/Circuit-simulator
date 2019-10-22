@@ -1,4 +1,4 @@
-package data;
+package main;
 
 import controllers.MainWindowController;
 import controllers.StartWindowController;

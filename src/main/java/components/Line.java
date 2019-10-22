@@ -1,6 +1,7 @@
 package components;
 
 import components.gates.Gate;
+import components.switches.Switch;
 import javafx.scene.paint.Color;
 
 public class Line {
@@ -11,6 +12,8 @@ public class Line {
     private boolean signal = false;
     private Gate gate1;
     private Gate gate2;
+    private Switch switch1;
+    private Switch switch2;
     private Color color;
 
     public Line(double x1, double y1, double x2, double y2, Gate gate1, Gate gate2, Color color){

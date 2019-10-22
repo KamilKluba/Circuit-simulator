@@ -8,8 +8,6 @@ import data.Sizes;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import javax.naming.Name;
-
 public class Or2 extends Gate {
 
     public Or2(double x, double y) {

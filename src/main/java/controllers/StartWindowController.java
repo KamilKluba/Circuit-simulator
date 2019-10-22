@@ -1,6 +1,6 @@
 package controllers;
 
-import data.Main;
+import main.Main;
 import data.Sizes;
 import javafx.fxml.FXML;
 import javafx.scene.SnapshotParameters;
