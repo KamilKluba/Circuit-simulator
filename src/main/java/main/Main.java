@@ -50,12 +50,13 @@ public class Main extends Application {
 
     public void changeScene(){
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        primaryStage.setX((screenSize.width - 1024) / 2);
-        primaryStage.setY((screenSize.height - 768) / 2);
+        primaryStage.setX(0.5 * (screenSize.width - 1024));
+        primaryStage.setY(0.5 * (screenSize.height - 768));
         primaryStage.setWidth(1024);
         primaryStage.setHeight(768);
         primaryStage.show();
         scene.setRoot(anchorPane);
+        anchorPane.requestFocus();
     }
 
     public StartWindowController getStartWindowController() {

@@ -16,13 +16,15 @@ public class Line {
     private Switch switch2;
     private Color color;
 
-    public Line(double x1, double y1, double x2, double y2, Gate gate1, Gate gate2, Color color){
+    public Line(double x1, double y1, double x2, double y2, Gate gate1, Gate gate2, Switch switch1, Switch switch2, Color color){
         this.x1 = x1;
         this.y1 = y1;
         this.x2 = x2;
         this.y2 = y2;
         this.gate1 = gate1;
         this.gate2 = gate2;
+        this.switch1 = switch1;
+        this.switch2 = switch2;
         this.color = color;
     }
 
@@ -80,6 +82,22 @@ public class Line {
 
     public void setGate2(Gate gate2) {
         this.gate2 = gate2;
+    }
+
+    public Switch getSwitch1() {
+        return switch1;
+    }
+
+    public void setSwitch1(Switch switch1) {
+        this.switch1 = switch1;
+    }
+
+    public Switch getSwitch2() {
+        return switch2;
+    }
+
+    public void setSwitch2(Switch switch2) {
+        this.switch2 = switch2;
     }
 
     public Color getColor() {

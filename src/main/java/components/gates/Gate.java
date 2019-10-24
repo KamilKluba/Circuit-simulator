@@ -90,6 +90,10 @@ public class Gate {
         selected = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseGateXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseGateYShift);
     }
 
+    public boolean inside(double x, double y){
+        return Math.abs(x - this.pointCenter.getX()) <= Sizes.baseGateXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseGateYShift;
+    }
+
     public void rotate(){
         SnapshotParameters snapshotParameters = new SnapshotParameters();
         snapshotParameters.setFill(Color.TRANSPARENT);
@@ -151,10 +155,11 @@ public class Gate {
                 arrayPointsInputs[i].setY(pointCenter.getY() + rotatedInputY + nextInputsY * 60 * (double) i / (inputsNumber - 1));
             }
             if(l != null) {
-                if (l.getGate1().equals(this)) {
+                if (l.getGate1() != null && l.getGate1().equals(this)) {
                     l.setX1(pointCenter.getX() + rotatedInputX + nextInputsX * 60 * (double) i / (inputsNumber - 1));
                     l.setY1(pointCenter.getY() + rotatedInputY + nextInputsY * 60 * (double) i / (inputsNumber - 1));
-                } else {
+                }
+                else if(l.getGate2() != null && l.getGate2().equals(this)){
                     l.setX2(pointCenter.getX() + rotatedInputX + nextInputsX * 60 * (double) i / (inputsNumber - 1));
                     l.setY2(pointCenter.getY() + rotatedInputY + nextInputsY * 60 * (double) i / (inputsNumber - 1));
                 }
@@ -163,10 +168,11 @@ public class Gate {
         pointOutput.setX(pointCenter.getX() + rotatedOutputX);
         pointOutput.setY(pointCenter.getY() + rotatedOutputY);
         if(lineOutput != null){
-            if (lineOutput.getGate1().equals(this)) {
+            if (lineOutput.getGate1() != null && lineOutput.getGate1().equals(this)) {
                 lineOutput.setX1(pointCenter.getX() + rotatedOutputX);
                 lineOutput.setY1(pointCenter.getY() + rotatedOutputY);
-            } else {
+            }
+            else if(lineOutput.getGate2() != null && lineOutput.getGate2().equals(this)){
                 lineOutput.setX2(pointCenter.getX() + rotatedOutputX);
                 lineOutput.setY2(pointCenter.getY() + rotatedOutputY);
             }
@@ -191,15 +197,7 @@ public class Gate {
         pointCenter.setY(pointCenter.getY() + y - mousePressY);
 
         for(Line l : arrayLines){
-            if(l != null) {
-                if (l.getGate1().equals(this)) {
-                    l.setX1(l.getX1() + x - mousePressX);
-                    l.setY1(l.getY1() + y - mousePressY);
-                } else {
-                    l.setX2(l.getX2() + x - mousePressX);
-                    l.setY2(l.getY2() + y - mousePressY);
-                }
-            }
+            changePointCoordinates(l, x, y, mousePressX, mousePressY);
         }
 
         for(Point p : arrayPointsInputs){
@@ -207,16 +205,22 @@ public class Gate {
             p.setY(p.getY() + y - mousePressY);
         }
 
-        if(lineOutput != null) {
-            if (lineOutput.getGate1().equals(this)) {
-                lineOutput.setX1(lineOutput.getX1() + x - mousePressX);
-                lineOutput.setY1(lineOutput.getY1() + y - mousePressY);
-            } else {
-                lineOutput.setX2(lineOutput.getX2() + x - mousePressX);
-                lineOutput.setY2(lineOutput.getY2() + y - mousePressY);
-            }
-        }
+        changePointCoordinates(lineOutput, x, y, mousePressX, mousePressY);
+
         pointOutput.setX(pointOutput.getX() + x - mousePressX);
         pointOutput.setY(pointOutput.getY() + y - mousePressY);
+    }
+
+    private void changePointCoordinates(Line l, double x, double y, double mousePressX, double mousePressY){
+        if(l != null) {
+            if (l.getGate1() != null && l.getGate1().equals(this)) {
+                l.setX1(l.getX1() + x - mousePressX);
+                l.setY1(l.getY1() + y - mousePressY);
+            }
+            else if(l.getGate2() != null && l.getGate2().equals(this)) {
+                l.setX2(l.getX2() + x - mousePressX);
+                l.setY2(l.getY2() + y - mousePressY);
+            }
+        }
     }
 }

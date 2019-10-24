@@ -7,8 +7,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 
 public abstract class Switch {
+    private int rotation = 0;
     private Point pointCenter;
     private boolean state = false;
+    private boolean selected = false;
     private Line line;
     private Point pointLineHook;
     protected ImageView imageViewOn;
@@ -28,6 +30,76 @@ public abstract class Switch {
         this.pointLineHook = new Point("Output", x, y - 35);
     }
 
+    public void select(double x, double y){
+        selected = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseSwitchXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseSwitchYShift);
+    }
+
+    public boolean inside(double x, double y){
+        return Math.abs(x - this.pointCenter.getX()) <= Sizes.baseSwitchXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseSwitchYShift;
+    }
+
+    public void rotate(){
+        rotation++;
+        if(rotation == 4){
+            rotation = 0;
+        }
+
+        if(rotation == 0){
+            pointLineHook.setX(pointCenter.getX());
+            pointLineHook.setY(pointCenter.getY() - 35);
+        }
+        else if(rotation == 1){
+            pointLineHook.setX(pointCenter.getX() + 20);
+            pointLineHook.setY(pointCenter.getY());
+        }
+        else if(rotation == 2){
+            pointLineHook.setX(pointCenter.getX());
+            pointLineHook.setY(pointCenter.getY() + 35);
+        }
+        else{
+            pointLineHook.setX(pointCenter.getX() - 20);
+            pointLineHook.setY(pointCenter.getY());
+        }
+
+        if(line != null){
+            if(line.getSwitch1() != null && line.getSwitch1().equals(this)){
+                line.setX1(pointLineHook.getX());
+                line.setY1(pointLineHook.getY());
+            }
+            else if(line.getSwitch2() != null && line.getSwitch2().equals(this)){
+                line.setX2(pointLineHook.getX());
+                line.setY2(pointLineHook.getY());
+            }
+        }
+    }
+
+    public void move(double x, double y, double mousePressX, double mousePressY) {
+        pointCenter.setX(pointCenter.getX() + x - mousePressX);
+        pointCenter.setY(pointCenter.getY() + y - mousePressY);
+
+        if(line != null){
+            if(line.getSwitch1() != null && line.getSwitch1().equals(this)){
+                line.setX1(pointLineHook.getX() + x - mousePressX);
+                line.setY1(pointLineHook.getY() + y - mousePressY);
+            }
+            else if(line.getSwitch2() != null && line.getSwitch2().equals(this)){
+                line.setX2(pointLineHook.getX() + x - mousePressX);
+                line.setY2(pointLineHook.getY() + y - mousePressY);
+            }
+        }
+
+        pointLineHook.setX(pointLineHook.getX() + x - mousePressX);
+        pointLineHook.setY(pointLineHook.getY() + y - mousePressY);
+    }
+
+    public int getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(int rotation) {
+        this.rotation = rotation;
+    }
+
     public Point getPointCenter() {
         return pointCenter;
     }
@@ -42,6 +114,14 @@ public abstract class Switch {
 
     public void setState(boolean state) {
         this.state = state;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     public Line getLine() {
