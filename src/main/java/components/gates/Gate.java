@@ -15,6 +15,7 @@ public class Gate {
     protected Line[] arrayLines;
     protected Line lineOutput;
     protected boolean selected = false;
+    protected boolean selectedForDrag = false;
     protected Color color = Color.BLACK;
     protected Point pointCenter;
     protected Point pointOutput;
@@ -86,8 +87,18 @@ public class Gate {
         return selected;
     }
 
+    public void setSelectedForDrag(boolean selectedForDrag) {
+        this.selectedForDrag = selectedForDrag;
+    }
+
+    public boolean isSelectedForDrag() {return selectedForDrag;}
+
     public void select(double x, double y) {
         selected = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseGateXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseGateYShift);
+    }
+
+    public void selectForDrag(double x, double y){
+        selectedForDrag = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseGateXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseGateYShift);
     }
 
     public boolean inside(double x, double y){

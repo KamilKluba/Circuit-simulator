@@ -11,6 +11,7 @@ public abstract class Switch {
     private Point pointCenter;
     private boolean state = false;
     private boolean selected = false;
+    private boolean selectedForDrag = false;
     private Line line;
     private Point pointLineHook;
     protected ImageView imageViewOn;
@@ -32,6 +33,13 @@ public abstract class Switch {
 
     public void select(double x, double y){
         selected = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseSwitchXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseSwitchYShift);
+        if(selected){
+            state = !state;
+        }
+    }
+
+    public void selectForDrag(double x, double y){
+        selectedForDrag = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseGateXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseGateYShift);
     }
 
     public boolean inside(double x, double y){
@@ -122,6 +130,12 @@ public abstract class Switch {
 
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    public boolean isSelectedForDrag() {return selectedForDrag;}
+
+    public void setSelectedForDrag(boolean selectedForDrag) {
+        this.selectedForDrag = selectedForDrag;
     }
 
     public Line getLine() {

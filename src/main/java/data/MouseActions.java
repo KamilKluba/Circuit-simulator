@@ -1,5 +1,6 @@
 package data;
 
+import com.sun.glass.ui.Size;
 import components.Line;
 import components.Point;
 import components.TableComponent;
@@ -174,12 +175,12 @@ public class MouseActions {
 
     public void actionCanvasMouseDragged(double x, double y){
         for(Gate g : arrayListCreatedGates){
-            if(g.inside(x, y)){
+            if(g.isSelectedForDrag()){
                 g.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY());
             }
         }
         for(Switch s : arrayListCreatedSwitches){
-            if(s.inside(x, y)){
+            if(s.isSelectedForDrag()){
                 s.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY());
             }
         }
@@ -197,6 +198,17 @@ public class MouseActions {
 
         pointMousePressedToDrag.setX(x);
         pointMousePressedToDrag.setY(y);
+
+        for(Gate g : arrayListCreatedGates){
+            if(g.inside(x, y)){
+                g.selectForDrag(x, y);
+            }
+        }
+        for(Switch s : arrayListCreatedSwitches){
+            if(s.inside(x, y)){
+                s.selectForDrag(x, y);
+            }
+        }
     }
 
     public void actionCanvasMouseReleased(double x, double y){
@@ -205,7 +217,14 @@ public class MouseActions {
         pointMouseReleased.setY(y);
 
         System.out.println(pointMousePressed.getX() + " " + x + " " + pointMousePressed.getY() + " " + y);
-        mouseDragged = Math.abs(pointMousePressed.getX() - x) > 20 || Math.abs(pointMousePressed.getY() - y) > 20;
+        mouseDragged = Math.abs(pointMousePressed.getX() - x) > Sizes.minimalXDragToSelect || Math.abs(pointMousePressed.getY() - y) > Sizes.minimalYDragToSelect;
+
+        for(Gate g : arrayListCreatedGates){
+            g.setSelectedForDrag(false);
+        }
+        for(Switch s : arrayListCreatedSwitches){
+            s.setSelectedForDrag(false);
+        }
     }
 
     public Point getPointMousePressed() {
