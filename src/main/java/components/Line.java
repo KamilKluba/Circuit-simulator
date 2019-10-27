@@ -7,9 +7,11 @@ import javafx.scene.paint.Color;
 public class Line {
     private double x1;
     private double y1;
+    private boolean input1IsOutput;
     private double x2;
     private double y2;
-    private boolean signal = false;
+    private boolean input2IsOutput;
+    private boolean state = false;
     private Gate gate1;
     private Gate gate2;
     private Switch switch1;
@@ -28,6 +30,38 @@ public class Line {
         this.color = color;
     }
 
+
+    public void setState(boolean state) {
+        this.state = state;
+        if (state) {
+            color = new Color(0, 1, 1, 1);
+        } else {
+            color = Color.BLACK;
+        }
+
+
+        if (gate1 != null && !input1IsOutput) {
+            setSignalOnGateInput(gate1);
+        }
+        if (gate2 != null && !input2IsOutput) {
+            setSignalOnGateInput(gate2);
+        }
+    }
+
+    private void setSignalOnGateInput(Gate gate){
+        Line[] arrayLines = gate.getArrayLines();
+        for (int i = 0; i < arrayLines.length; i++) {
+            if (arrayLines[i] != null && arrayLines[i].equals(this)) {
+                gate.getArraySignalsInputs()[i] = state;
+            }
+        }
+        gate.computeSignal();
+    }
+
+    public boolean isState() {
+        return state;
+    }
+
     public double getX1() {
         return x1;
     }
@@ -42,6 +76,14 @@ public class Line {
 
     public void setY1(double y1) {
         this.y1 = y1;
+    }
+
+    public boolean isInput1IsOutput() {
+        return input1IsOutput;
+    }
+
+    public void setInput1IsOutput(boolean input1IsOutput) {
+        this.input1IsOutput = input1IsOutput;
     }
 
     public double getX2() {
@@ -60,12 +102,12 @@ public class Line {
         this.y2 = y2;
     }
 
-    public boolean isSignal() {
-        return signal;
+    public boolean isInput2IsOutput() {
+        return input2IsOutput;
     }
 
-    public void setSignal(boolean signal) {
-        this.signal = signal;
+    public void setInput2IsOutput(boolean input2IsOutput) {
+        this.input2IsOutput = input2IsOutput;
     }
 
     public Gate getGate1() {

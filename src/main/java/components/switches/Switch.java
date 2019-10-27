@@ -17,24 +17,32 @@ public abstract class Switch {
     protected ImageView imageViewOn;
     protected ImageView imageViewOff;
 
-    public void draw(GraphicsContext graphicsContext){
-        if(state){
-            graphicsContext.drawImage(imageViewOn.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
-        }
-        else{
-            graphicsContext.drawImage(imageViewOff.getImage(),pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
-        }
-    }
 
     public Switch(double x, double y){
         this.pointCenter = new Point("Center", x, y);
         this.pointLineHook = new Point("Output", x, y - 35);
     }
 
+    public void sendSignal(){
+        if(line != null){
+            line.setState(state);
+        }
+    }
+
     public void select(double x, double y){
         selected = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseSwitchXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseSwitchYShift);
         if(selected){
             state = !state;
+        }
+        sendSignal();
+    }
+
+    public void draw(GraphicsContext graphicsContext){
+        if(state){
+            graphicsContext.drawImage(imageViewOn.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
+        }
+        else{
+            graphicsContext.drawImage(imageViewOff.getImage(),pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
         }
     }
 

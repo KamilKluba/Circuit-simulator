@@ -97,6 +97,7 @@ public class MouseActions {
         }
 
         if(mwc.isWaitForPlaceComponent()){
+            graphicsContext.setStroke(Color.BLACK);
             if(newComponentName.equals(Names.gateAnd2Name)){
                 Gate g = new And2(x, y);
                 g.draw(graphicsContext);
@@ -121,11 +122,16 @@ public class MouseActions {
             selectedItemName = tableViewComponents.getSelectionModel().getSelectedItem().getName();
         } catch (Exception e){}
 
-        System.out.println("Click parameters: coverTotal:" + mwc.checkIfCoverTotal(selectedItemName, x, y) + ", coverHalf:" + mwc.checkIfCoverHalf(selectedItemName, x, y) +
-                " selItemName:" + selectedItemName + ", waitForGate2:" + mwc.isWaitForComponent2() + ",  mouseButton:" + button);
+        if(Accesses.logMouseActions) {
+            System.out.println("Click parameters: coverTotal:" + mwc.checkIfCoverTotal(selectedItemName, x, y) + ", coverHalf:" + mwc.checkIfCoverHalf(selectedItemName, x, y) +
+                    " selItemName:" + selectedItemName + ", waitForGate2:" + mwc.isWaitForComponent2() + ",  mouseButton:" + button);
+        }
 
         //Revert creating component
         if(button == MouseButton.SECONDARY){
+            if(Accesses.logMouseActions) {
+                System.out.println("Reverted creating component");
+            }
             mwc.setCoveredError(false);
             mwc.setLineBuffer(null);
             mwc.setWaitForComponent2(false);
@@ -134,33 +140,43 @@ public class MouseActions {
         }
         //Clicked on a existing gate (1 or 2), and creating a line
         else if(mwc.checkIfCoverHalf(selectedItemName, x, y) && (mwc.isWaitForComponent2() || selectedItemName.equals(Names.lineName))){
-            System.out.println("Creating line");
+            if(Accesses.logMouseActions) {
+                System.out.println("Creating line");
+            }
             mwc.createNewLine(x, y);
             mwc.setCoveredError(false);
         }
         //Clicked on a free space while creating line
         else if(!mwc.checkIfCoverHalf(selectedItemName, x, y) && (mwc.isWaitForComponent2() || selectedItemName.equals(Names.lineName))){
-            System.out.println("Stopped creating line");
+            if(Accesses.logMouseActions) {
+                System.out.println("Stopped creating line");
+            }
             mwc.setLineBuffer(null);
             mwc.setWaitForComponent2(false);
             mwc.setCoveredError(false);
         }
         //Clicked on a free space while creating component (not line)
         else if(!mwc.checkIfCoverTotal(selectedItemName, x, y) && tableViewComponents.getSelectionModel().getSelectedItem() != null && !selectedItemName.contains(Names.lineName)) {
-            System.out.println("Create new component " + selectedItemName);
+            if(Accesses.logMouseActions) {
+                System.out.println("Create new component " + selectedItemName);
+            }
             mwc.createNewComponent(x, y, selectedItemName);
             mwc.setWaitForPlaceComponent(false);
         }
         //Clicked on a occupied space while creating gate
         else if(selectedItemName != ""){
-            System.out.println("Covered gate while trying to create new one");
+            if(Accesses.logMouseActions) {
+                System.out.println("Covered gate while trying to create new one");
+            }
             mwc.setCoveredError(true);
             mwc.setWaitForPlaceComponent(true);
             actionCanvasMouseMoved(x, y);
         }
         //Just clicked on a free space
         else if(!mouseDragged){
-            System.out.println("No special action, trying to select a gate");
+            if(Accesses.logMouseActions) {
+                System.out.println("No special action, trying to select a gate");
+            }
             for(Gate g : arrayListCreatedGates){
                 g.select(x, y);
             }
@@ -192,7 +208,9 @@ public class MouseActions {
     }
 
     public void actionCanvasMousePressed(double x, double y){
-        System.out.println("Mouse pressed");
+        if(Accesses.logMouseActions) {
+            System.out.println("Mouse pressed");
+        }
         pointMousePressed.setX(x);
         pointMousePressed.setY(y);
 
@@ -212,11 +230,12 @@ public class MouseActions {
     }
 
     public void actionCanvasMouseReleased(double x, double y){
-        System.out.println("Mouse released");
+        if(Accesses.logMouseActions) {
+            System.out.println("Mouse released");
+        }
         pointMouseReleased.setX(x);
         pointMouseReleased.setY(y);
 
-        System.out.println(pointMousePressed.getX() + " " + x + " " + pointMousePressed.getY() + " " + y);
         mouseDragged = Math.abs(pointMousePressed.getX() - x) > Sizes.minimalXDragToSelect || Math.abs(pointMousePressed.getY() - y) > Sizes.minimalYDragToSelect;
 
         for(Gate g : arrayListCreatedGates){

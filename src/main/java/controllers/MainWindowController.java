@@ -3,6 +3,7 @@ package controllers;
 import components.*;
 import components.switches.Switch;
 import components.switches.SwitchBistatble;
+import data.Accesses;
 import data.MouseActions;
 import main.Main;
 import data.Names;
@@ -106,8 +107,10 @@ public class MainWindowController {
 
     }
 
-    public void actionSelectionChanged(){
-        System.out.println("TableView selection changed");
+    public void actionSelectionChanged() {
+        if (Accesses.logTableView){
+            System.out.println("TableView selection changed");
+        }
 
         try {
             String selectedName = tableViewComponents.getSelectionModel().getSelectedItem().getName();
@@ -257,8 +260,8 @@ public class MainWindowController {
         }
 
         graphicsContext.setLineWidth(Sizes.baseLineWidth);
-        graphicsContext.setStroke(Color.BLACK);
         for(Line l : arrayListCreatedLines){
+            graphicsContext.setStroke(l.getColor());
             graphicsContext.strokeLine(l.getX1(), l.getY1(), l.getX2(), l.getY2());
         }
     }
@@ -279,10 +282,13 @@ public class MainWindowController {
     }
 
     private void actionCanvasKeyTyped(String character){
-        if(character.matches("[1-9]")){
+        if(character.matches("[0-9]")){
             int index = Integer.parseInt(character);
             if(tableViewComponents.getItems().size() >= index){
                 tableViewComponents.getSelectionModel().select(index - 1);
+            }
+            else{
+                tableViewComponents.getSelectionModel().clearSelection();
             }
         }
 
@@ -299,17 +305,14 @@ public class MainWindowController {
         tableViewComponents.getSelectionModel().clearSelection();
         try {
             if (newComponentName.equals(Names.gateAnd2Name)) {
-                System.out.println("And 2");
                 Gate newGate = new And2(x, y);
                 arrayListCreatedGates.add(newGate);
             }
             else if (newComponentName.equals(Names.gateOr2Name)) {
-                System.out.println("Or 2");
                 Gate newGate = new Or2(x, y);
                 arrayListCreatedGates.add(newGate);
             }
             else if(newComponentName.equals(Names.switchName)){
-                System.out.println("Switch");
                 SwitchBistatble newSwitch = new SwitchBistatble(x, y);
                 arrayListCreatedSwitches.add(newSwitch);
             }
@@ -343,8 +346,7 @@ public class MainWindowController {
         canvas.setOnMouseClicked(e -> {
             paneWorkspace.getChildren().remove(comboBoxNewLineHook);
             canvas.setOnMouseClicked(f -> mouseActions.actionCanvasMouseClicked(f.getX(), f.getY(), f.getButton()));
-            System.out.println("Click on canvas while combo is on");
-        });
+             });
 
         if(!waitForComponent2) {
             comboBoxNewLineHook.setOnAction(e -> chooseNewLineHook1(x, y, g, s, comboBoxNewLineHook));
@@ -352,7 +354,6 @@ public class MainWindowController {
         else{
             comboBoxNewLineHook.setOnAction(e -> chooseNewLineHook2(x, y, g, s, comboBoxNewLineHook));
         }
-        System.out.println("Create new line");
     }
 
     private void chooseNewLineHook1(double x, double y, Gate g, Switch s, ComboBox<Point> comboBoxNewLineHook){
@@ -361,15 +362,18 @@ public class MainWindowController {
             lineBuffer = new Line(p.getX(), p.getY(), x, y, g, null, null, null, Color.BLACK);
             if (p.getName().contains("Output")) {
                 g.setLineOutput(lineBuffer);
+                lineBuffer.setInput1IsOutput(true);
             }
             else if (p.getName().contains("Input")) {
                 int inputNumber = Integer.parseInt(p.getName().split("Input")[1]);
                 g.getArrayLines()[inputNumber - 1] = lineBuffer;
+                lineBuffer.setInput1IsOutput(false);
             }
         }
         else if(s != null){
             lineBuffer = new Line(p.getX(), p.getY(), x, y, null, null, s, null, Color.BLACK);
             s.setLine(lineBuffer);
+            lineBuffer.setInput1IsOutput(false);
         }
 
         canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e.getX(), e.getY(), e.getButton()));
@@ -386,15 +390,18 @@ public class MainWindowController {
             lineBuffer.setGate2(g);
             if (p.getName().contains("Output")) {
                 g.setLineOutput(lineBuffer);
+                lineBuffer.setInput2IsOutput(false);
             }
             else if (p.getName().contains("Input")) {
                 int inputNumber = Integer.parseInt(p.getName().split("Input")[1]);
                 g.getArrayLines()[inputNumber - 1] = lineBuffer;
+                lineBuffer.setInput2IsOutput(false);
             }
         }
         else if(s != null){
             lineBuffer.setSwitch2(s);
             s.setLine(lineBuffer);
+            lineBuffer.setInput2IsOutput(false);
         }
         arrayListCreatedLines.add(lineBuffer);
 

@@ -9,11 +9,15 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
+import java.sql.SQLOutput;
+
 public class Gate {
     protected double inputsNumber;
     protected String name;
     protected Line[] arrayLines;
     protected Line lineOutput;
+    protected boolean output = false;
+    protected boolean[] arraySignalsInputs;
     protected boolean selected = false;
     protected boolean selectedForDrag = false;
     protected Color color = Color.BLACK;
@@ -26,7 +30,6 @@ public class Gate {
     protected ImageView imageViewSelected;
 
 
-
     public Gate(){
     }
 
@@ -35,66 +38,21 @@ public class Gate {
         pointOutput = new Point(Names.pointOutputName, x + 93, y);
     }
 
-    public void setOutput(){
+    public void computeSignal(){
 
     }
-
-    public Line[] getArrayLines() {
-        return arrayLines;
-    }
-
-    public Integer getArrayListInputsSize(){
-        return 2;
-    }
-
-    public void setLineOutput(Line lineOutput) {
-        this.lineOutput = lineOutput;
-    }
-
-    public Line getLineOutput() {
-        return lineOutput;
-    }
-
-    public ImageView getImageViewOff(){
-        return imageViewOff;
-    }
-
-    public ImageView getImageViewOn() {
-        return imageViewOn;
-    }
-
-    public ImageView getImageViewSelected() {
-        return imageViewSelected;
-    }
-
-    public String getName(){
-        return name;
-    }
-
-    public Point getPointCenter() {
-        return pointCenter;
-    }
-
-    public Point getPointOutput() {
-        return pointOutput;
-    }
-
-    public Point[] getArrayPointsInputs() {
-        return arrayPointsInputs;
-    }
-
-    public boolean isSelected(){
-        return selected;
-    }
-
-    public void setSelectedForDrag(boolean selectedForDrag) {
-        this.selectedForDrag = selectedForDrag;
-    }
-
-    public boolean isSelectedForDrag() {return selectedForDrag;}
 
     public void select(double x, double y) {
         selected = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseGateXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseGateYShift);
+        if(selected) {
+            System.out.println("------------------------------");
+            System.out.println(lineOutput + " output");
+            int i = 0;
+            for (Line l : arrayLines) {
+                i++;
+                System.out.println(l + " input " + i);
+            }
+        }
     }
 
     public void selectForDrag(double x, double y){
@@ -195,7 +153,7 @@ public class Gate {
             graphicsContext.drawImage(imageViewSelected.getImage(), pointCenter.getX() - Sizes.baseGateXShift, pointCenter.getY() - Sizes.baseGateYShift);
         }
         //THERE IS A BUG HERE PROBABLY, CHECK IT LATER///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        else if(lineOutput != null && lineOutput.isSignal()){
+        else if(output){
             graphicsContext.drawImage(imageViewOn.getImage(), pointCenter.getX() - Sizes.baseGateXShift, pointCenter.getY() - Sizes.baseGateYShift);
         }
         else {
@@ -234,4 +192,76 @@ public class Gate {
             }
         }
     }
+
+    public void setOutput(boolean output){
+        this.output = output;
+    }
+
+    public boolean getOutput(){
+        return output;
+    }
+
+    public Line[] getArrayLines() {
+        return arrayLines;
+    }
+
+    public Integer getArrayListInputsSize(){
+        return 2;
+    }
+
+    public void setLineOutput(Line lineOutput) {
+        this.lineOutput = lineOutput;
+    }
+
+    public Line getLineOutput() {
+        return lineOutput;
+    }
+
+    public boolean[] getArraySignalsInputs() {
+        return arraySignalsInputs;
+    }
+
+    public void setArraySignalsInputs(boolean[] arraySignalsInputs) {
+        this.arraySignalsInputs = arraySignalsInputs;
+    }
+
+    public ImageView getImageViewOff(){
+        return imageViewOff;
+    }
+
+    public ImageView getImageViewOn() {
+        return imageViewOn;
+    }
+
+    public ImageView getImageViewSelected() {
+        return imageViewSelected;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public Point getPointCenter() {
+        return pointCenter;
+    }
+
+    public Point getPointOutput() {
+        return pointOutput;
+    }
+
+    public Point[] getArrayPointsInputs() {
+        return arrayPointsInputs;
+    }
+
+    public boolean isSelected(){
+        return selected;
+    }
+
+    public void setSelectedForDrag(boolean selectedForDrag) {
+        this.selectedForDrag = selectedForDrag;
+    }
+
+    public boolean isSelectedForDrag() {return selectedForDrag;}
+
+
 }
