@@ -44,15 +44,6 @@ public class Gate {
 
     public void select(double x, double y) {
         selected = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseGateXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseGateYShift);
-        if(selected) {
-            System.out.println("------------------------------");
-            System.out.println(lineOutput + " output");
-            int i = 0;
-            for (Line l : arrayLines) {
-                i++;
-                System.out.println(l + " input " + i);
-            }
-        }
     }
 
     public void selectForDrag(double x, double y){

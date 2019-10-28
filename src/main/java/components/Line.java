@@ -12,6 +12,7 @@ public class Line {
     private double y2;
     private boolean input2IsOutput;
     private boolean state = false;
+    private boolean lastState = false;
     private Gate gate1;
     private Gate gate2;
     private Switch switch1;
@@ -33,18 +34,21 @@ public class Line {
 
     public void setState(boolean state) {
         this.state = state;
-        if (state) {
-            color = new Color(0, 1, 1, 1);
-        } else {
-            color = Color.BLACK;
-        }
+        if(state != lastState) {
+            lastState = state;
+            if (state) {
+                color = new Color(0, 0.8, 0.8, 1);
+            } else {
+                color = Color.BLACK;
+            }
 
 
-        if (gate1 != null && !input1IsOutput) {
-            setSignalOnGateInput(gate1);
-        }
-        if (gate2 != null && !input2IsOutput) {
-            setSignalOnGateInput(gate2);
+            if (gate1 != null && !input1IsOutput) {
+                setSignalOnGateInput(gate1);
+            }
+            if (gate2 != null && !input2IsOutput) {
+                setSignalOnGateInput(gate2);
+            }
         }
     }
 

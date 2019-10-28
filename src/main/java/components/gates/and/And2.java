@@ -21,9 +21,9 @@ public class And2 extends Gate {
         arraySignalsInputs = new boolean[2];
         name = Names.gateAnd2Name;
 
-        imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/and2_gate_off.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
-        imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/and2_gate_on.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
-        imageViewSelected = new ImageView(new Image(getClass().getResource("/graphics/and2_gate_selected.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
+        imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/and/and2_gate_off.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
+        imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/and/and2_gate_on.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
+        imageViewSelected = new ImageView(new Image(getClass().getResource("/graphics/and/and2_gate_selected.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
     }
 
     @Override

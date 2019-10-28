@@ -29,8 +29,8 @@ public class StartWindowController {
 
     @FXML
     private void initialize(){
-        imageRight = new Image(getClass().getResource("/graphics/or2_gate_off.png").toExternalForm(), Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false);
-        ImageView imageView = new ImageView(new Image(getClass().getResource("/graphics/or2_gate_off.png").toExternalForm(), Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false));
+        imageRight = new Image(getClass().getResource("/graphics/or/or2_gate_off.png").toExternalForm(), Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false);
+        ImageView imageView = new ImageView(new Image(getClass().getResource("/graphics/or/or2_gate_off.png").toExternalForm(), Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false));
         imageView.setRotate(180);
         SnapshotParameters snapshotParameters = new SnapshotParameters();
         snapshotParameters.setFill(Color.TRANSPARENT);

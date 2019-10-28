@@ -1,6 +1,13 @@
 package controllers;
 
 import components.*;
+import components.gates.and.And3;
+import components.gates.and.And4;
+import components.gates.or.Or3;
+import components.gates.or.Or4;
+import components.gates.xor.Xor2;
+import components.gates.xor.Xor3;
+import components.gates.xor.Xor4;
 import components.switches.Switch;
 import components.switches.SwitchBistatble;
 import data.Accesses;
@@ -58,16 +65,37 @@ public class MainWindowController {
     public void initialize(){
         arrayListPossibleComponents.add(new TableComponent("Line", 2,
                                         new ImageView(new Image(getClass().getResource("/graphics/line_off.png").toExternalForm(),
-                                                    Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
         arrayListPossibleComponents.add(new TableComponent(Names.switchName, 1,
                                         new ImageView(new Image(getClass().getResource("/graphics/switch_off.png").toExternalForm(),
-                                                    Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
         arrayListPossibleComponents.add(new TableComponent(Names.gateAnd2Name, 2,
-                                        new ImageView(new Image(getClass().getResource("/graphics/and2_gate_off.png").toExternalForm(),
-                                                    Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+                                        new ImageView(new Image(getClass().getResource("/graphics/and/and2_gate_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.gateAnd3Name, 3,
+                                        new ImageView(new Image(getClass().getResource("/graphics/and/and3_gate_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.gateAnd4Name, 4,
+                                        new ImageView(new Image(getClass().getResource("/graphics/and/and4_gate_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
         arrayListPossibleComponents.add(new TableComponent(Names.gateOr2Name, 2,
-                                        new ImageView(new Image(getClass().getResource("/graphics/or2_gate_off.png").toExternalForm(),
-                                                    Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+                                        new ImageView(new Image(getClass().getResource("/graphics/or/or2_gate_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.gateOr3Name, 3,
+                                        new ImageView(new Image(getClass().getResource("/graphics/or/or3_gate_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.gateOr4Name, 4,
+                                        new ImageView(new Image(getClass().getResource("/graphics/or/or4_gate_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.gateXor2Name, 2,
+                                        new ImageView(new Image(getClass().getResource("/graphics/xor/xor2_gate_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.gateXor3Name, 3,
+                                        new ImageView(new Image(getClass().getResource("/graphics/xor/xor3_gate_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.gateXor4Name, 4,
+                                        new ImageView(new Image(getClass().getResource("/graphics/xor/xor4_gate_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
 
         ObservableList<TableComponent> ol = FXCollections.observableList(arrayListPossibleComponents);
         tableViewComponents.setItems(ol);
@@ -264,6 +292,7 @@ public class MainWindowController {
             graphicsContext.setStroke(l.getColor());
             graphicsContext.strokeLine(l.getX1(), l.getY1(), l.getX2(), l.getY2());
         }
+        graphicsContext.setStroke(Color.BLACK);
     }
 
     private void actionCanvasKeyPressed(KeyCode code){
@@ -308,8 +337,36 @@ public class MainWindowController {
                 Gate newGate = new And2(x, y);
                 arrayListCreatedGates.add(newGate);
             }
+            else if (newComponentName.equals(Names.gateAnd3Name)) {
+                Gate newGate = new And3(x, y);
+                arrayListCreatedGates.add(newGate);
+            }
+            else if (newComponentName.equals(Names.gateAnd4Name)) {
+                Gate newGate = new And4(x, y);
+                arrayListCreatedGates.add(newGate);
+            }
             else if (newComponentName.equals(Names.gateOr2Name)) {
                 Gate newGate = new Or2(x, y);
+                arrayListCreatedGates.add(newGate);
+            }
+            else if (newComponentName.equals(Names.gateOr3Name)) {
+                Gate newGate = new Or3(x, y);
+                arrayListCreatedGates.add(newGate);
+            }
+            else if (newComponentName.equals(Names.gateOr4Name)) {
+                Gate newGate = new Or4(x, y);
+                arrayListCreatedGates.add(newGate);
+            }
+            else if (newComponentName.equals(Names.gateXor2Name)) {
+                Gate newGate = new Xor2(x, y);
+                arrayListCreatedGates.add(newGate);
+            }
+            else if (newComponentName.equals(Names.gateXor3Name)) {
+                Gate newGate = new Xor3(x, y);
+                arrayListCreatedGates.add(newGate);
+            }
+            else if (newComponentName.equals(Names.gateXor4Name)) {
+                Gate newGate = new Xor4(x, y);
                 arrayListCreatedGates.add(newGate);
             }
             else if(newComponentName.equals(Names.switchName)){
@@ -390,7 +447,7 @@ public class MainWindowController {
             lineBuffer.setGate2(g);
             if (p.getName().contains("Output")) {
                 g.setLineOutput(lineBuffer);
-                lineBuffer.setInput2IsOutput(false);
+                lineBuffer.setInput2IsOutput(true);
             }
             else if (p.getName().contains("Input")) {
                 int inputNumber = Integer.parseInt(p.getName().split("Input")[1]);

@@ -6,7 +6,14 @@ import components.Point;
 import components.TableComponent;
 import components.gates.Gate;
 import components.gates.and.And2;
+import components.gates.and.And3;
+import components.gates.and.And4;
 import components.gates.or.Or2;
+import components.gates.or.Or3;
+import components.gates.or.Or4;
+import components.gates.xor.Xor2;
+import components.gates.xor.Xor3;
+import components.gates.xor.Xor4;
 import components.switches.Switch;
 import components.switches.SwitchBistatble;
 import controllers.MainWindowController;
@@ -102,8 +109,36 @@ public class MouseActions {
                 Gate g = new And2(x, y);
                 g.draw(graphicsContext);
             }
+            else if(newComponentName.equals(Names.gateAnd3Name)){
+                Gate g = new And3(x, y);
+                g.draw(graphicsContext);
+            }
+            else if(newComponentName.equals(Names.gateAnd4Name)){
+                Gate g = new And4(x, y);
+                g.draw(graphicsContext);
+            }
             else if(newComponentName.equals(Names.gateOr2Name)){
                 Gate g = new Or2(x, y);
+                g.draw(graphicsContext);
+            }
+            else if(newComponentName.equals(Names.gateOr3Name)){
+                Gate g = new Or3(x, y);
+                g.draw(graphicsContext);
+            }
+            else if(newComponentName.equals(Names.gateOr4Name)){
+                Gate g = new Or4(x, y);
+                g.draw(graphicsContext);
+            }
+            else if(newComponentName.equals(Names.gateXor2Name)){
+                Gate g = new Xor2(x, y);
+                g.draw(graphicsContext);
+            }
+            else if(newComponentName.equals(Names.gateXor3Name)){
+                Gate g = new Xor3(x, y);
+                g.draw(graphicsContext);
+            }
+            else if(newComponentName.equals(Names.gateXor4Name)){
+                Gate g = new Xor4(x, y);
                 g.draw(graphicsContext);
             }
             else if(newComponentName.equals(Names.switchName)){
