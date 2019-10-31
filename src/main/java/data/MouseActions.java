@@ -16,6 +16,7 @@ import components.gates.xor.Xor3;
 import components.gates.xor.Xor4;
 import components.switches.Switch;
 import components.switches.SwitchBistatble;
+import components.switches.SwitchMonostable;
 import controllers.MainWindowController;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.TableView;
@@ -92,7 +93,7 @@ public class MouseActions {
                 graphicsContext.strokeLine(x + shiftGateX, y + shiftGateY, x + shiftGateX, y - shiftGateY);
                 graphicsContext.strokeLine(x + shiftGateX, y - shiftGateY, x - shiftGateX, y - shiftGateY);
             }
-            else if(newComponentName.contains(Names.switchName)){
+            else if(newComponentName.contains(Names.switchSearchName)){
                 graphicsContext.strokeLine(x - shiftSwitchX, y - shiftSwitchY, x - shiftSwitchX, y + shiftSwitchY);
                 graphicsContext.strokeLine(x - shiftSwitchX, y + shiftSwitchY, x + shiftSwitchX, y + shiftSwitchY);
                 graphicsContext.strokeLine(x + shiftSwitchX, y + shiftSwitchY, x + shiftSwitchX, y - shiftSwitchY);
@@ -141,9 +142,13 @@ public class MouseActions {
                 Gate g = new Xor4(x, y);
                 g.draw(graphicsContext);
             }
-            else if(newComponentName.equals(Names.switchName)){
-                SwitchBistatble sm = new SwitchBistatble(x, y);
+            else if(newComponentName.equals(Names.switchMonostableName)){
+                SwitchMonostable sm = new SwitchMonostable(x, y);
                 sm.draw(graphicsContext);
+            }
+            else if(newComponentName.equals(Names.switchBistableName)){
+                SwitchBistatble sb = new SwitchBistatble(x, y);
+                sb.draw(graphicsContext);
             }
         }
     }
@@ -216,7 +221,9 @@ public class MouseActions {
                 g.select(x, y);
             }
             for(Switch s : arrayListCreatedSwitches){
-                s.select(x, y);
+                if(s.getName().equals(Names.switchBistableName)) {
+                    s.select(x, y);
+                }
             }
             mwc.setCoveredError(false);
         }
@@ -260,8 +267,12 @@ public class MouseActions {
         for(Switch s : arrayListCreatedSwitches){
             if(s.inside(x, y)){
                 s.selectForDrag(x, y);
+                if(s.getName().equals(Names.switchMonostableName)){
+                    s.setState(true);
+                }
             }
         }
+        mwc.repaint();
     }
 
     public void actionCanvasMouseReleased(double x, double y){
@@ -278,7 +289,11 @@ public class MouseActions {
         }
         for(Switch s : arrayListCreatedSwitches){
             s.setSelectedForDrag(false);
+            if(s.getName().equals(Names.switchMonostableName)){
+                s.setState(false);
+            }
         }
+        mwc.repaint();
     }
 
     public Point getPointMousePressed() {

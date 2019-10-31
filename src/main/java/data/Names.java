@@ -1,6 +1,7 @@
 package data;
 
 public class Names {
+    public static String gateSearchName = "Gate";
     public static String gateAnd2Name = "Gate And 2";
     public static String gateAnd3Name = "Gate And 3";
     public static String gateAnd4Name = "Gate And 4";
@@ -10,9 +11,10 @@ public class Names {
     public static String gateXor2Name = "Gate Xor 2";
     public static String gateXor3Name = "Gate Xor 3";
     public static String gateXor4Name = "Gate Xor 4";
-    public static String gateSearchName = "Gate";
     public static String lineName = "Line";
-    public static String switchName = "Switch";
+    public static String switchSearchName = "Switch";
+    public static String switchMonostableName = "Switch monostable";
+    public static String switchBistableName = "Switch bistable";
     public static String pointOutputName = "Output";
     public static String pointCenterName = "Center";
     public static String pointInputName = "Input";

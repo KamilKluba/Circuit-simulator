@@ -10,6 +10,7 @@ import components.gates.xor.Xor3;
 import components.gates.xor.Xor4;
 import components.switches.Switch;
 import components.switches.SwitchBistatble;
+import components.switches.SwitchMonostable;
 import data.Accesses;
 import data.MouseActions;
 import main.Main;
@@ -66,8 +67,11 @@ public class MainWindowController {
         arrayListPossibleComponents.add(new TableComponent("Line", 2,
                                         new ImageView(new Image(getClass().getResource("/graphics/line_off.png").toExternalForm(),
                                                 Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
-        arrayListPossibleComponents.add(new TableComponent(Names.switchName, 1,
-                                        new ImageView(new Image(getClass().getResource("/graphics/switch_off.png").toExternalForm(),
+        arrayListPossibleComponents.add(new TableComponent(Names.switchMonostableName, 1,
+                                        new ImageView(new Image(getClass().getResource("/graphics/switch_monostable_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.switchBistableName, 1,
+                                        new ImageView(new Image(getClass().getResource("/graphics/switch_bistable_off.png").toExternalForm(),
                                                 Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
         arrayListPossibleComponents.add(new TableComponent(Names.gateAnd2Name, 2,
                                         new ImageView(new Image(getClass().getResource("/graphics/and/and2_gate_off.png").toExternalForm(),
@@ -199,7 +203,7 @@ public class MainWindowController {
             xSizeCompare = Sizes.baseGateXSize;
             ySizeCompare = Sizes.baseGateYSize;
         }
-        else if(componentName.contains(Names.switchName)){
+        else if(componentName.contains(Names.switchSearchName)){
             xSizeCompare = Sizes.baseSwitchXSize;
             ySizeCompare = Sizes.baseSwitchYSize;
         }
@@ -229,7 +233,7 @@ public class MainWindowController {
             xShiftCompare = Sizes.baseGateXShift;
             yShiftCompare = Sizes.baseGateYShift;
         }
-        else if(componentName.contains(Names.switchName)){
+        else if(componentName.contains(Names.switchSearchName)){
             xShiftCompare = Sizes.baseSwitchXShift;
             yShiftCompare = Sizes.baseSwitchYShift;
         }
@@ -369,7 +373,11 @@ public class MainWindowController {
                 Gate newGate = new Xor4(x, y);
                 arrayListCreatedGates.add(newGate);
             }
-            else if(newComponentName.equals(Names.switchName)){
+            else if(newComponentName.equals(Names.switchMonostableName)){
+                SwitchMonostable newSwitch = new SwitchMonostable(x, y);
+                arrayListCreatedSwitches.add(newSwitch);
+            }
+            else if(newComponentName.equals(Names.switchBistableName)){
                 SwitchBistatble newSwitch = new SwitchBistatble(x, y);
                 arrayListCreatedSwitches.add(newSwitch);
             }

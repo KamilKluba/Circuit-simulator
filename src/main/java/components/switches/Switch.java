@@ -7,13 +7,14 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 
 public abstract class Switch {
-    private int rotation = 0;
-    private Point pointCenter;
-    private boolean state = false;
-    private boolean selected = false;
-    private boolean selectedForDrag = false;
-    private Line line;
-    private Point pointLineHook;
+    protected String name;
+    protected int rotation = 0;
+    protected Point pointCenter;
+    protected boolean state = false;
+    protected boolean selected = false;
+    protected boolean selectedForDrag = false;
+    protected Line line;
+    protected Point pointLineHook;
     protected ImageView imageViewOn;
     protected ImageView imageViewOff;
 
@@ -106,6 +107,10 @@ public abstract class Switch {
 
         pointLineHook.setX(pointLineHook.getX() + x - mousePressX);
         pointLineHook.setY(pointLineHook.getY() + y - mousePressY);
+    }
+
+    public String getName() {
+        return name;
     }
 
     public int getRotation() {
