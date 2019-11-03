@@ -19,4 +19,10 @@ public class SwitchBistatble extends Switch{
         imageViewOn.setRotate(180);
         imageViewOn.setImage(imageViewOn.snapshot(snapshotParameters, null));
     }
+
+    public void setState(boolean state){
+        this.state = state;
+
+        sendSignal();
+    }
 }

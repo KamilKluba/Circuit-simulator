@@ -4,6 +4,8 @@ import components.gates.Gate;
 import components.switches.Switch;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
+
 public class Line {
     private double x1;
     private double y1;
@@ -53,10 +55,20 @@ public class Line {
     }
 
     private void setSignalOnGateInput(Gate gate){
-        Line[] arrayLines = gate.getArrayLines();
-        for (int i = 0; i < arrayLines.length; i++) {
-            if (arrayLines[i] != null && arrayLines[i].equals(this)) {
-                gate.getArraySignalsInputs()[i] = state;
+        ArrayList<Line>[] arrayArrayListLines = gate.getArrayArrayListLines();
+        boolean endLoop = false;
+        for (int i = 0; i < arrayArrayListLines.length; i++) {
+            for(Line l : arrayArrayListLines[i]) {
+                if (l.equals(this)) {
+                    endLoop = true;
+                    for(Line line : arrayArrayListLines[i]){
+                        line.setState(state);
+                    }
+                    break;
+                }
+            }
+            if(endLoop){
+                break;
             }
         }
         gate.computeSignal();

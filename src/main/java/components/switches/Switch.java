@@ -6,6 +6,8 @@ import data.Sizes;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 
+import java.util.ArrayList;
+
 public abstract class Switch {
     protected String name;
     protected int rotation = 0;
@@ -13,7 +15,7 @@ public abstract class Switch {
     protected boolean state = false;
     protected boolean selected = false;
     protected boolean selectedForDrag = false;
-    protected Line line;
+    protected ArrayList<Line> arrayListlines = new ArrayList<>();
     protected Point pointLineHook;
     protected ImageView imageViewOn;
     protected ImageView imageViewOff;
@@ -25,8 +27,8 @@ public abstract class Switch {
     }
 
     public void sendSignal(){
-        if(line != null){
-            line.setState(state);
+        for(Line l : arrayListlines){
+            l.setState(state);
         }
     }
 
@@ -78,14 +80,14 @@ public abstract class Switch {
             pointLineHook.setY(pointCenter.getY());
         }
 
-        if(line != null){
-            if(line.getSwitch1() != null && line.getSwitch1().equals(this)){
-                line.setX1(pointLineHook.getX());
-                line.setY1(pointLineHook.getY());
+        for(Line l : arrayListlines){
+            if(l.getSwitch1() != null && l.getSwitch1().equals(this)){
+                l.setX1(pointLineHook.getX());
+                l.setY1(pointLineHook.getY());
             }
-            else if(line.getSwitch2() != null && line.getSwitch2().equals(this)){
-                line.setX2(pointLineHook.getX());
-                line.setY2(pointLineHook.getY());
+            else if(l.getSwitch2() != null && l.getSwitch2().equals(this)){
+                l.setX2(pointLineHook.getX());
+                l.setY2(pointLineHook.getY());
             }
         }
     }
@@ -94,14 +96,14 @@ public abstract class Switch {
         pointCenter.setX(pointCenter.getX() + x - mousePressX);
         pointCenter.setY(pointCenter.getY() + y - mousePressY);
 
-        if(line != null){
-            if(line.getSwitch1() != null && line.getSwitch1().equals(this)){
-                line.setX1(pointLineHook.getX() + x - mousePressX);
-                line.setY1(pointLineHook.getY() + y - mousePressY);
+        for(Line l : arrayListlines){
+            if(l.getSwitch1() != null && l.getSwitch1().equals(this)){
+                l.setX1(pointLineHook.getX() + x - mousePressX);
+                l.setY1(pointLineHook.getY() + y - mousePressY);
             }
-            else if(line.getSwitch2() != null && line.getSwitch2().equals(this)){
-                line.setX2(pointLineHook.getX() + x - mousePressX);
-                line.setY2(pointLineHook.getY() + y - mousePressY);
+            else if(l.getSwitch2() != null && l.getSwitch2().equals(this)){
+                l.setX2(pointLineHook.getX() + x - mousePressX);
+                l.setY2(pointLineHook.getY() + y - mousePressY);
             }
         }
 
@@ -151,12 +153,8 @@ public abstract class Switch {
         this.selectedForDrag = selectedForDrag;
     }
 
-    public Line getLine() {
-        return line;
-    }
-
-    public void setLine(Line line) {
-        this.line = line;
+    public ArrayList<Line> getArrayListlines() {
+        return arrayListlines;
     }
 
     public Point getPointLineHook() {

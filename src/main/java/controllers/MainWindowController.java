@@ -56,7 +56,6 @@ public class MainWindowController {
     @FXML private TableView<TableComponent> tableViewComponents;
     @FXML private TableColumn<TableComponent, ImageView> tableColumnComponentsPictures;
     @FXML private TableColumn<TableComponent, Integer> tableColumnComponentInputsNumber;
-    @FXML private Button buttonAddGate;
     @FXML private Button buttonDeleteGate;
     @FXML private Button buttonRotate;
     @FXML private ScrollPane scrollPaneWorkspace;
@@ -131,12 +130,18 @@ public class MainWindowController {
 
     }
 
-    public void actionAddGate(){
-
-    }
-
     public void actionDeleteGate(){
+        for(Gate g : arrayListCreatedGates){
+            if(g.isSelected()){
 
+            }
+        }
+
+        for(Switch s : arrayListCreatedSwitches){
+            if(s.isSelected()){
+
+            }
+        }
     }
 
     public void actionSelectionChanged() {
@@ -426,18 +431,18 @@ public class MainWindowController {
         if(g != null) {
             lineBuffer = new Line(p.getX(), p.getY(), x, y, g, null, null, null, Color.BLACK);
             if (p.getName().contains("Output")) {
-                g.setLineOutput(lineBuffer);
+                g.getArrayListLinesOutput().add(lineBuffer);
                 lineBuffer.setInput1IsOutput(true);
             }
             else if (p.getName().contains("Input")) {
                 int inputNumber = Integer.parseInt(p.getName().split("Input")[1]);
-                g.getArrayLines()[inputNumber - 1] = lineBuffer;
+                g.getArrayArrayListLines()[inputNumber - 1].add(lineBuffer);
                 lineBuffer.setInput1IsOutput(false);
             }
         }
         else if(s != null){
             lineBuffer = new Line(p.getX(), p.getY(), x, y, null, null, s, null, Color.BLACK);
-            s.setLine(lineBuffer);
+            s.getArrayListlines().add(lineBuffer);
             lineBuffer.setInput1IsOutput(false);
         }
 
@@ -454,18 +459,18 @@ public class MainWindowController {
         if(g != null) {
             lineBuffer.setGate2(g);
             if (p.getName().contains("Output")) {
-                g.setLineOutput(lineBuffer);
+                g.getArrayListLinesOutput().add(lineBuffer);
                 lineBuffer.setInput2IsOutput(true);
             }
             else if (p.getName().contains("Input")) {
                 int inputNumber = Integer.parseInt(p.getName().split("Input")[1]);
-                g.getArrayLines()[inputNumber - 1] = lineBuffer;
+                g.getArrayArrayListLines()[inputNumber - 1].add(lineBuffer);
                 lineBuffer.setInput2IsOutput(false);
             }
         }
         else if(s != null){
             lineBuffer.setSwitch2(s);
-            s.setLine(lineBuffer);
+            s.getArrayListlines().add(lineBuffer);
             lineBuffer.setInput2IsOutput(false);
         }
         arrayListCreatedLines.add(lineBuffer);

@@ -24,7 +24,10 @@ public class SwitchMonostable extends Switch{
         imageViewOn.setImage(imageViewOn.snapshot(snapshotParameters, null));
     }
 
+    @Override
     public void setState(boolean state){
         this.state = state;
+
+        sendSignal();
     }
 }

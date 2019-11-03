@@ -8,13 +8,17 @@ import data.Sizes;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.util.ArrayList;
+
 public class Xor2 extends Gate {
 
     public Xor2(double x, double y) {
         super(x, y);
 
         inputsNumber = 2;
-        arrayLines = new Line[2];
+        arrayArrayListLines = new ArrayList[2];
+        arrayArrayListLines[0] = new ArrayList<>();
+        arrayArrayListLines[1] = new ArrayList<>();
         arrayPointsInputs = new Point[2];
         arrayPointsInputs[0] = new Point(Names.pointInputName + "1", x - 93, y - 30);
         arrayPointsInputs[1] = new Point(Names.pointInputName + "2", x - 93, y + 30);
@@ -41,12 +45,12 @@ public class Xor2 extends Gate {
             output = false;
         }
 
-        if(lineOutput != null){
-            lineOutput.setState(output);
+        for (Line l : arrayListLinesOutput){
+            l.setState(output);
         }
     }
 
-    public Line[] getArrayLines() {
-        return arrayLines;
+    public ArrayList[] getArrayArrayListLines() {
+        return arrayArrayListLines;
     }
 }

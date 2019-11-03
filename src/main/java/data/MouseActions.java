@@ -221,8 +221,8 @@ public class MouseActions {
                 g.select(x, y);
             }
             for(Switch s : arrayListCreatedSwitches){
-                if(s.getName().equals(Names.switchBistableName)) {
-                    s.select(x, y);
+                if(s.getName().equals(Names.switchBistableName) && s.inside(x, y)) {
+                    s.setState(!s.isState());
                 }
             }
             mwc.setCoveredError(false);
