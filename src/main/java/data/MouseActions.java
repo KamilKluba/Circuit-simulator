@@ -18,9 +18,14 @@ import components.switches.Switch;
 import components.switches.SwitchBistatble;
 import components.switches.SwitchMonostable;
 import controllers.MainWindowController;
+import javafx.event.EventHandler;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -54,9 +59,16 @@ public class MouseActions {
         pointMouseMoved.setY(y);
         mwc.repaint();
 
+Canvas canvas = mwc.getCanvas();
+        graphicsContext.setStroke(Color.BLACK);
+        graphicsContext.setLineWidth(Sizes.baseLineDOJEBANAGRUBOSC);
+        graphicsContext.strokeLine(0, 0, canvas.getWidth(), 0);
+        graphicsContext.strokeLine(0, 0, 0, canvas.getHeight());
+        graphicsContext.strokeLine(canvas.getWidth(), 0, canvas.getWidth(), canvas.getHeight());
+        graphicsContext.strokeLine(0, canvas.getHeight(), canvas.getWidth(), canvas.getHeight());
+
         String newComponentName = tableViewComponents.getSelectionModel().getSelectedItem() != null ?
                 tableViewComponents.getSelectionModel().getSelectedItem().getName() : null;
-
 
         if(mwc.isCoveredError()) {
             graphicsContext.setStroke(Color.RED);
@@ -332,6 +344,21 @@ public class MouseActions {
             }
         }
         mwc.repaint();
+    }
+
+    public void actionCanvasScrolled(ScrollEvent e){
+//        if(e.getTextDeltaY() > 0){
+//            mwc.getCanvas().setScaleX(mwc.getCanvas().getScaleX() + 0.1);
+//            mwc.getCanvas().setScaleY(mwc.getCanvas().getScaleY() + 0.1);
+//            mwc.getPaneWorkspace().setScaleX(mwc.getPaneWorkspace().getScaleX() + 0.1);
+//            mwc.getPaneWorkspace().setScaleY(mwc.getPaneWorkspace().getScaleY() + 0.1);
+//        }
+//        else{
+//            mwc.getCanvas().setScaleX(mwc.getCanvas().getScaleX() - 0.1);
+//            mwc.getCanvas().setScaleY(mwc.getCanvas().getScaleY() - 0.1);
+//            mwc.getPaneWorkspace().setScaleX(mwc.getPaneWorkspace().getScaleX() - 0.1);
+//            mwc.getPaneWorkspace().setScaleY(mwc.getPaneWorkspace().getScaleY() - 0.1);
+//        }
     }
 
     public Point getPointMousePressed() {

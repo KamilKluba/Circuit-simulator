@@ -1,10 +1,12 @@
 package main;
 
+import components.ZoomableScrollPane;
 import controllers.MainWindowController;
 import controllers.StartWindowController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -15,7 +17,7 @@ public class Main extends Application {
     private StartWindowController startWindowController;
     private FlowPane flowPane;
     private MainWindowController mainWindowController;
-    private BorderPane anchorPane;
+    private BorderPane borderPane;
     private Scene scene;
     private Stage primaryStage;
 
@@ -32,8 +34,12 @@ public class Main extends Application {
         startWindowController = loaderStartWindow.getController();
 
         FXMLLoader loaderMainWindow = new FXMLLoader(getClass().getResource("/fxml/MainWindow.fxml"));
-        anchorPane = loaderMainWindow.load();
+        borderPane = loaderMainWindow.load();
         mainWindowController = loaderMainWindow.getController();
+//        Pane pane = mainWindowController.getPaneWorkspace();
+//        Canvas canvas = mainWindowController.getCanvas();
+//        ZoomableScrollPane zsp = new ZoomableScrollPane(pane);
+//        borderPane.setCenter(zsp);
 
         scene = new Scene(flowPane);
 
@@ -55,8 +61,8 @@ public class Main extends Application {
         primaryStage.setWidth(1024);
         primaryStage.setHeight(768);
         primaryStage.show();
-        scene.setRoot(anchorPane);
-        anchorPane.requestFocus();
+        scene.setRoot(borderPane);
+        borderPane.requestFocus();
     }
 
     public StartWindowController getStartWindowController() {

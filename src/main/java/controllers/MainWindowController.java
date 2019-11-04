@@ -116,6 +116,7 @@ public class MainWindowController {
         canvas.setOnMouseDragged(e -> mouseActions.actionCanvasMouseDragged(e.getX(), e.getY()));
         canvas.setOnMousePressed(e -> mouseActions.actionCanvasMousePressed(e.getX(), e.getY()));
         canvas.setOnMouseReleased(e -> mouseActions.actionCanvasMouseReleased(e.getX(), e.getY()));
+        canvas.setOnScroll(e -> mouseActions.actionCanvasScrolled(e));
 
         tableViewComponents.setOnKeyPressed(e -> actionCanvasKeyPressed(e.getCode()));
     }
@@ -338,8 +339,28 @@ public class MainWindowController {
         else if(code == KeyCode.CONTROL){
             scrollPaneWorkspace.setPannable(true);
         }
-        else if(code == KeyCode.DELETE){
+        else if(code == KeyCode.DELETE) {
             actionDelete();
+        }
+        else if(code == KeyCode.UP){
+            System.out.println(code);
+            paneWorkspace.setTranslateY(paneWorkspace.getTranslateY() + 10);
+            canvas.setTranslateY(canvas.getTranslateY() + 10);
+        }
+        else if(code == KeyCode.DOWN){
+            System.out.println(code);
+            paneWorkspace.setTranslateY(paneWorkspace.getTranslateY() - 10);
+            canvas.setTranslateY(canvas.getTranslateY() - 10);
+        }
+        else if(code == KeyCode.LEFT){
+            System.out.println(code);
+            paneWorkspace.setTranslateX(paneWorkspace.getTranslateX() - 10);
+            canvas.setTranslateX(canvas.getTranslateX() - 10);
+        }
+        else if(code == KeyCode.RIGHT){
+            System.out.println(code);
+            paneWorkspace.setTranslateX(paneWorkspace.getTranslateX() + 10);
+            canvas.setTranslateX(canvas.getTranslateX() + 10);
         }
 
         mouseActions.actionCanvasMouseMoved(mouseActions.getPointMouseMoved().getX(), mouseActions.getPointMouseMoved().getY());
@@ -561,6 +582,18 @@ public class MainWindowController {
 
     public ArrayList<TableComponent> getArrayListPossibleComponents() {
         return arrayListPossibleComponents;
+    }
+
+    public Canvas getCanvas() {
+        return canvas;
+    }
+
+    public ScrollPane getScrollPaneWorkspace() {
+        return scrollPaneWorkspace;
+    }
+
+    public Pane getPaneWorkspace() {
+        return paneWorkspace;
     }
 }
 

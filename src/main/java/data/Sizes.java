@@ -9,6 +9,7 @@ public class Sizes {
     public static double baseGateYShift = baseGateYSize * 0.5;
     public static double baseLineWidth = 5.5;
     public static double baseLineContourWidth = 1.0;
+    public static double baseLineDOJEBANAGRUBOSC = 40;
     public static double baseSwitchXSize = 100.0;
     public static double baseSwitchYSize = 100.0;
     public static double baseSwitchXShift = baseSwitchXSize * 0.5;
