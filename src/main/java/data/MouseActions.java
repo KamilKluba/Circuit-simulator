@@ -217,6 +217,9 @@ public class MouseActions {
             if(Accesses.logMouseActions) {
                 System.out.println("No special action, trying to select a gate");
             }
+            for(Line l : arrayListCreatedLines) {
+                l.select(x, y);
+            }
             for(Gate g : arrayListCreatedGates){
                 g.select(x, y);
             }
@@ -247,6 +250,41 @@ public class MouseActions {
 
         pointMousePressedToDrag.setX(x);
         pointMousePressedToDrag.setY(y);
+
+        graphicsContext.setStroke(Color.GRAY);
+        graphicsContext.setLineWidth(Sizes.baseLineContourWidth);
+        graphicsContext.strokeLine(pointMousePressed.getX(), pointMousePressed.getY(), x, pointMousePressed.getY());
+        graphicsContext.strokeLine(pointMousePressed.getX(), pointMousePressed.getY(), pointMousePressed.getX(), y);
+        graphicsContext.strokeLine(x, pointMousePressed.getY(), x, y);
+        graphicsContext.strokeLine(pointMousePressed.getX(), y, x, y);
+
+        double x1, x2, y1, y2;
+        if(pointMousePressed.getX() < x){
+            x1 = pointMousePressed.getX();
+            x2 = x;
+        }
+        else{
+            x1 = x;
+            x2 = pointMousePressed.getX();
+        }
+        if(pointMousePressed.getY() < y){
+            y1 = pointMousePressed.getY();
+            y2 = y;
+        }
+        else{
+            y1 = y;
+            y2 = pointMousePressed.getY();
+        }
+
+        for(Line l : arrayListCreatedLines) {
+            l.select(x1, y1, x2, y2);
+        }
+        for(Gate g : arrayListCreatedGates){
+            g.select(x1, y1, x2, y2);
+        }
+        for(Switch s : arrayListCreatedSwitches){
+            s.select(x1, y2, x2, y2);
+        }
     }
 
     public void actionCanvasMousePressed(double x, double y){

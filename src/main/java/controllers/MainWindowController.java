@@ -34,6 +34,7 @@ import javafx.scene.paint.Color;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.regex.Pattern;
 
 public class MainWindowController {
@@ -56,7 +57,7 @@ public class MainWindowController {
     @FXML private TableView<TableComponent> tableViewComponents;
     @FXML private TableColumn<TableComponent, ImageView> tableColumnComponentsPictures;
     @FXML private TableColumn<TableComponent, Integer> tableColumnComponentInputsNumber;
-    @FXML private Button buttonDeleteGate;
+    @FXML private Button buttonDelete;
     @FXML private Button buttonRotate;
     @FXML private ScrollPane scrollPaneWorkspace;
     @FXML private Pane paneWorkspace;
@@ -130,18 +131,41 @@ public class MainWindowController {
 
     }
 
-    public void actionDeleteGate(){
-        for(Gate g : arrayListCreatedGates){
+    public void actionDelete(){
+        Iterator<Line> iteratorLines = arrayListCreatedLines.iterator();
+        if(iteratorLines.hasNext()){
+            Line l = iteratorLines.next();
+            if(l.isSelected()){
+                l.delete(arrayListCreatedLines);
+            }
+        }
+
+        Iterator<Gate> iteratorGates = arrayListCreatedGates.iterator();
+        if(iteratorGates.hasNext()){
+            Gate g = iteratorGates.next();
             if(g.isSelected()){
-
+                while(g.getArrayListLinesOutput().size() > 0){
+                    g.getArrayListLinesOutput().get(0).delete(arrayListCreatedLines);
+                }
+                for(ArrayList<Line> al : g.getArrayArrayListLines()){
+                    while(al.size() > 0){
+                        al.get(0).delete(arrayListCreatedLines);
+                    }
+                }
+                arrayListCreatedGates.remove(g);
             }
         }
 
-        for(Switch s : arrayListCreatedSwitches){
+        Iterator<Switch> iteratorSwitches = arrayListCreatedSwitches.iterator();
+        if(iteratorSwitches.hasNext()){
+            Switch s = iteratorSwitches.next();
             if(s.isSelected()){
-
+                while(s.getArrayListlines().size() > 0){
+                    s.getArrayListlines().get(0).delete(arrayListCreatedLines);
+                }
             }
         }
+        repaint();
     }
 
     public void actionSelectionChanged() {
@@ -298,8 +322,7 @@ public class MainWindowController {
 
         graphicsContext.setLineWidth(Sizes.baseLineWidth);
         for(Line l : arrayListCreatedLines){
-            graphicsContext.setStroke(l.getColor());
-            graphicsContext.strokeLine(l.getX1(), l.getY1(), l.getX2(), l.getY2());
+            l.draw(graphicsContext);
         }
         graphicsContext.setStroke(Color.BLACK);
     }
@@ -314,6 +337,9 @@ public class MainWindowController {
         }
         else if(code == KeyCode.CONTROL){
             scrollPaneWorkspace.setPannable(true);
+        }
+        else if(code == KeyCode.DELETE){
+            actionDelete();
         }
 
         mouseActions.actionCanvasMouseMoved(mouseActions.getPointMouseMoved().getX(), mouseActions.getPointMouseMoved().getY());

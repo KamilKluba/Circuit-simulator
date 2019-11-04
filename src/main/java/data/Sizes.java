@@ -15,4 +15,5 @@ public class Sizes {
     public static double baseSwitchYShift = baseSwitchYSize * 0.5;
     public static double minimalXDragToSelect = 20;
     public static double minimalYDragToSelect = 20;
+    public static double lineSelectDistance = 10;
 }

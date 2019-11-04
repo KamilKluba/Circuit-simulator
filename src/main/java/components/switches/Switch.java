@@ -27,8 +27,10 @@ public abstract class Switch {
     }
 
     public void sendSignal(){
+        System.out.println("----------------");
         for(Line l : arrayListlines){
             l.setState(state);
+            System.out.println(l);
         }
     }
 
@@ -38,6 +40,10 @@ public abstract class Switch {
             state = !state;
         }
         sendSignal();
+    }
+
+    public void select(double x1, double y1, double x2, double y2){
+        selected = pointCenter.getX() > x1 && pointCenter.getX() < x2 && pointCenter.getY() > y1 && pointCenter.getY() < y2;
     }
 
     public void draw(GraphicsContext graphicsContext){
