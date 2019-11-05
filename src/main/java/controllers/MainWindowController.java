@@ -52,6 +52,7 @@ public class MainWindowController {
     private ComboBox<Point> comboBoxNewLineHook;
     private MouseActions mouseActions;
 
+    private ZoomableScrollPane zsp;
     @FXML private Canvas canvas;
     @FXML private TextField textFieldFilterComponents;
     @FXML private TableView<TableComponent> tableViewComponents;
@@ -72,6 +73,9 @@ public class MainWindowController {
                                                 Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
         arrayListPossibleComponents.add(new TableComponent(Names.switchBistableName, 1,
                                         new ImageView(new Image(getClass().getResource("/graphics/switch_bistable_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.gateNotName, 1,
+                                        new ImageView(new Image(getClass().getResource("/graphics/not/not_off.png").toExternalForm(),
                                                 Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
         arrayListPossibleComponents.add(new TableComponent(Names.gateAnd2Name, 2,
                                         new ImageView(new Image(getClass().getResource("/graphics/and/and2_gate_off.png").toExternalForm(),
@@ -113,16 +117,16 @@ public class MainWindowController {
 
         canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e.getX(), e.getY(), e.getButton()));
         canvas.setOnMouseMoved(e -> mouseActions.actionCanvasMouseMoved(e.getX(), e.getY()));
-        canvas.setOnMouseDragged(e -> mouseActions.actionCanvasMouseDragged(e.getX(), e.getY()));
-        canvas.setOnMousePressed(e -> mouseActions.actionCanvasMousePressed(e.getX(), e.getY()));
+        canvas.setOnMouseDragged(e -> mouseActions.actionCanvasMouseDragged(e));
+        canvas.setOnMousePressed(e -> mouseActions.actionCanvasMousePressed(e));
         canvas.setOnMouseReleased(e -> mouseActions.actionCanvasMouseReleased(e.getX(), e.getY()));
-        canvas.setOnScroll(e -> mouseActions.actionCanvasScrolled(e));
 
         tableViewComponents.setOnKeyPressed(e -> actionCanvasKeyPressed(e.getCode()));
     }
 
     public void myInitialize(Main main){
         this.main = main;
+        this.zsp = main.getZsp();
         main.getScene().setOnKeyPressed(e -> actionCanvasKeyPressed(e.getCode()));
         main.getScene().setOnKeyTyped(e -> actionCanvasKeyTyped(e.getCharacter()));
         main.getScene().setOnKeyReleased(e -> actionCanvasKeyReleased(e.getCode()));
@@ -445,7 +449,6 @@ public class MainWindowController {
 
         tableViewComponents.getSelectionModel().clearSelection();
         comboBoxNewLineHook = new ComboBox<>();
-        comboBoxNewLineHook.setPrefSize(150, 30);
         comboBoxNewLineHook.setLayoutX(x - 75);
         comboBoxNewLineHook.setLayoutY(y);
         comboBoxNewLineHook.promptTextProperty().setValue("Wybierz pin");
@@ -463,7 +466,7 @@ public class MainWindowController {
         canvas.setOnMouseClicked(e -> {
             paneWorkspace.getChildren().remove(comboBoxNewLineHook);
             canvas.setOnMouseClicked(f -> mouseActions.actionCanvasMouseClicked(f.getX(), f.getY(), f.getButton()));
-             });
+        });
 
         if(!waitForComponent2) {
             comboBoxNewLineHook.setOnAction(e -> chooseNewLineHook1(x, y, g, s, comboBoxNewLineHook));
@@ -594,6 +597,10 @@ public class MainWindowController {
 
     public Pane getPaneWorkspace() {
         return paneWorkspace;
+    }
+
+    public ZoomableScrollPane getZsp() {
+        return zsp;
     }
 }
 

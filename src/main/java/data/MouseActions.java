@@ -59,13 +59,7 @@ public class MouseActions {
         pointMouseMoved.setY(y);
         mwc.repaint();
 
-Canvas canvas = mwc.getCanvas();
-        graphicsContext.setStroke(Color.BLACK);
-        graphicsContext.setLineWidth(Sizes.baseLineDOJEBANAGRUBOSC);
-        graphicsContext.strokeLine(0, 0, canvas.getWidth(), 0);
-        graphicsContext.strokeLine(0, 0, 0, canvas.getHeight());
-        graphicsContext.strokeLine(canvas.getWidth(), 0, canvas.getWidth(), canvas.getHeight());
-        graphicsContext.strokeLine(0, canvas.getHeight(), canvas.getWidth(), canvas.getHeight());
+        System.out.println(x + " " + y);
 
         String newComponentName = tableViewComponents.getSelectionModel().getSelectedItem() != null ?
                 tableViewComponents.getSelectionModel().getSelectedItem().getName() : null;
@@ -246,7 +240,10 @@ Canvas canvas = mwc.getCanvas();
         mwc.repaint();
     }
 
-    public void actionCanvasMouseDragged(double x, double y){
+    public void actionCanvasMouseDragged(MouseEvent e){
+        double x = e.getX();
+        double y = e.getY();
+
         for(Gate g : arrayListCreatedGates){
             if(g.isSelectedForDrag()){
                 g.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY());
@@ -262,47 +259,57 @@ Canvas canvas = mwc.getCanvas();
 
         pointMousePressedToDrag.setX(x);
         pointMousePressedToDrag.setY(y);
+        if(e.getButton() == MouseButton.PRIMARY) {
+            graphicsContext.setStroke(Color.BLUE);
+            graphicsContext.setLineWidth(Sizes.baseLineContourWidth);
+            graphicsContext.strokeLine(pointMousePressed.getX(), pointMousePressed.getY(), x, pointMousePressed.getY());
+            graphicsContext.strokeLine(pointMousePressed.getX(), pointMousePressed.getY(), pointMousePressed.getX(), y);
+            graphicsContext.strokeLine(x, pointMousePressed.getY(), x, y);
+            graphicsContext.strokeLine(pointMousePressed.getX(), y, x, y);
 
-        graphicsContext.setStroke(Color.GRAY);
-        graphicsContext.setLineWidth(Sizes.baseLineContourWidth);
-        graphicsContext.strokeLine(pointMousePressed.getX(), pointMousePressed.getY(), x, pointMousePressed.getY());
-        graphicsContext.strokeLine(pointMousePressed.getX(), pointMousePressed.getY(), pointMousePressed.getX(), y);
-        graphicsContext.strokeLine(x, pointMousePressed.getY(), x, y);
-        graphicsContext.strokeLine(pointMousePressed.getX(), y, x, y);
+            double x1, x2, y1, y2;
+            if (pointMousePressed.getX() < x) {
+                x1 = pointMousePressed.getX();
+                x2 = x;
+            } else {
+                x1 = x;
+                x2 = pointMousePressed.getX();
+            }
+            if (pointMousePressed.getY() < y) {
+                y1 = pointMousePressed.getY();
+                y2 = y;
+            } else {
+                y1 = y;
+                y2 = pointMousePressed.getY();
+            }
 
-        double x1, x2, y1, y2;
-        if(pointMousePressed.getX() < x){
-            x1 = pointMousePressed.getX();
-            x2 = x;
-        }
-        else{
-            x1 = x;
-            x2 = pointMousePressed.getX();
-        }
-        if(pointMousePressed.getY() < y){
-            y1 = pointMousePressed.getY();
-            y2 = y;
-        }
-        else{
-            y1 = y;
-            y2 = pointMousePressed.getY();
-        }
-
-        for(Line l : arrayListCreatedLines) {
-            l.select(x1, y1, x2, y2);
-        }
-        for(Gate g : arrayListCreatedGates){
-            g.select(x1, y1, x2, y2);
-        }
-        for(Switch s : arrayListCreatedSwitches){
-            s.select(x1, y2, x2, y2);
+            for (Line l : arrayListCreatedLines) {
+                l.select(x1, y1, x2, y2);
+            }
+            for (Gate g : arrayListCreatedGates) {
+                g.select(x1, y1, x2, y2);
+            }
+            for (Switch s : arrayListCreatedSwitches) {
+                s.select(x1, y2, x2, y2);
+            }
         }
     }
 
-    public void actionCanvasMousePressed(double x, double y){
+    public void actionCanvasMousePressed(MouseEvent e){
+        double x = e.getX();
+        double y = e.getY();
+
         if(Accesses.logMouseActions) {
             System.out.println("Mouse pressed");
         }
+
+        if(e.getButton() == MouseButton.SECONDARY){
+            mwc.getZsp().setPannable(true);
+        }
+        else{
+            mwc.getZsp().setPannable(false);
+        }
+
         pointMousePressed.setX(x);
         pointMousePressed.setY(y);
 
@@ -344,21 +351,6 @@ Canvas canvas = mwc.getCanvas();
             }
         }
         mwc.repaint();
-    }
-
-    public void actionCanvasScrolled(ScrollEvent e){
-//        if(e.getTextDeltaY() > 0){
-//            mwc.getCanvas().setScaleX(mwc.getCanvas().getScaleX() + 0.1);
-//            mwc.getCanvas().setScaleY(mwc.getCanvas().getScaleY() + 0.1);
-//            mwc.getPaneWorkspace().setScaleX(mwc.getPaneWorkspace().getScaleX() + 0.1);
-//            mwc.getPaneWorkspace().setScaleY(mwc.getPaneWorkspace().getScaleY() + 0.1);
-//        }
-//        else{
-//            mwc.getCanvas().setScaleX(mwc.getCanvas().getScaleX() - 0.1);
-//            mwc.getCanvas().setScaleY(mwc.getCanvas().getScaleY() - 0.1);
-//            mwc.getPaneWorkspace().setScaleX(mwc.getPaneWorkspace().getScaleX() - 0.1);
-//            mwc.getPaneWorkspace().setScaleY(mwc.getPaneWorkspace().getScaleY() - 0.1);
-//        }
     }
 
     public Point getPointMousePressed() {

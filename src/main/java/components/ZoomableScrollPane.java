@@ -20,9 +20,10 @@ public class ZoomableScrollPane extends ScrollPane {
         this.zoomNode = new Group(target);
         setContent(outerNode(zoomNode));
 
-        setPannable(true);
-//        setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-//        setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        setHvalue(0.5);
+        setVvalue(0.5);
+
+        setPannable(false);
         setFitToHeight(true); //center
         setFitToWidth(true); //center
 
@@ -45,12 +46,31 @@ public class ZoomableScrollPane extends ScrollPane {
     }
 
     private void updateScale() {
+        if(target.getScaleX() < 0.2) {
+            scaleValue = 0.2;
+        }
+        else if(target.getScaleX() > 10){
+            scaleValue = 10;
+        }
         target.setScaleX(scaleValue);
         target.setScaleY(scaleValue);
+        System.out.println(target.getScaleX());
+        target.getStyleClass().clear();
+        if(target.getScaleX() >= 2){
+            target.getStyleClass().add("background_normal");
+        }
+        else if(target.getScaleX() >= 1) {
+            target.getStyleClass().add("background_bigger");
+        }
+        else if(target.getScaleX() >= 0.5){
+            target.getStyleClass().add("background_biggest");
+        }
+        else{
+            target.getStyleClass().add("background_biggest2");
+        }
     }
 
     private void onScroll(double wheelDelta, Point2D mousePoint) {
-        System.out.println("Dzieje sie");
         double zoomFactor = Math.exp(wheelDelta * zoomIntensity);
 
         Bounds innerBounds = zoomNode.getLayoutBounds();
@@ -75,5 +95,9 @@ public class ZoomableScrollPane extends ScrollPane {
         Bounds updatedInnerBounds = zoomNode.getBoundsInLocal();
         this.setHvalue((valX + adjustment.getX()) / (updatedInnerBounds.getWidth() - viewportBounds.getWidth()));
         this.setVvalue((valY + adjustment.getY()) / (updatedInnerBounds.getHeight() - viewportBounds.getHeight()));
+    }
+
+    public double getScaleValue() {
+        return scaleValue;
     }
 }

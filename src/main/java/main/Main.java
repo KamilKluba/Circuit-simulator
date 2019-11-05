@@ -20,6 +20,7 @@ public class Main extends Application {
     private BorderPane borderPane;
     private Scene scene;
     private Stage primaryStage;
+    private ZoomableScrollPane zsp;
 
     public static void main(String[] args) {
         launch(args);
@@ -36,10 +37,10 @@ public class Main extends Application {
         FXMLLoader loaderMainWindow = new FXMLLoader(getClass().getResource("/fxml/MainWindow.fxml"));
         borderPane = loaderMainWindow.load();
         mainWindowController = loaderMainWindow.getController();
-//        Pane pane = mainWindowController.getPaneWorkspace();
-//        Canvas canvas = mainWindowController.getCanvas();
-//        ZoomableScrollPane zsp = new ZoomableScrollPane(pane);
-//        borderPane.setCenter(zsp);
+        Pane pane = mainWindowController.getPaneWorkspace();
+        Canvas canvas = mainWindowController.getCanvas();
+        zsp = new ZoomableScrollPane(pane);
+        borderPane.setCenter(zsp);
 
         scene = new Scene(flowPane);
 
@@ -83,5 +84,9 @@ public class Main extends Application {
 
     public Stage getPrimaryStage() {
         return primaryStage;
+    }
+
+    public ZoomableScrollPane getZsp() {
+        return zsp;
     }
 }

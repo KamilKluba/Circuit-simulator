@@ -40,6 +40,6 @@ public class Point {
 
     @Override
     public String toString() {
-        return name + " x=" + x + ", y=" + y;
+        return name;
     }
 }

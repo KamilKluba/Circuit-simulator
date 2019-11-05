@@ -1,5 +1,20 @@
-.background{
-    -fx-background-image: url("../graphics/background.png");
+.background_normal{
+    -fx-background-image: url("../graphics/backgrounds/background.png");
+    -fx-background-repeat: repeat;
+}
+
+.background_bigger{
+    -fx-background-image: url("../graphics/backgrounds/background_bigger.png");
+    -fx-background-repeat: repeat;
+}
+
+.background_biggest{
+    -fx-background-image: url("../graphics/backgrounds/background_biggest.png");
+    -fx-background-repeat: repeat;
+}
+
+.background_biggest2{
+    -fx-background-image: url("../graphics/backgrounds/background_biggest2.png");
     -fx-background-repeat: repeat;
 }
 
