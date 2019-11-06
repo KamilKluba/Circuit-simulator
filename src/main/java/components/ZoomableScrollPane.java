@@ -46,15 +46,8 @@ public class ZoomableScrollPane extends ScrollPane {
     }
 
     private void updateScale() {
-        if(target.getScaleX() < 0.2) {
-            scaleValue = 0.2;
-        }
-        else if(target.getScaleX() > 10){
-            scaleValue = 10;
-        }
         target.setScaleX(scaleValue);
         target.setScaleY(scaleValue);
-        System.out.println(target.getScaleX());
         target.getStyleClass().clear();
         if(target.getScaleX() >= 2){
             target.getStyleClass().add("background_normal");

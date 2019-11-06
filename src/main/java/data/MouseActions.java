@@ -5,6 +5,7 @@ import components.Line;
 import components.Point;
 import components.TableComponent;
 import components.gates.Gate;
+import components.gates.Not;
 import components.gates.and.And2;
 import components.gates.and.And3;
 import components.gates.and.And4;
@@ -59,8 +60,6 @@ public class MouseActions {
         pointMouseMoved.setY(y);
         mwc.repaint();
 
-        System.out.println(x + " " + y);
-
         String newComponentName = tableViewComponents.getSelectionModel().getSelectedItem() != null ?
                 tableViewComponents.getSelectionModel().getSelectedItem().getName() : null;
 
@@ -112,7 +111,11 @@ public class MouseActions {
 
         if(mwc.isWaitForPlaceComponent()){
             graphicsContext.setStroke(Color.BLACK);
-            if(newComponentName.equals(Names.gateAnd2Name)){
+            if(newComponentName.equals(Names.gateNotName)){
+                Gate g = new Not(x, y);
+                g.draw(graphicsContext);
+            }
+            else if(newComponentName.equals(Names.gateAnd2Name)){
                 Gate g = new And2(x, y);
                 g.draw(graphicsContext);
             }
@@ -261,7 +264,7 @@ public class MouseActions {
         pointMousePressedToDrag.setY(y);
         if(e.getButton() == MouseButton.PRIMARY) {
             graphicsContext.setStroke(Color.BLUE);
-            graphicsContext.setLineWidth(Sizes.baseLineContourWidth);
+            graphicsContext.setLineWidth(Sizes.baseLineContourWidth / (mwc.getPaneWorkspace().getScaleX() * 10 / 9) + 0.5);
             graphicsContext.strokeLine(pointMousePressed.getX(), pointMousePressed.getY(), x, pointMousePressed.getY());
             graphicsContext.strokeLine(pointMousePressed.getX(), pointMousePressed.getY(), pointMousePressed.getX(), y);
             graphicsContext.strokeLine(x, pointMousePressed.getY(), x, y);

@@ -1,6 +1,7 @@
 package controllers;
 
 import components.*;
+import components.gates.Not;
 import components.gates.and.And3;
 import components.gates.and.And4;
 import components.gates.or.Or3;
@@ -227,6 +228,10 @@ public class MainWindowController {
             }
         }
         repaint();
+
+        for(Line l : arrayListCreatedLines){
+            System.out.println(l.getX1() + " " + l.getY1() + " " + l.getX2() + " " + l.getY2());
+        }
     }
 
     public boolean checkIfCoverTotal(String componentName, double x, double y){
@@ -393,7 +398,11 @@ public class MainWindowController {
     public void createNewComponent(double x, double y, String newComponentName){
         tableViewComponents.getSelectionModel().clearSelection();
         try {
-            if (newComponentName.equals(Names.gateAnd2Name)) {
+            if (newComponentName.equals(Names.gateNotName)) {
+                Gate newGate = new Not(x, y);
+                arrayListCreatedGates.add(newGate);
+            }
+            else if (newComponentName.equals(Names.gateAnd2Name)) {
                 Gate newGate = new And2(x, y);
                 arrayListCreatedGates.add(newGate);
             }

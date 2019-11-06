@@ -112,21 +112,35 @@ public class Gate {
             nextInputsY = 0;
         }
 
-        for (int i = 0; i < arrayArrayListLines.length; i++) {
-            ArrayList<Line> al = arrayArrayListLines[i];
-            for(Line l : al) {
-                if (arrayPointsInputs[i] != null) {
-                    arrayPointsInputs[i].setX(pointCenter.getX() + rotatedInputX + nextInputsX * 60 * (double) i / (inputsNumber - 1));
-                    arrayPointsInputs[i].setY(pointCenter.getY() + rotatedInputY + nextInputsY * 60 * (double) i / (inputsNumber - 1));
-                }
-                if (l != null) {
-                    if (l.getGate1() != null && l.getGate1().equals(this)) {
-                        l.setX1(pointCenter.getX() + rotatedInputX + nextInputsX * 60 * (double) i / (inputsNumber - 1));
-                        l.setY1(pointCenter.getY() + rotatedInputY + nextInputsY * 60 * (double) i / (inputsNumber - 1));
-                    } else if (l.getGate2() != null && l.getGate2().equals(this)) {
-                        l.setX2(pointCenter.getX() + rotatedInputX + nextInputsX * 60 * (double) i / (inputsNumber - 1));
-                        l.setY2(pointCenter.getY() + rotatedInputY + nextInputsY * 60 * (double) i / (inputsNumber - 1));
+        if(arrayArrayListLines.length > 1) {
+            for (int i = 0; i < arrayArrayListLines.length; i++) {
+                ArrayList<Line> al = arrayArrayListLines[i];
+                for (Line l : al) {
+                    if (arrayPointsInputs[i] != null) {
+                        arrayPointsInputs[i].setX(pointCenter.getX() + rotatedInputX + nextInputsX * 60 * (double) i / (inputsNumber - 1));
+                        arrayPointsInputs[i].setY(pointCenter.getY() + rotatedInputY + nextInputsY * 60 * (double) i / (inputsNumber - 1));
                     }
+                    if (l != null) {
+                        if (l.getGate1() != null && l.getGate1().equals(this)) {
+                            l.setX1(pointCenter.getX() + rotatedInputX + nextInputsX * 60 * (double) i / (inputsNumber - 1));
+                            l.setY1(pointCenter.getY() + rotatedInputY + nextInputsY * 60 * (double) i / (inputsNumber - 1));
+                        } else if (l.getGate2() != null && l.getGate2().equals(this)) {
+                            l.setX2(pointCenter.getX() + rotatedInputX + nextInputsX * 60 * (double) i / (inputsNumber - 1));
+                            l.setY2(pointCenter.getY() + rotatedInputY + nextInputsY * 60 * (double) i / (inputsNumber - 1));
+                        }
+                    }
+                }
+            }
+        }
+        else{
+            for(Line l : arrayArrayListLines[0]){
+                if (l.getGate1() != null && l.getGate1().equals(this)) {
+                    l.setX1(pointCenter.getX() + rotatedInputX * ((rotation + 1) % 2));
+                    l.setY1(pointCenter.getY() + rotatedInputY * ((rotation) % 2));
+                }
+                else if(l.getGate2() != null && l.getGate2().equals(this)){
+                    l.setX2(pointCenter.getX() + rotatedInputX * ((rotation + 1) % 2));
+                    l.setY2(pointCenter.getY() + rotatedInputY * ((rotation) % 2));
                 }
             }
         }
