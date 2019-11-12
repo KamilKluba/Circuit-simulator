@@ -121,7 +121,7 @@ public class MainWindowController {
 
         mouseActions = new MouseActions(this);
 
-        canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e.getX(), e.getY(), e.getButton()));
+        canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));
         canvas.setOnMouseMoved(e -> mouseActions.actionCanvasMouseMoved(e.getX(), e.getY()));
         canvas.setOnMouseDragged(e -> mouseActions.actionCanvasMouseDragged(e));
         canvas.setOnMousePressed(e -> mouseActions.actionCanvasMousePressed(e));
@@ -174,6 +174,7 @@ public class MainWindowController {
                 while(s.getArrayListlines().size() > 0){
                     s.getArrayListlines().get(0).delete(arrayListCreatedLines);
                 }
+                arrayListCreatedSwitches.remove(s);
             }
         }
         repaint();
@@ -196,7 +197,7 @@ public class MainWindowController {
         lineBuffer = null;
         paneWorkspace.getChildren().remove(comboBoxNewLineHook);
         comboBoxNewLineHook = null;
-        canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e.getX(), e.getY(), e.getButton()));
+        canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));
 
         repaint();
     }
@@ -492,7 +493,7 @@ public class MainWindowController {
 
         canvas.setOnMouseClicked(e -> {
             paneWorkspace.getChildren().remove(comboBoxNewLineHook);
-            canvas.setOnMouseClicked(f -> mouseActions.actionCanvasMouseClicked(f.getX(), f.getY(), f.getButton()));
+            canvas.setOnMouseClicked(f -> mouseActions.actionCanvasMouseClicked(f));
         });
 
         if(!waitForComponent2) {
@@ -524,7 +525,7 @@ public class MainWindowController {
             s.sendSignal();
         }
 
-        canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e.getX(), e.getY(), e.getButton()));
+        canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));
         waitForComponent2 = true;
         paneWorkspace.getChildren().remove(comboBoxNewLineHook);
 
@@ -559,7 +560,7 @@ public class MainWindowController {
             s.sendSignal();
         }
 
-        canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e.getX(), e.getY(), e.getButton()));
+        canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));
         waitForComponent2 = false;
         paneWorkspace.getChildren().remove(comboBoxNewLineHook);
 

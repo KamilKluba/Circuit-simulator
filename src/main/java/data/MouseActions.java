@@ -177,7 +177,11 @@ public class MouseActions {
         }
     }
 
-    public void actionCanvasMouseClicked(double x, double y, MouseButton button){
+    public void actionCanvasMouseClicked(MouseEvent event){
+        double x = event.getX();
+        double y = event.getY();
+        MouseButton button = event.getButton();
+
         TableComponent selectedItem = null;
         String selectedItemName = "";
 
@@ -191,19 +195,8 @@ public class MouseActions {
                     " selItemName:" + selectedItemName + ", waitForGate2:" + mwc.isWaitForComponent2() + ",  mouseButton:" + button);
         }
 
-        //Revert creating component
-        if(button == MouseButton.SECONDARY){
-            if(Accesses.logMouseActions) {
-                System.out.println("Reverted creating component");
-            }
-            mwc.setCoveredError(false);
-            mwc.setLineBuffer(null);
-            mwc.setWaitForComponent2(false);
-            mwc.setWaitForPlaceComponent(false);
-            tableViewComponents.getSelectionModel().clearSelection();
-        }
         //Clicked on a existing gate (1 or 2), and creating a line
-        else if(mwc.checkIfCoverHalf(selectedItemName, x, y) && (mwc.isWaitForComponent2() || selectedItemName.equals(Names.lineName))){
+        if(mwc.checkIfCoverHalf(selectedItemName, x, y) && (mwc.isWaitForComponent2() || selectedItemName.equals(Names.lineName))){
             if(Accesses.logMouseActions) {
                 System.out.println("Creating line");
             }
@@ -248,11 +241,27 @@ public class MouseActions {
                 g.select(x, y);
             }
             for(Switch s : arrayListCreatedSwitches){
-                if(s.getName().equals(Names.switchBistableName) && s.inside(x, y)) {
-                    s.setState(!s.isState());
+                if(s.getName().equals(Names.switchBistableName)) {
+                    if(button == MouseButton.PRIMARY){
+                        s.select(x, y);
+                    }
+                    else if(button == MouseButton.SECONDARY) {
+                        s.setState(!s.isState());
+                    }
                 }
             }
             mwc.setCoveredError(false);
+        }
+        //Revert creating component
+        else if(button == MouseButton.SECONDARY){
+            if(Accesses.logMouseActions) {
+                System.out.println("Reverted creating component");
+            }
+            mwc.setCoveredError(false);
+            mwc.setLineBuffer(null);
+            mwc.setWaitForComponent2(false);
+            mwc.setWaitForPlaceComponent(false);
+            tableViewComponents.getSelectionModel().clearSelection();
         }
 
         mwc.repaint();
@@ -308,7 +317,7 @@ public class MouseActions {
                 g.select(x1, y1, x2, y2);
             }
             for (Switch s : arrayListCreatedSwitches) {
-                s.select(x1, y2, x2, y2);
+                s.select(x1, y1, x2, y2);
             }
         }
     }

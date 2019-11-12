@@ -19,6 +19,8 @@ public abstract class Switch {
     protected Point pointLineHook;
     protected ImageView imageViewOn;
     protected ImageView imageViewOff;
+    protected ImageView imageViewSelectedOn;
+    protected ImageView imageViewSelectedOff;
 
 
     public Switch(double x, double y){
@@ -27,19 +29,13 @@ public abstract class Switch {
     }
 
     public void sendSignal(){
-        System.out.println("----------------");
         for(Line l : arrayListlines){
             l.setState(state);
-            System.out.println(l);
         }
     }
 
     public void select(double x, double y){
         selected = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseSwitchXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseSwitchYShift);
-        if(selected){
-            state = !state;
-        }
-        sendSignal();
     }
 
     public boolean checkIfCouldBeSelected(double x, double y){
@@ -51,11 +47,20 @@ public abstract class Switch {
     }
 
     public void draw(GraphicsContext graphicsContext){
-        if(state){
-            graphicsContext.drawImage(imageViewOn.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
+        if(selected){
+            if(state){
+                graphicsContext.drawImage(imageViewSelectedOn.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
+            }
+            else{
+                graphicsContext.drawImage(imageViewSelectedOff.getImage(),pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
+            }
         }
-        else{
-            graphicsContext.drawImage(imageViewOff.getImage(),pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
+        else {
+            if (state) {
+                graphicsContext.drawImage(imageViewOn.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
+            } else {
+                graphicsContext.drawImage(imageViewOff.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
+            }
         }
     }
 
