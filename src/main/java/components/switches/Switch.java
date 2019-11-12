@@ -42,6 +42,10 @@ public abstract class Switch {
         sendSignal();
     }
 
+    public boolean checkIfCouldBeSelected(double x, double y){
+        return (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseSwitchXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseSwitchYShift);
+    }
+
     public void select(double x1, double y1, double x2, double y2){
         selected = pointCenter.getX() > x1 && pointCenter.getX() < x2 && pointCenter.getY() > y1 && pointCenter.getY() < y2;
     }

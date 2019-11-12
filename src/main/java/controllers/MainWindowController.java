@@ -1,6 +1,10 @@
 package controllers;
 
 import components.*;
+import components.flipflops.FlipFlop;
+import components.flipflops.FlipFlopD;
+import components.flipflops.FlipFlopJK;
+import components.flipflops.FlipFlopT;
 import components.gates.Not;
 import components.gates.and.And3;
 import components.gates.and.And4;
@@ -40,9 +44,10 @@ import java.util.regex.Pattern;
 
 public class MainWindowController {
     private Main main;
+    private ArrayList<Line> arrayListCreatedLines = new ArrayList<>();
     private ArrayList<Gate> arrayListCreatedGates = new ArrayList<>();
     private ArrayList<Switch> arrayListCreatedSwitches = new ArrayList<>();
-    private ArrayList<Line> arrayListCreatedLines = new ArrayList<>();
+    private ArrayList<FlipFlop> arrayListCreatedFlipFlops = new ArrayList<>();
     private GraphicsContext graphicsContext;
     private ArrayList<TableComponent> arrayListPossibleComponents = new ArrayList<>();
     private boolean coveredError = false;
@@ -70,10 +75,10 @@ public class MainWindowController {
                                         new ImageView(new Image(getClass().getResource("/graphics/line_off.png").toExternalForm(),
                                                 Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
         arrayListPossibleComponents.add(new TableComponent(Names.switchMonostableName, 1,
-                                        new ImageView(new Image(getClass().getResource("/graphics/switch_monostable_off.png").toExternalForm(),
+                                        new ImageView(new Image(getClass().getResource("/graphics/switches/switch_monostable_off.png").toExternalForm(),
                                                 Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
         arrayListPossibleComponents.add(new TableComponent(Names.switchBistableName, 1,
-                                        new ImageView(new Image(getClass().getResource("/graphics/switch_bistable_off.png").toExternalForm(),
+                                        new ImageView(new Image(getClass().getResource("/graphics/switches/switch_bistable_off.png").toExternalForm(),
                                                 Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
         arrayListPossibleComponents.add(new TableComponent(Names.gateNotName, 1,
                                         new ImageView(new Image(getClass().getResource("/graphics/not/not_off.png").toExternalForm(),
@@ -446,10 +451,23 @@ public class MainWindowController {
                 SwitchBistatble newSwitch = new SwitchBistatble(x, y);
                 arrayListCreatedSwitches.add(newSwitch);
             }
+            else if(newComponentName.equals(Names.flipFlopD)){
+                FlipFlop newFlipflop = new FlipFlopD(x, y);
+                arrayListCreatedFlipFlops.add(newFlipflop);
+            }
+            else if(newComponentName.equals(Names.flipFlopT)){
+                FlipFlop newFlipflop = new FlipFlopT(x, y);
+                arrayListCreatedFlipFlops.add(newFlipflop);
+            }
+            else if(newComponentName.equals(Names.flipFlopJK)){
+                FlipFlop newFlipflop = new FlipFlopJK(x, y);
+                arrayListCreatedFlipFlops.add(newFlipflop);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
         coveredError = false;
+        canvas.requestFocus();
     }
 
     public void createNewLine(double x, double y) {
@@ -503,11 +521,14 @@ public class MainWindowController {
             lineBuffer = new Line(p.getX(), p.getY(), x, y, null, null, s, null, Color.BLACK);
             s.getArrayListlines().add(lineBuffer);
             lineBuffer.setInput1IsOutput(false);
+            s.sendSignal();
         }
 
         canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e.getX(), e.getY(), e.getButton()));
         waitForComponent2 = true;
         paneWorkspace.getChildren().remove(comboBoxNewLineHook);
+
+        canvas.requestFocus();
         repaint();
     }
 
@@ -515,6 +536,10 @@ public class MainWindowController {
         Point p = comboBoxNewLineHook.getSelectionModel().getSelectedItem();
         lineBuffer.setX2(comboBoxNewLineHook.getSelectionModel().getSelectedItem().getX());
         lineBuffer.setY2(comboBoxNewLineHook.getSelectionModel().getSelectedItem().getY());
+
+        arrayListCreatedLines.add(lineBuffer);
+        lineBuffer.setState(lineBuffer.isState());
+
         if(g != null) {
             lineBuffer.setGate2(g);
             if (p.getName().contains("Output")) {
@@ -531,12 +556,14 @@ public class MainWindowController {
             lineBuffer.setSwitch2(s);
             s.getArrayListlines().add(lineBuffer);
             lineBuffer.setInput2IsOutput(false);
+            s.sendSignal();
         }
-        arrayListCreatedLines.add(lineBuffer);
 
         canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e.getX(), e.getY(), e.getButton()));
         waitForComponent2 = false;
         paneWorkspace.getChildren().remove(comboBoxNewLineHook);
+
+        canvas.requestFocus();
         repaint();
     }
 

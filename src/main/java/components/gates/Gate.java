@@ -11,7 +11,7 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
-public class Gate {
+public abstract class Gate {
     protected double inputsNumber;
     protected String name;
     protected ArrayList<Line>[] arrayArrayListLines;
@@ -48,6 +48,10 @@ public class Gate {
 
     public void select(double x1, double y1, double x2, double y2){
         selected = pointCenter.getX() > x1 && pointCenter.getX() < x2 && pointCenter.getY() > y1 && pointCenter.getY() < y2;
+    }
+
+    public boolean checkIfCouldBeSelected(double x, double y){
+        return (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseGateXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseGateYShift);
     }
 
     public void selectForDrag(double x, double y){
@@ -115,11 +119,11 @@ public class Gate {
         if(arrayArrayListLines.length > 1) {
             for (int i = 0; i < arrayArrayListLines.length; i++) {
                 ArrayList<Line> al = arrayArrayListLines[i];
+                if (arrayPointsInputs[i] != null) {
+                    arrayPointsInputs[i].setX(pointCenter.getX() + rotatedInputX + nextInputsX * 60 * (double) i / (inputsNumber - 1));
+                    arrayPointsInputs[i].setY(pointCenter.getY() + rotatedInputY + nextInputsY * 60 * (double) i / (inputsNumber - 1));
+                }
                 for (Line l : al) {
-                    if (arrayPointsInputs[i] != null) {
-                        arrayPointsInputs[i].setX(pointCenter.getX() + rotatedInputX + nextInputsX * 60 * (double) i / (inputsNumber - 1));
-                        arrayPointsInputs[i].setY(pointCenter.getY() + rotatedInputY + nextInputsY * 60 * (double) i / (inputsNumber - 1));
-                    }
                     if (l != null) {
                         if (l.getGate1() != null && l.getGate1().equals(this)) {
                             l.setX1(pointCenter.getX() + rotatedInputX + nextInputsX * 60 * (double) i / (inputsNumber - 1));

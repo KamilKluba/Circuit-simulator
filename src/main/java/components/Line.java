@@ -138,6 +138,60 @@ public class Line {
         selected = (this.x1 + this.x2) / 2 > x1 && (this.x1 + this.x2) / 2 < x2 && (this.y1 + this.y2) / 2 > y1 && (this.y1 + this.y2) / 2 < y2;
     }
 
+    public boolean checkIfCouldBeSelected(double x, double y) {
+        boolean horizontal;
+        boolean vertical;
+        double a;
+        double b;
+        double c;
+        //if < 0, count distance to p1, > 1, to p2, <0;1>, to line
+        double whereToCount = ((x2 - x1) * (x - x1) + (y2 - y1) * (y - y1)) / (Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
+        boolean isUnderX1 = false;
+        boolean isUnderX2 = false;
+        boolean isUnderTheLine = false;
+
+        if (x1 != x2 && y1 != y2) {
+            a = (y2 - y1) / (x2 - x1);
+            b = -1;
+            if (a != 0) {
+                c = y1 - (a * x1);
+            } else {
+                c = 0;
+            }
+            horizontal = false;
+            vertical = false;
+        } else if (x1 == x2) {
+            horizontal = false;
+            vertical = true;
+            a = x1;
+            b = 0;
+            c = 0;
+        }
+        //if(y1 == y2)
+        else {
+            vertical = false;
+            horizontal = true;
+            a = 0;
+            b = y1;
+            c = 0;
+        }
+
+        if (whereToCount < 0)
+            isUnderX1 = Math.sqrt(Math.pow((x - x1), 2) + Math.pow((y - y1), 2)) < Sizes.lineSelectDistance;
+        else if (whereToCount > 1)
+            isUnderX2 = Math.sqrt(Math.pow((x - x2), 2) + Math.pow((y - y2), 2)) < Sizes.lineSelectDistance;
+        else {
+            if (!vertical && !horizontal)
+                isUnderTheLine = Math.abs(a * x + b * y + c) / Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2)) < Sizes.lineSelectDistance;
+            if (vertical)
+                isUnderTheLine = Math.abs(x - x1) < Sizes.lineSelectDistance;
+            if (horizontal)
+                isUnderTheLine = Math.abs(y - y1) < Sizes.lineSelectDistance;
+        }
+
+        return isUnderX1 || isUnderX2 || isUnderTheLine;
+    }
+
     public void draw(GraphicsContext graphicsContext){
         if(selected) {
             graphicsContext.setStroke(selectionColor);

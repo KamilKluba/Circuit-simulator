@@ -12,12 +12,12 @@ public class SwitchMonostable extends Switch{
         super(x, y);
         name = Names.switchMonostableName;
 
-        imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/switch_monostable_off.png").toExternalForm(), Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false));
+        imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/switches/switch_monostable_off.png").toExternalForm(), Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false));
         SnapshotParameters snapshotParameters = new SnapshotParameters();
         snapshotParameters.setFill(Color.TRANSPARENT);
         imageViewOff.setRotate(90);
         imageViewOff.setImage(imageViewOff.snapshot(snapshotParameters, null));
-        imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/switch_monostable_on.png").toExternalForm(), Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false));
+        imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/switches/switch_monostable_on.png").toExternalForm(), Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false));
         snapshotParameters = new SnapshotParameters();
         snapshotParameters.setFill(Color.TRANSPARENT);
         imageViewOn.setRotate(270);

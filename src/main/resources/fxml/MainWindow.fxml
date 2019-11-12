@@ -23,9 +23,9 @@
    <center>
       <ScrollPane fx:id="scrollPaneWorkspace" prefHeight="200.0" prefWidth="200.0" styleClass="background" stylesheets="@../css/styles.css" BorderPane.alignment="CENTER">
          <content>
-            <Pane fx:id="paneWorkspace" prefHeight="6000.0" prefWidth="10000.0" styleClass="background" stylesheets="@../css/styles.css">
+            <Pane fx:id="paneWorkspace" prefHeight="2000.0" prefWidth="4000.0" styleClass="background" stylesheets="@../css/styles.css">
                <children>
-                  <Canvas fx:id="canvas" height="6000.0" layoutY="14.0" width="10000.0" />
+                  <Canvas fx:id="canvas" height="2000.0" layoutY="14.0" width="4000.0" />
                </children>
             </Pane>
          </content>

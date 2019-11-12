@@ -4,6 +4,9 @@ import com.sun.glass.ui.Size;
 import components.Line;
 import components.Point;
 import components.TableComponent;
+import components.flipflops.FlipFlopD;
+import components.flipflops.FlipFlopJK;
+import components.flipflops.FlipFlopT;
 import components.gates.Gate;
 import components.gates.Not;
 import components.gates.and.And2;
@@ -33,18 +36,18 @@ import java.util.ArrayList;
 
 public class MouseActions {
     private boolean mouseDragged = false;
-
+    private boolean couldBeSelected = false;
     private MainWindowController mwc;
     private GraphicsContext graphicsContext;
     private TableView<TableComponent> tableViewComponents;
     private ArrayList<Gate> arrayListCreatedGates;
     private ArrayList<Switch> arrayListCreatedSwitches;
-    private ArrayList<Line> arrayListCreatedLines;    
+    private ArrayList<Line> arrayListCreatedLines;
     private Point pointMousePressed = new Point();
     private Point pointMouseMoved = new Point();
     private Point pointMouseReleased = new Point();
     private Point pointMousePressedToDrag = new Point();
-    
+
 
     public MouseActions(MainWindowController mwc){
         this.mwc = mwc;
@@ -159,6 +162,18 @@ public class MouseActions {
                 SwitchBistatble sb = new SwitchBistatble(x, y);
                 sb.draw(graphicsContext);
             }
+            else if(newComponentName.equals(Names.flipFlopD)){
+                FlipFlopD ffd = new FlipFlopD(x, y);
+                ffd.draw(graphicsContext);
+            }
+            else if(newComponentName.equals(Names.flipFlopT)){
+                FlipFlopT fft = new FlipFlopT(x, y);
+                fft.draw(graphicsContext);
+            }
+            else if(newComponentName.equals(Names.flipFlopJK)){
+                FlipFlopJK ffjk = new FlipFlopJK(x, y);
+                ffjk.draw(graphicsContext);
+            }
         }
     }
 
@@ -262,7 +277,7 @@ public class MouseActions {
 
         pointMousePressedToDrag.setX(x);
         pointMousePressedToDrag.setY(y);
-        if(e.getButton() == MouseButton.PRIMARY) {
+        if(e.getButton() == MouseButton.PRIMARY && !couldBeSelected) {
             graphicsContext.setStroke(Color.BLUE);
             graphicsContext.setLineWidth(Sizes.baseLineContourWidth / (mwc.getPaneWorkspace().getScaleX() * 10 / 9) + 0.5);
             graphicsContext.strokeLine(pointMousePressed.getX(), pointMousePressed.getY(), x, pointMousePressed.getY());
@@ -318,6 +333,23 @@ public class MouseActions {
 
         pointMousePressedToDrag.setX(x);
         pointMousePressedToDrag.setY(y);
+
+        couldBeSelected = false;
+        for (Line l : arrayListCreatedLines) {
+            if(l.checkIfCouldBeSelected(e.getX(), e.getY())){
+                couldBeSelected = true;
+            }
+        }
+        for (Gate g : arrayListCreatedGates) {
+            if(g.checkIfCouldBeSelected(e.getX(), e.getY())){
+                couldBeSelected = true;
+            }
+        }
+        for (Switch s : arrayListCreatedSwitches) {
+            if(s.checkIfCouldBeSelected(e.getX(), e.getY())){
+                couldBeSelected = true;
+            }
+        }
 
         for(Gate g : arrayListCreatedGates){
             if(g.inside(x, y)){
