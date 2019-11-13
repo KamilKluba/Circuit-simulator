@@ -1,5 +1,6 @@
 package components;
 
+import components.flipflops.FlipFlop;
 import components.gates.Gate;
 import components.switches.Switch;
 import data.Sizes;
@@ -22,10 +23,13 @@ public class Line {
     private Gate gate2;
     private Switch switch1;
     private Switch switch2;
+    private FlipFlop flipFlop1;
+    private FlipFlop flipFlop2;
     private Color color;
     private Color selectionColor = new Color(0.459, 0, 0, 1);
 
-    public Line(double x1, double y1, double x2, double y2, Gate gate1, Gate gate2, Switch switch1, Switch switch2, Color color){
+    public Line(double x1, double y1, double x2, double y2, Gate gate1, Gate gate2, Switch switch1, Switch switch2,
+                FlipFlop flipFlop1, FlipFlop flipFlop2, Color color){
         this.x1 = x1;
         this.y1 = y1;
         this.x2 = x2;
@@ -34,6 +38,8 @@ public class Line {
         this.gate2 = gate2;
         this.switch1 = switch1;
         this.switch2 = switch2;
+        this.flipFlop1 = flipFlop1;
+        this.flipFlop2 = flipFlop2;
         this.color = color;
     }
 
@@ -212,6 +218,9 @@ public class Line {
         if(switch1 != null){
             switch1.getArrayListlines().remove(this);
         }
+        if(flipFlop1 != null){
+          //  flipFlop1.get
+        }
 
         if(gate2 != null){
             gate2.getArrayListLinesOutput().remove(this);
@@ -315,6 +324,22 @@ public class Line {
 
     public void setSwitch2(Switch switch2) {
         this.switch2 = switch2;
+    }
+
+    public FlipFlop getFlipFlop1() {
+        return flipFlop1;
+    }
+
+    public void setFlipFlop1(FlipFlop flipFlop1) {
+        this.flipFlop1 = flipFlop1;
+    }
+
+    public FlipFlop getFlipFlop2() {
+        return flipFlop2;
+    }
+
+    public void setFlipFlop2(FlipFlop flipFlop2) {
+        this.flipFlop2 = flipFlop2;
     }
 
     public Color getColor() {

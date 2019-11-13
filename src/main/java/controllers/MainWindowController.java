@@ -110,6 +110,15 @@ public class MainWindowController {
         arrayListPossibleComponents.add(new TableComponent(Names.gateXor4Name, 4,
                                         new ImageView(new Image(getClass().getResource("/graphics/xor/xor4_gate_off.png").toExternalForm(),
                                                 Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.flipFlopJK, 1,
+                                        new ImageView(new Image(getClass().getResource("/graphics/flipflops/jk_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.flipFlopD, 1,
+                                        new ImageView(new Image(getClass().getResource("/graphics/flipflops/D_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.flipFlopT, 1,
+                                        new ImageView(new Image(getClass().getResource("/graphics/flipflops/T_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
 
         ObservableList<TableComponent> ol = FXCollections.observableList(arrayListPossibleComponents);
         tableViewComponents.setItems(ol);
@@ -252,6 +261,10 @@ public class MainWindowController {
             xSizeCompare = Sizes.baseSwitchXSize;
             ySizeCompare = Sizes.baseSwitchYSize;
         }
+        else if(componentName.contains(Names.flipFlopSearchName)){
+            xSizeCompare = Sizes.baseFlipFlopXSize;
+            ySizeCompare = Sizes.baseFlipFlopYSize;
+        }
 
         for(Gate g : arrayListCreatedGates) {
             if (Math.abs(x - g.getPointCenter().getX()) <= (Sizes.baseGateXSize + xSizeCompare) / 2 &&
@@ -263,6 +276,13 @@ public class MainWindowController {
         for(Switch s : arrayListCreatedSwitches) {
             if (Math.abs(x - s.getPointCenter().getX()) <= (Sizes.baseSwitchXSize + xSizeCompare) / 2 &&
                 Math.abs(y - s.getPointCenter().getY()) <= (Sizes.baseSwitchYSize + ySizeCompare) / 2){
+                return true;
+            }
+        }
+
+        for(FlipFlop ff : arrayListCreatedFlipFlops) {
+            if (Math.abs(x - ff.getPointCenter().getX()) <= (Sizes.baseFlipFlopXSize + xSizeCompare) / 2 &&
+                Math.abs(y - ff.getPointCenter().getY()) <= (Sizes.baseFlipFlopYSize + ySizeCompare) / 2){
                 return true;
             }
         }
@@ -282,6 +302,10 @@ public class MainWindowController {
             xShiftCompare = Sizes.baseSwitchXShift;
             yShiftCompare = Sizes.baseSwitchYShift;
         }
+        else if(componentName.contains(Names.flipFlopSearchName)){
+            xShiftCompare = Sizes.baseFlipFlopXShift;
+            yShiftCompare = Sizes.baseFlipFlopYShift;
+        }
 
         for(Gate g : arrayListCreatedGates) {
             if (Math.abs(x - g.getPointCenter().getX()) <= (Sizes.baseGateXShift + xShiftCompare) / 2 &&
@@ -296,6 +320,14 @@ public class MainWindowController {
                 return true;
             }
         }
+
+        for(FlipFlop ff : arrayListCreatedFlipFlops){
+            if (Math.abs(x - ff.getPointCenter().getX()) <= (Sizes.baseFlipFlopXShift + xShiftCompare) / 2 &&
+                    Math.abs(y - ff.getPointCenter().getY()) <= (Sizes.baseFlipFlopYShift + yShiftCompare) / 2) {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -325,6 +357,19 @@ public class MainWindowController {
         return null;
     }
 
+    private FlipFlop getCoveredFlipFlop(double x, double y){
+        double xShift = Sizes.baseFlipFlopXShift;
+        double yShift = Sizes.baseFlipFlopYShift;
+
+        for(FlipFlop ff : arrayListCreatedFlipFlops) {
+            if (Math.abs(x - ff.getPointCenter().getX()) <= Sizes.baseFlipFlopXShift &&
+                    Math.abs(y - ff.getPointCenter().getY()) <= Sizes.baseFlipFlopYShift) {
+                return ff;
+            }
+        }
+        return null;
+    }
+
     public void repaint(){
         graphicsContext.clearRect(0, 0, canvas.getWidth() + 1, canvas.getHeight() + 1);
 
@@ -340,6 +385,11 @@ public class MainWindowController {
         for(Line l : arrayListCreatedLines){
             l.draw(graphicsContext);
         }
+
+        for(FlipFlop ff : arrayListCreatedFlipFlops){
+            ff.draw(graphicsContext);
+        }
+
         graphicsContext.setStroke(Color.BLACK);
     }
 
@@ -507,7 +557,7 @@ public class MainWindowController {
     private void chooseNewLineHook1(double x, double y, Gate g, Switch s, ComboBox<Point> comboBoxNewLineHook){
         Point p = comboBoxNewLineHook.getSelectionModel().getSelectedItem();
         if(g != null) {
-            lineBuffer = new Line(p.getX(), p.getY(), x, y, g, null, null, null, Color.BLACK);
+            lineBuffer = new Line(p.getX(), p.getY(), x, y, g, null, null, null, null, null,  Color.BLACK);
             if (p.getName().contains("Output")) {
                 g.getArrayListLinesOutput().add(lineBuffer);
                 lineBuffer.setInput1IsOutput(true);
@@ -519,7 +569,7 @@ public class MainWindowController {
             }
         }
         else if(s != null){
-            lineBuffer = new Line(p.getX(), p.getY(), x, y, null, null, s, null, Color.BLACK);
+            lineBuffer = new Line(p.getX(), p.getY(), x, y, null, null, s, null, null, null,  Color.BLACK);
             s.getArrayListlines().add(lineBuffer);
             lineBuffer.setInput1IsOutput(false);
             s.sendSignal();
@@ -618,6 +668,10 @@ public class MainWindowController {
 
     public ArrayList<Line> getArrayListCreatedLines() {
         return arrayListCreatedLines;
+    }
+
+    public ArrayList<FlipFlop> getArrayListCreatedFlipFlops() {
+        return arrayListCreatedFlipFlops;
     }
 
     public ArrayList<TableComponent> getArrayListPossibleComponents() {

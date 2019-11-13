@@ -4,6 +4,7 @@ import com.sun.glass.ui.Size;
 import components.Line;
 import components.Point;
 import components.TableComponent;
+import components.flipflops.FlipFlop;
 import components.flipflops.FlipFlopD;
 import components.flipflops.FlipFlopJK;
 import components.flipflops.FlipFlopT;
@@ -43,6 +44,7 @@ public class MouseActions {
     private ArrayList<Gate> arrayListCreatedGates;
     private ArrayList<Switch> arrayListCreatedSwitches;
     private ArrayList<Line> arrayListCreatedLines;
+    private ArrayList<FlipFlop> arrayListCreatedFlipFlops;
     private Point pointMousePressed = new Point();
     private Point pointMouseMoved = new Point();
     private Point pointMouseReleased = new Point();
@@ -56,6 +58,7 @@ public class MouseActions {
         this.arrayListCreatedGates = mwc.getArrayListCreatedGates();
         this.arrayListCreatedSwitches = mwc.getArrayListCreatedSwitches();
         this.arrayListCreatedLines = mwc.getArrayListCreatedLines();
+        this.arrayListCreatedFlipFlops = mwc.getArrayListCreatedFlipFlops();
     }
 
     public void actionCanvasMouseMoved(double x, double y){
@@ -73,6 +76,8 @@ public class MouseActions {
             double shiftGateY = Sizes.baseGateYShift;
             double shiftSwitchX = Sizes.baseSwitchXShift;
             double shiftSwitchY = Sizes.baseSwitchYShift;
+            double shiftFlipFlopX = Sizes.baseFlipFlopXShift;
+            double shiftFlipFlopY = Sizes.baseFlipFlopYShift;
 
             for (Gate g : arrayListCreatedGates) {
                 Point pointCenter = g.getPointCenter();
@@ -88,6 +93,14 @@ public class MouseActions {
                 graphicsContext.strokeLine(pointCenter.getX() + shiftSwitchX, pointCenter.getY() + shiftSwitchY, pointCenter.getX() + shiftSwitchX, pointCenter.getY() - shiftSwitchY);
                 graphicsContext.strokeLine(pointCenter.getX() + shiftSwitchX, pointCenter.getY() - shiftSwitchY, pointCenter.getX() - shiftSwitchX, pointCenter.getY() - shiftSwitchY);
             }
+            for (FlipFlop ff : arrayListCreatedFlipFlops){
+                Point pointCenter = ff.getPointCenter();
+                graphicsContext.strokeLine(pointCenter.getX() - shiftFlipFlopX, pointCenter.getY() - shiftFlipFlopY, pointCenter.getX() - shiftFlipFlopX, pointCenter.getY() + shiftFlipFlopY);
+                graphicsContext.strokeLine(pointCenter.getX() - shiftFlipFlopX, pointCenter.getY() + shiftFlipFlopY, pointCenter.getX() + shiftFlipFlopX, pointCenter.getY() + shiftFlipFlopY);
+                graphicsContext.strokeLine(pointCenter.getX() + shiftFlipFlopX, pointCenter.getY() + shiftFlipFlopY, pointCenter.getX() + shiftFlipFlopX, pointCenter.getY() - shiftFlipFlopY);
+                graphicsContext.strokeLine(pointCenter.getX() + shiftFlipFlopX, pointCenter.getY() - shiftFlipFlopY, pointCenter.getX() - shiftFlipFlopX, pointCenter.getY() - shiftFlipFlopY);
+            }
+
             if(mwc.checkIfCoverTotal(newComponentName, x, y)){
                 graphicsContext.setStroke(Color.RED);
             }
@@ -106,6 +119,12 @@ public class MouseActions {
                 graphicsContext.strokeLine(x - shiftSwitchX, y + shiftSwitchY, x + shiftSwitchX, y + shiftSwitchY);
                 graphicsContext.strokeLine(x + shiftSwitchX, y + shiftSwitchY, x + shiftSwitchX, y - shiftSwitchY);
                 graphicsContext.strokeLine(x + shiftSwitchX, y - shiftSwitchY, x - shiftSwitchX, y - shiftSwitchY);
+            }
+            else if(newComponentName.contains(Names.flipFlopSearchName)){
+                graphicsContext.strokeLine(x - shiftFlipFlopX, y - shiftFlipFlopY, x - shiftFlipFlopX, y + shiftFlipFlopY);
+                graphicsContext.strokeLine(x - shiftFlipFlopX, y + shiftFlipFlopY, x + shiftFlipFlopX, y + shiftFlipFlopY);
+                graphicsContext.strokeLine(x + shiftFlipFlopX, y + shiftFlipFlopY, x + shiftFlipFlopX, y - shiftFlipFlopY);
+                graphicsContext.strokeLine(x + shiftFlipFlopX, y - shiftFlipFlopY, x - shiftFlipFlopX, y - shiftFlipFlopY);
             }
         }
         else if(mwc.isWaitForComponent2()){
@@ -245,10 +264,13 @@ public class MouseActions {
                     if(button == MouseButton.PRIMARY){
                         s.select(x, y);
                     }
-                    else if(button == MouseButton.SECONDARY) {
+                    else if(button == MouseButton.SECONDARY && s.inside(x, y)) {
                         s.setState(!s.isState());
                     }
                 }
+            }
+            for(FlipFlop ff : arrayListCreatedFlipFlops){
+                ff.select(x, y);
             }
             mwc.setCoveredError(false);
         }
@@ -279,6 +301,11 @@ public class MouseActions {
         for(Switch s : arrayListCreatedSwitches){
             if(s.isSelectedForDrag()){
                 s.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY());
+            }
+        }
+        for(FlipFlop ff : arrayListCreatedFlipFlops){
+            if(ff.isSelectedForDrag()){
+                ff.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY());
             }
         }
 
@@ -319,6 +346,9 @@ public class MouseActions {
             for (Switch s : arrayListCreatedSwitches) {
                 s.select(x1, y1, x2, y2);
             }
+            for (FlipFlop ff : arrayListCreatedFlipFlops){
+                ff.select(x1, y1, x2, y2);
+            }
         }
     }
 
@@ -353,19 +383,14 @@ public class MouseActions {
             if(g.checkIfCouldBeSelected(e.getX(), e.getY())){
                 couldBeSelected = true;
             }
+            if(g.inside(x, y)){
+                g.selectForDrag(x, y);
+            }
         }
         for (Switch s : arrayListCreatedSwitches) {
             if(s.checkIfCouldBeSelected(e.getX(), e.getY())){
                 couldBeSelected = true;
             }
-        }
-
-        for(Gate g : arrayListCreatedGates){
-            if(g.inside(x, y)){
-                g.selectForDrag(x, y);
-            }
-        }
-        for(Switch s : arrayListCreatedSwitches){
             if(s.inside(x, y)){
                 s.selectForDrag(x, y);
                 if(s.getName().equals(Names.switchMonostableName)){
@@ -373,6 +398,15 @@ public class MouseActions {
                 }
             }
         }
+        for (FlipFlop ff : arrayListCreatedFlipFlops) {
+            if(ff.checkIfCouldBeSelected(e.getX(), e.getY())){
+                couldBeSelected = true;
+            }
+            if(ff.inside(x, y)){
+                ff.selectForDrag(x, y);
+            }
+        }
+
         mwc.repaint();
     }
 
@@ -393,6 +427,9 @@ public class MouseActions {
             if(s.getName().equals(Names.switchMonostableName)){
                 s.setState(false);
             }
+        }
+        for(FlipFlop ff : arrayListCreatedFlipFlops){
+            ff.setSelectedForDrag(false);
         }
         mwc.repaint();
     }
