@@ -13,9 +13,18 @@ import components.gates.Not;
 import components.gates.and.And2;
 import components.gates.and.And3;
 import components.gates.and.And4;
+import components.gates.nand.Nand2;
+import components.gates.nand.Nand3;
+import components.gates.nand.Nand4;
+import components.gates.nor.Nor2;
+import components.gates.nor.Nor3;
+import components.gates.nor.Nor4;
 import components.gates.or.Or2;
 import components.gates.or.Or3;
 import components.gates.or.Or4;
+import components.gates.xnor.Xnor2;
+import components.gates.xnor.Xnor3;
+import components.gates.xnor.Xnor4;
 import components.gates.xor.Xor2;
 import components.gates.xor.Xor3;
 import components.gates.xor.Xor4;
@@ -171,6 +180,42 @@ public class MouseActions {
             }
             else if(newComponentName.equals(Names.gateXor4Name)){
                 Gate g = new Xor4(x, y);
+                g.draw(graphicsContext);
+            }
+            else if(newComponentName.equals(Names.gateNand2Name)){
+                Gate g = new Nand2(x, y);
+                g.draw(graphicsContext);
+            }
+            else if(newComponentName.equals(Names.gateNand3Name)){
+                Gate g = new Nand3(x, y);
+                g.draw(graphicsContext);
+            }
+            else if(newComponentName.equals(Names.gateNand4Name)){
+                Gate g = new Nand4(x, y);
+                g.draw(graphicsContext);
+            }
+            else if(newComponentName.equals(Names.gateNor2Name)){
+                Gate g = new Nor2(x, y);
+                g.draw(graphicsContext);
+            }
+            else if(newComponentName.equals(Names.gateNor3Name)){
+                Gate g = new Nor3(x, y);
+                g.draw(graphicsContext);
+            }
+            else if(newComponentName.equals(Names.gateNor4Name)){
+                Gate g = new Nor4(x, y);
+                g.draw(graphicsContext);
+            }
+            else if(newComponentName.equals(Names.gateXnor2Name)){
+                Gate g = new Xnor2(x, y);
+                g.draw(graphicsContext);
+            }
+            else if(newComponentName.equals(Names.gateXnor3Name)){
+                Gate g = new Xnor3(x, y);
+                g.draw(graphicsContext);
+            }
+            else if(newComponentName.equals(Names.gateXnor4Name)){
+                Gate g = new Xnor4(x, y);
                 g.draw(graphicsContext);
             }
             else if(newComponentName.equals(Names.switchMonostableName)){

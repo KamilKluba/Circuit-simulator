@@ -11,14 +11,16 @@ import java.util.ArrayList;
 public abstract class FlipFlop {
     protected boolean selected = false;
     protected boolean selectedForDrag = false;
-    protected boolean state;
-    protected boolean clock = false;
-    protected boolean reset = false;
+    protected String name;
+    protected boolean signalInput = false;
+    protected boolean signalOutput = false;
+    protected boolean signalClock = false;
+    protected boolean signalReset = false;
     protected ArrayList<Line> arrayListLinesInput = new ArrayList<>();
     protected ArrayList<Line> arrayListLinesOutput = new ArrayList<>();
     protected ArrayList<Line> arrayListLinesOutputReverted = new ArrayList<>();
     protected ArrayList<Line> arrayListLinesClock = new ArrayList<>();
-    protected ArrayList<Line> arrayListLineReset = new ArrayList<>();
+    protected ArrayList<Line> arrayListLinesReset = new ArrayList<>();
     protected Point pointCenter;
     protected Point pointInput;
     protected Point pointOutput;
@@ -31,17 +33,17 @@ public abstract class FlipFlop {
 
     public FlipFlop(double x, double y){
         pointCenter = new Point("Center", x, y);
-        pointInput = new Point("Input", x, y);
-        pointOutput = new Point("Output", x, y);
-        pointOutputReversed = new Point("Output reversed", x, y);
-        pointReset = new Point("Reset", x, y);
-        pointClock = new Point("Clock", x, y);
+        pointInput = new Point("Input", x - 145, y - 75);
+        pointOutput = new Point("Output", x + 145, y - 75);
+        pointOutputReversed = new Point("Output reversed", x + 145, y + 75);
+        pointReset = new Point("Reset", x, y - 195);
+        pointClock = new Point("Clock", x, y + 195);
     }
 
     public void draw(GraphicsContext graphicsContext) {
         if (selected) {
             graphicsContext.drawImage(imageViewSelected.getImage(), pointCenter.getX() - Sizes.baseFlipFlopXShift, pointCenter.getY() - Sizes.baseFlipFlopYShift);
-        } else if (state) {
+        } else if (signalOutput) {
             graphicsContext.drawImage(imageViewOn.getImage(), pointCenter.getX() - Sizes.baseFlipFlopXShift, pointCenter.getY() - Sizes.baseFlipFlopYShift);
         } else {
             graphicsContext.drawImage(imageViewOff.getImage(), pointCenter.getX() - Sizes.baseFlipFlopXShift, pointCenter.getY() - Sizes.baseFlipFlopYShift);
@@ -72,6 +74,21 @@ public abstract class FlipFlop {
         pointCenter.setX(pointCenter.getX() + x - mousePressX);
         pointCenter.setY(pointCenter.getY() + y - mousePressY);
 
+        pointInput.setX(pointInput.getX() + x - mousePressX);
+        pointInput.setY(pointInput.getY() + y - mousePressY);
+
+        pointOutput.setX(pointOutput.getX() + x - mousePressX);
+        pointOutput.setY(pointOutput.getY() + y - mousePressY);
+
+        pointOutputReversed.setX(pointOutputReversed.getX() + x - mousePressX);
+        pointOutputReversed.setY(pointOutputReversed.getY() + y - mousePressY);
+
+        pointReset.setX(pointReset.getX() + x - mousePressX);
+        pointReset.setY(pointReset.getY() + y - mousePressY);
+
+        pointClock.setX(pointClock.getX() + x - mousePressX);
+        pointClock.setY(pointClock.getY() + y - mousePressY);
+
         for(Line l : arrayListLinesInput){
             if(l.getFlipFlop1() != null && l.getFlipFlop1().equals(this)){
                 l.setX1(pointInput.getX() + x - mousePressX);
@@ -83,32 +100,82 @@ public abstract class FlipFlop {
             }
         }
 
-        pointInput.setX(pointInput.getX() + x - mousePressX);
-        pointInput.setY(pointInput.getY() + y - mousePressY);
+        for(Line l : arrayListLinesOutput){
+            if(l.getFlipFlop1() != null && l.getFlipFlop1().equals(this)){
+                l.setX1(pointOutput.getX() + x - mousePressX);
+                l.setY1(pointOutput.getY() + y - mousePressY);
+            }
+            else if(l.getFlipFlop2() != null && l.getFlipFlop2().equals(this)){
+                l.setX2(pointOutput.getX() + x - mousePressX);
+                l.setY2(pointOutput.getY() + y - mousePressY);
+            }
+        }
+
+        for(Line l : arrayListLinesOutputReverted){
+            if(l.getFlipFlop1() != null && l.getFlipFlop1().equals(this)){
+                l.setX1(pointOutputReversed.getX() + x - mousePressX);
+                l.setY1(pointOutputReversed.getY() + y - mousePressY);
+            }
+            else if(l.getFlipFlop2() != null && l.getFlipFlop2().equals(this)){
+                l.setX2(pointOutputReversed.getX() + x - mousePressX);
+                l.setY2(pointOutputReversed.getY() + y - mousePressY);
+            }
+        }
+
+        for(Line l : arrayListLinesClock){
+            if(l.getFlipFlop1() != null && l.getFlipFlop1().equals(this)){
+                l.setX1(pointClock.getX() + x - mousePressX);
+                l.setY1(pointClock.getY() + y - mousePressY);
+            }
+            else if(l.getFlipFlop2() != null && l.getFlipFlop2().equals(this)){
+                l.setX2(pointClock.getX() + x - mousePressX);
+                l.setY2(pointClock.getY() + y - mousePressY);
+            }
+        }
+
+        for(Line l : arrayListLinesReset){
+            if(l.getFlipFlop1() != null && l.getFlipFlop1().equals(this)){
+                l.setX1(pointReset.getX() + x - mousePressX);
+                l.setY1(pointReset.getY() + y - mousePressY);
+            }
+            else if(l.getFlipFlop2() != null && l.getFlipFlop2().equals(this)){
+                l.setX2(pointReset.getX() + x - mousePressX);
+                l.setY2(pointReset.getY() + y - mousePressY);
+            }
+        }
     }
 
-    public boolean isState() {
-        return state;
+
+    public boolean isSignalInput() {
+        return signalInput;
     }
 
-    public void setState(boolean state) {
-        this.state = state;
+    public void setSignalInput(boolean signalInput) {
+        this.signalInput = signalInput;
     }
 
-    public boolean isClock() {
-        return clock;
+    public boolean isSignalOutput() {
+        return signalOutput;
     }
 
-    public void setClock(boolean clock) {
-        this.clock = clock;
+    public void setSignalOutput(boolean signalOutput) {
+        this.signalOutput = signalOutput;
     }
 
-    public boolean isReset() {
-        return reset;
+    public boolean isSignalClock() {
+        return signalClock;
     }
 
-    public void setReset(boolean reset) {
-        this.reset = reset;
+    public void setSignalClock(boolean signalClock) {
+        this.signalClock = signalClock;
+    }
+
+    public boolean isSignalReset() {
+        return signalReset;
+    }
+
+    public void setSignalReset(boolean signalReset) {
+        this.signalReset = signalReset;
     }
 
     public boolean isSelected() {
@@ -127,6 +194,14 @@ public abstract class FlipFlop {
         this.selectedForDrag = selectedForDrag;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public ArrayList<Line> getArrayListLinesInput() {
         return arrayListLinesInput;
     }
@@ -143,8 +218,8 @@ public abstract class FlipFlop {
         return arrayListLinesClock;
     }
 
-    public ArrayList<Line> getArrayListLineReset() {
-        return arrayListLineReset;
+    public ArrayList<Line> getArrayListLinesReset() {
+        return arrayListLinesReset;
     }
 
     public Point getPointCenter() {

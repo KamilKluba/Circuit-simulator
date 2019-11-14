@@ -1,8 +1,10 @@
 package components;
 
 import components.flipflops.FlipFlop;
+import components.flipflops.FlipFlopJK;
 import components.gates.Gate;
 import components.switches.Switch;
+import data.Names;
 import data.Sizes;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -219,7 +221,14 @@ public class Line {
             switch1.getArrayListlines().remove(this);
         }
         if(flipFlop1 != null){
-          //  flipFlop1.get
+            flipFlop1.getArrayListLinesInput().remove(this);
+            if(flipFlop1.getName().equals(Names.flipFlopJK)){
+                ((FlipFlopJK)flipFlop1).getArrayListLinesInputK().remove(this);
+            }
+            flipFlop1.getArrayListLinesOutput().remove(this);
+            flipFlop1.getArrayListLinesOutputReverted().remove(this);
+            flipFlop1.getArrayListLinesClock().remove(this);
+            flipFlop1.getArrayListLinesReset().remove(this);
         }
 
         if(gate2 != null){
@@ -231,6 +240,17 @@ public class Line {
         if(switch2 != null){
             switch2.getArrayListlines().remove(this);
         }
+        if(flipFlop2 != null){
+            flipFlop2.getArrayListLinesInput().remove(this);
+            if(flipFlop2.getName().equals(Names.flipFlopJK)){
+                ((FlipFlopJK)flipFlop2).getArrayListLinesInputK().remove(this);
+            }
+            flipFlop2.getArrayListLinesOutput().remove(this);
+            flipFlop2.getArrayListLinesOutputReverted().remove(this);
+            flipFlop2.getArrayListLinesClock().remove(this);
+            flipFlop2.getArrayListLinesReset().remove(this);
+        }
+
         arrayListCreatedLines.remove(this);
     }
 

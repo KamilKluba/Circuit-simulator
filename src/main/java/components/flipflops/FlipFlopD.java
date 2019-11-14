@@ -1,5 +1,6 @@
 package components.flipflops;
 
+import data.Names;
 import data.Sizes;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -7,6 +8,8 @@ import javafx.scene.image.ImageView;
 public class FlipFlopD extends FlipFlop{
     public FlipFlopD(double x, double y) {
         super(x, y);
+
+        name = Names.flipFlopD;
 
         imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/flipflops/d_off.png").toExternalForm(), Sizes.baseFlipFlopXSize, Sizes.baseFlipFlopYSize, false, false));
         imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/flipflops/d_on.png").toExternalForm(), Sizes.baseFlipFlopXSize, Sizes.baseFlipFlopYSize, false, false));

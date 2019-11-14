@@ -8,8 +8,17 @@ import components.flipflops.FlipFlopT;
 import components.gates.Not;
 import components.gates.and.And3;
 import components.gates.and.And4;
+import components.gates.nand.Nand2;
+import components.gates.nand.Nand3;
+import components.gates.nand.Nand4;
+import components.gates.nor.Nor2;
+import components.gates.nor.Nor3;
+import components.gates.nor.Nor4;
 import components.gates.or.Or3;
 import components.gates.or.Or4;
+import components.gates.xnor.Xnor2;
+import components.gates.xnor.Xnor3;
+import components.gates.xnor.Xnor4;
 import components.gates.xor.Xor2;
 import components.gates.xor.Xor3;
 import components.gates.xor.Xor4;
@@ -110,15 +119,42 @@ public class MainWindowController {
         arrayListPossibleComponents.add(new TableComponent(Names.gateXor4Name, 4,
                                         new ImageView(new Image(getClass().getResource("/graphics/xor/xor4_gate_off.png").toExternalForm(),
                                                 Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.gateNand2Name, 2,
+                                        new ImageView(new Image(getClass().getResource("/graphics/nand/nand2_gate_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.gateNand3Name, 3,
+                                        new ImageView(new Image(getClass().getResource("/graphics/nand/nand3_gate_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.gateNand4Name, 4,
+                                        new ImageView(new Image(getClass().getResource("/graphics/nand/nand4_gate_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.gateNor2Name, 2,
+                                        new ImageView(new Image(getClass().getResource("/graphics/nor/nor2_gate_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.gateNor3Name, 3,
+                                        new ImageView(new Image(getClass().getResource("/graphics/nor/nor3_gate_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.gateNor4Name, 4,
+                                        new ImageView(new Image(getClass().getResource("/graphics/nor/nor4_gate_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.gateXnor2Name, 2,
+                                        new ImageView(new Image(getClass().getResource("/graphics/xnor/xnor2_gate_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.gateXnor3Name, 3,
+                                        new ImageView(new Image(getClass().getResource("/graphics/xnor/xnor3_gate_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.gateXnor4Name, 4,
+                                        new ImageView(new Image(getClass().getResource("/graphics/xnor/xnor4_gate_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
         arrayListPossibleComponents.add(new TableComponent(Names.flipFlopJK, 1,
                                         new ImageView(new Image(getClass().getResource("/graphics/flipflops/jk_off.png").toExternalForm(),
-                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+                                                Sizes.baseFlipFLopImageInTableXSize, Sizes.baseFlipFLopImageInTableYSize, false, false))));
         arrayListPossibleComponents.add(new TableComponent(Names.flipFlopD, 1,
                                         new ImageView(new Image(getClass().getResource("/graphics/flipflops/D_off.png").toExternalForm(),
-                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+                                                Sizes.baseFlipFLopImageInTableXSize, Sizes.baseFlipFLopImageInTableYSize, false, false))));
         arrayListPossibleComponents.add(new TableComponent(Names.flipFlopT, 1,
                                         new ImageView(new Image(getClass().getResource("/graphics/flipflops/T_off.png").toExternalForm(),
-                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+                                                Sizes.baseFlipFLopImageInTableXSize, Sizes.baseFlipFLopImageInTableYSize, false, false))));
 
         ObservableList<TableComponent> ol = FXCollections.observableList(arrayListPossibleComponents);
         tableViewComponents.setItems(ol);
@@ -186,6 +222,34 @@ public class MainWindowController {
                 arrayListCreatedSwitches.remove(s);
             }
         }
+
+        Iterator<FlipFlop> iteratorFlipFlops = arrayListCreatedFlipFlops.iterator();
+        if(iteratorFlipFlops.hasNext()){
+            FlipFlop ff = iteratorFlipFlops.next();
+            if(ff.isSelected()){
+                while(ff.getArrayListLinesInput().size() > 0){
+                    ff.getArrayListLinesInput().get(0).delete(arrayListCreatedLines);
+                }
+                if(ff.getName().equals(Names.flipFlopJK)) {
+                    while (((FlipFlopJK)ff).getArrayListLinesInputK().size() > 0) {
+                        ((FlipFlopJK)ff).getArrayListLinesInputK().get(0).delete(arrayListCreatedLines);
+                    }
+                }
+                while(ff.getArrayListLinesOutput().size() > 0){
+                    ff.getArrayListLinesOutput().get(0).delete(arrayListCreatedLines);
+                }
+                while(ff.getArrayListLinesOutputReverted().size() > 0){
+                    ff.getArrayListLinesOutputReverted().get(0).delete(arrayListCreatedLines);
+                }
+                while(ff.getArrayListLinesClock().size() > 0){
+                    ff.getArrayListLinesClock().get(0).delete(arrayListCreatedLines);
+                }
+                while(ff.getArrayListLinesReset().size() > 0){
+                    ff.getArrayListLinesReset().get(0).delete(arrayListCreatedLines);
+                }
+                arrayListCreatedFlipFlops.remove(ff);
+            }
+        }
         repaint();
     }
 
@@ -243,10 +307,6 @@ public class MainWindowController {
             }
         }
         repaint();
-
-        for(Line l : arrayListCreatedLines){
-            System.out.println(l.getX1() + " " + l.getY1() + " " + l.getX2() + " " + l.getY2());
-        }
     }
 
     public boolean checkIfCoverTotal(String componentName, double x, double y){
@@ -494,6 +554,42 @@ public class MainWindowController {
                 Gate newGate = new Xor4(x, y);
                 arrayListCreatedGates.add(newGate);
             }
+            else if (newComponentName.equals(Names.gateNand2Name)) {
+                Gate newGate = new Nand2(x, y);
+                arrayListCreatedGates.add(newGate);
+            }
+            else if (newComponentName.equals(Names.gateNand3Name)) {
+                Gate newGate = new Nand3(x, y);
+                arrayListCreatedGates.add(newGate);
+            }
+            else if (newComponentName.equals(Names.gateNand4Name)) {
+                Gate newGate = new Nand4(x, y);
+                arrayListCreatedGates.add(newGate);
+            }
+            else if (newComponentName.equals(Names.gateNor2Name)) {
+                Gate newGate = new Nor2(x, y);
+                arrayListCreatedGates.add(newGate);
+            }
+            else if (newComponentName.equals(Names.gateNor3Name)) {
+                Gate newGate = new Nor3(x, y);
+                arrayListCreatedGates.add(newGate);
+            }
+            else if (newComponentName.equals(Names.gateNor4Name)) {
+                Gate newGate = new Nor4(x, y);
+                arrayListCreatedGates.add(newGate);
+            }
+            else if (newComponentName.equals(Names.gateXnor2Name)) {
+                Gate newGate = new Xnor2(x, y);
+                arrayListCreatedGates.add(newGate);
+            }
+            else if (newComponentName.equals(Names.gateXnor3Name)) {
+                Gate newGate = new Xnor3(x, y);
+                arrayListCreatedGates.add(newGate);
+            }
+            else if (newComponentName.equals(Names.gateXnor4Name)) {
+                Gate newGate = new Xnor4(x, y);
+                arrayListCreatedGates.add(newGate);
+            }
             else if(newComponentName.equals(Names.switchMonostableName)){
                 SwitchMonostable newSwitch = new SwitchMonostable(x, y);
                 arrayListCreatedSwitches.add(newSwitch);
@@ -524,6 +620,7 @@ public class MainWindowController {
     public void createNewLine(double x, double y) {
         Gate g = getCoveredGate(x, y);
         Switch s = getCoveredSwitch(x, y);
+        FlipFlop ff = getCoveredFlipFlop(x, y);
 
         tableViewComponents.getSelectionModel().clearSelection();
         comboBoxNewLineHook = new ComboBox<>();
@@ -535,9 +632,25 @@ public class MainWindowController {
             for (Point p : g.getArrayPointsInputs()) {
                 comboBoxNewLineHook.getItems().add(p);
             }
+            s = null;
+            ff = null;
         }
-        if(s != null){
+        else if(s != null){
             comboBoxNewLineHook.getItems().add(s.getPointLineHook());
+            g = null;
+            ff = null;
+        }
+        else if(ff != null){
+            comboBoxNewLineHook.getItems().add(ff.getPointInput());
+            if(ff.getName().equals(Names.flipFlopJK)){
+                comboBoxNewLineHook.getItems().add(((FlipFlopJK)ff).getPointInputK());
+            }
+            comboBoxNewLineHook.getItems().add(ff.getPointOutput());
+            comboBoxNewLineHook.getItems().add(ff.getPointOutputReversed());
+            comboBoxNewLineHook.getItems().add(ff.getPointClock());
+            comboBoxNewLineHook.getItems().add(ff.getPointReset());
+            g = null;
+            s = null;
         }
         paneWorkspace.getChildren().add(comboBoxNewLineHook);
 
@@ -546,23 +659,29 @@ public class MainWindowController {
             canvas.setOnMouseClicked(f -> mouseActions.actionCanvasMouseClicked(f));
         });
 
+        final Gate finalG = g;
+        final Switch finalS = s;
+        final FlipFlop finalFF = ff;
+
         if(!waitForComponent2) {
-            comboBoxNewLineHook.setOnAction(e -> chooseNewLineHook1(x, y, g, s, comboBoxNewLineHook));
+            comboBoxNewLineHook.setOnAction(e -> chooseNewLineHook1(x, y, finalG, finalS, finalFF, comboBoxNewLineHook));
         }
         else{
-            comboBoxNewLineHook.setOnAction(e -> chooseNewLineHook2(x, y, g, s, comboBoxNewLineHook));
+            comboBoxNewLineHook.setOnAction(e -> chooseNewLineHook2(x, y, finalG, finalS, finalFF, comboBoxNewLineHook));
         }
     }
 
-    private void chooseNewLineHook1(double x, double y, Gate g, Switch s, ComboBox<Point> comboBoxNewLineHook){
+    private void chooseNewLineHook1(double x, double y, Gate g, Switch s, FlipFlop ff, ComboBox<Point> comboBoxNewLineHook){
         Point p = comboBoxNewLineHook.getSelectionModel().getSelectedItem();
+        String pointName = p.getName();
+
         if(g != null) {
             lineBuffer = new Line(p.getX(), p.getY(), x, y, g, null, null, null, null, null,  Color.BLACK);
-            if (p.getName().contains("Output")) {
+            if (pointName.contains("Output")) {
                 g.getArrayListLinesOutput().add(lineBuffer);
                 lineBuffer.setInput1IsOutput(true);
             }
-            else if (p.getName().contains("Input")) {
+            else if (pointName.contains("Input")) {
                 int inputNumber = Integer.parseInt(p.getName().split("Input")[1]);
                 g.getArrayArrayListLines()[inputNumber - 1].add(lineBuffer);
                 lineBuffer.setInput1IsOutput(false);
@@ -574,6 +693,33 @@ public class MainWindowController {
             lineBuffer.setInput1IsOutput(false);
             s.sendSignal();
         }
+        else if(ff != null){
+            lineBuffer = new Line(p.getX(), p.getY(), x, y, null, null, null, null, ff, null, Color.BLACK);
+            if(pointName.equals("Input") || pointName.equals("Input J")){
+                ff.getArrayListLinesInput().add(lineBuffer);
+                lineBuffer.setInput1IsOutput(false);
+            }
+            else if(pointName.equals("Input K")){
+                ((FlipFlopJK)ff).getArrayListLinesInputK().add(lineBuffer);
+                lineBuffer.setInput1IsOutput(false);
+            }
+            else if(pointName.equals("Output")){
+                ff.getArrayListLinesOutput().add(lineBuffer);
+                lineBuffer.setInput1IsOutput(true);
+            }
+            else if(pointName.equals("OutputReverted")){
+                ff.getArrayListLinesOutputReverted().add(lineBuffer);
+                lineBuffer.setInput1IsOutput(true);
+            }
+            else if(pointName.equals("Clock")){
+                ff.getArrayListLinesClock().add(lineBuffer);
+                lineBuffer.setInput1IsOutput(false);
+            }
+            else if(pointName.equals("Reset")){
+                ff.getArrayListLinesReset().add(lineBuffer);
+                lineBuffer.setInput1IsOutput(false);
+            }
+        }
 
         canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));
         waitForComponent2 = true;
@@ -583,8 +729,10 @@ public class MainWindowController {
         repaint();
     }
 
-    private void chooseNewLineHook2(double x, double y, Gate g, Switch s, ComboBox<Point> comboBoxNewLineHook) {
+    private void chooseNewLineHook2(double x, double y, Gate g, Switch s, FlipFlop ff, ComboBox<Point> comboBoxNewLineHook) {
         Point p = comboBoxNewLineHook.getSelectionModel().getSelectedItem();
+        String pointName = p.getName();
+
         lineBuffer.setX2(comboBoxNewLineHook.getSelectionModel().getSelectedItem().getX());
         lineBuffer.setY2(comboBoxNewLineHook.getSelectionModel().getSelectedItem().getY());
 
@@ -593,12 +741,12 @@ public class MainWindowController {
 
         if(g != null) {
             lineBuffer.setGate2(g);
-            if (p.getName().contains("Output")) {
+            if (pointName.contains("Output")) {
                 g.getArrayListLinesOutput().add(lineBuffer);
                 lineBuffer.setInput2IsOutput(true);
             }
-            else if (p.getName().contains("Input")) {
-                int inputNumber = Integer.parseInt(p.getName().split("Input")[1]);
+            else if (pointName.contains("Input")) {
+                int inputNumber = Integer.parseInt(pointName.split("Input")[1]);
                 g.getArrayArrayListLines()[inputNumber - 1].add(lineBuffer);
                 lineBuffer.setInput2IsOutput(false);
             }
@@ -608,6 +756,33 @@ public class MainWindowController {
             s.getArrayListlines().add(lineBuffer);
             lineBuffer.setInput2IsOutput(false);
             s.sendSignal();
+        }
+        else if(ff != null){
+            lineBuffer.setFlipFlop2(ff);
+            if(pointName.equals("Input") || pointName.equals("Input J")){
+                ff.getArrayListLinesInput().add(lineBuffer);
+                lineBuffer.setInput2IsOutput(false);
+            }
+            else if(pointName.equals("Input K")){
+                ((FlipFlopJK)ff).getArrayListLinesInputK().add(lineBuffer);
+                lineBuffer.setInput2IsOutput(false);
+            }
+            else if(pointName.equals("Output")){
+                ff.getArrayListLinesOutput().add(lineBuffer);
+                lineBuffer.setInput2IsOutput(true);
+            }
+            else if(pointName.equals("Output Reversed")){
+                ff.getArrayListLinesOutputReverted().add(lineBuffer);
+                lineBuffer.setInput2IsOutput(true);
+            }
+            else if(pointName.equals("Clock")){
+                ff.getArrayListLinesClock().add(lineBuffer);
+                lineBuffer.setInput2IsOutput(false);
+            }
+            else if(pointName.equals("Reset")){
+                ff.getArrayListLinesReset().add(lineBuffer);
+                lineBuffer.setInput2IsOutput(false);
+            }
         }
 
         canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));

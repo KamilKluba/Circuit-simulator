@@ -21,4 +21,6 @@ public class Sizes {
     public static double baseFlipFlopYSize = 400.0;
     public static double baseFlipFlopXShift = baseFlipFlopXSize * 0.5;
     public static double baseFlipFlopYShift = baseFlipFlopYSize * 0.5;
+    public static double baseFlipFLopImageInTableXSize = 60;
+    public static double baseFlipFLopImageInTableYSize = 80;
 }
