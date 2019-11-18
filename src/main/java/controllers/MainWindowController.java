@@ -260,8 +260,8 @@ public class MainWindowController {
 
         try {
             String selectedName = tableViewComponents.getSelectionModel().getSelectedItem().getName();
-            waitForPlaceComponent = selectedName.contains("And") || selectedName.contains("Or") || selectedName.contains("Xor") || selectedName.contains("Not") ||
-                    selectedName.contains("Nand") || selectedName.contains("Nor") || selectedName.contains("Xnor") || selectedName.contains("Switch");
+            waitForPlaceComponent = selectedName.contains(Names.gateSearchName) || selectedName.contains("Switch") ||
+                    selectedName.contains(Names.flipFlopSearchName);
         } catch(Exception e){
             waitForPlaceComponent = false;
         }

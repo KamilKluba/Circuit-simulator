@@ -29,9 +29,9 @@ public class Xnor4 extends Gate {
         arraySignalsInputs = new boolean[4];
         name = Names.gateXor4Name;
 
-        imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/xor/xor4_gate_off.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
-        imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/xor/xor4_gate_on.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
-        imageViewSelected = new ImageView(new Image(getClass().getResource("/graphics/xor/xor4_gate_selected.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
+        imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/xnor/xnor4_gate_off.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
+        imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/xnor/xnor4_gate_on.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
+        imageViewSelected = new ImageView(new Image(getClass().getResource("/graphics/xnor/xnor4_gate_selected.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
     }
 
     @Override

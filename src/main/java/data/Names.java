@@ -2,7 +2,7 @@ package data;
 
 public class Names {
     public static String gateSearchName = "Gate";
-    public static String gateNotName = "Not";
+    public static String gateNotName = "Gate Not";
     public static String gateAnd2Name = "Gate And 2";
     public static String gateAnd3Name = "Gate And 3";
     public static String gateAnd4Name = "Gate And 4";
