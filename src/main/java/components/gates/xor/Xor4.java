@@ -43,14 +43,14 @@ public class Xor4 extends Gate {
             }
         }
         if(numberOfHighSignals % 2 == 1){
-            output = true;
+            output.set(true);
         }
         else{
-            output = false;
+            output.set(false);
         }
 
         for (Line l : arrayListLinesOutput){
-            l.setState(output);
+            l.setState(output.get());
         }
     }
 

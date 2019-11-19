@@ -690,7 +690,7 @@ public class MainWindowController {
         else if(s != null){
             lineBuffer = new Line(p.getX(), p.getY(), x, y, null, null, s, null, null, null,  Color.BLACK);
             s.getArrayListlines().add(lineBuffer);
-            lineBuffer.setInput1IsOutput(false);
+            lineBuffer.setInput1IsOutput(true);
             s.sendSignal();
         }
         else if(ff != null){
@@ -754,7 +754,7 @@ public class MainWindowController {
         else if(s != null){
             lineBuffer.setSwitch2(s);
             s.getArrayListlines().add(lineBuffer);
-            lineBuffer.setInput2IsOutput(false);
+            lineBuffer.setInput2IsOutput(true);
             s.sendSignal();
         }
         else if(ff != null){
@@ -786,6 +786,7 @@ public class MainWindowController {
         }
 
         canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));
+        lineBuffer.lifeCycle();
         waitForComponent2 = false;
         paneWorkspace.getChildren().remove(comboBoxNewLineHook);
 

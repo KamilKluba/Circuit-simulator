@@ -35,15 +35,15 @@ public class And4 extends Gate {
 
     @Override
     public void computeSignal(){
-        output = true;
+        output.set(true);
         for(boolean b : arraySignalsInputs) {
             if (!b){
-                output = false;
+                output.set(false);
                 break;
             }
         }
         for (Line l : arrayListLinesOutput){
-            l.setState(output);
+            l.setState(output.get());
         }
     }
 

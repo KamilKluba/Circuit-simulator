@@ -26,7 +26,7 @@ public class SwitchMonostable extends Switch{
 
     @Override
     public void setState(boolean state){
-        this.state = state;
+        this.state.set(state);
 
         sendSignal();
     }

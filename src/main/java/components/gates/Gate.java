@@ -10,13 +10,16 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class Gate {
     protected double inputsNumber;
     protected String name;
     protected ArrayList<Line>[] arrayArrayListLines;
     protected ArrayList<Line> arrayListLinesOutput = new ArrayList<>();
-    protected boolean output = false;
+    protected AtomicBoolean output = new AtomicBoolean(false);
     protected boolean[] arraySignalsInputs;
     protected boolean selected = false;
     protected boolean selectedForDrag = false;
@@ -28,7 +31,7 @@ public abstract class Gate {
     protected ImageView imageViewOff;
     protected ImageView imageViewOn;
     protected ImageView imageViewSelected;
-
+    protected ExecutorService executorService = Executors.newFixedThreadPool(1);
 
     public Gate(){
     }
@@ -167,7 +170,7 @@ public abstract class Gate {
             graphicsContext.drawImage(imageViewSelected.getImage(), pointCenter.getX() - Sizes.baseGateXShift, pointCenter.getY() - Sizes.baseGateYShift);
         }
         //THERE IS A BUG HERE PROBABLY, CHECK IT LATER///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        else if(output){
+        else if(output.get()){
             graphicsContext.drawImage(imageViewOn.getImage(), pointCenter.getX() - Sizes.baseGateXShift, pointCenter.getY() - Sizes.baseGateYShift);
         }
         else {
@@ -212,11 +215,11 @@ public abstract class Gate {
     }
 
     public void setOutput(boolean output){
-        this.output = output;
+        this.output.set(output);
     }
 
     public boolean getOutput(){
-        return output;
+        return output.get();
     }
 
     public ArrayList<Line>[] getArrayArrayListLines() {

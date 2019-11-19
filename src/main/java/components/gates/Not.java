@@ -28,9 +28,9 @@ public class Not extends Gate {
 
     @Override
     public void computeSignal(){
-        output = !arraySignalsInputs[0];
+        output.set(!arraySignalsInputs[0]);
         for (Line l : arrayListLinesOutput){
-            l.setState(output);
+            l.setState(output.get());
         }
     }
 

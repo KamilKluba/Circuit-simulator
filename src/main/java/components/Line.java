@@ -10,6 +10,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Line {
     private double x1;
@@ -18,7 +22,7 @@ public class Line {
     private double x2;
     private double y2;
     private boolean input2IsOutput;
-    private boolean state = false;
+    private AtomicBoolean state = new AtomicBoolean(false);
     private boolean lastState = false;
     private boolean selected = false;
     private Gate gate1;
@@ -45,46 +49,90 @@ public class Line {
         this.color = color;
     }
 
+    public void lifeCycle(){
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        executorService.execute(() -> {
+            while(true){
+                if(input1IsOutput){
+                    if(gate1 != null){
+                        state.set(gate1.getOutput());
+                    }
+                    else if(flipFlop1 != null){
+                        state.set(flipFlop1.isSignalOutput());
+                    }
+                    else if(switch1 != null){
+                        state.set(switch1.isState());
+                    }
+                }
+                if(input2IsOutput){
+                    if(gate2 != null){
+                        state.set(gate2.getOutput());
+                    }
+                    else if(flipFlop2 != null){
+                        state.set(flipFlop2.isSignalOutput());
+                    }
+                    else if(switch2 != null){
+                        state.set(switch2.isState());
+                    }
+                }
+
+                if(state.get() != lastState) {
+                    lastState = state.get();
+                    if (state.get()) {
+                        color = new Color(0, 0.8, 0.8, 1);
+                    } else {
+                        color = Color.BLACK;
+                    }
+                }
+
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
     public void setState(boolean state) {
-        this.state = state;
-        if(state != lastState) {
-            lastState = state;
-            if (state) {
-                color = new Color(0, 0.8, 0.8, 1);
-            } else {
-                color = Color.BLACK;
-            }
-
-
-            if (gate1 != null && !input1IsOutput) {
-                setSignalOnGateInput(gate1);
-            }
-            if (gate2 != null && !input2IsOutput) {
-                setSignalOnGateInput(gate2);
-            }
-        }
+//        this.state = state;
+//        if(state != lastState) {
+//            lastState = state;
+//            if (state) {
+//                color = new Color(0, 0.8, 0.8, 1);
+//            } else {
+//                color = Color.BLACK;
+//            }
+//
+//
+//            if (gate1 != null && !input1IsOutput) {
+//                setSignalOnGateInput(gate1);
+//            }
+//            if (gate2 != null && !input2IsOutput) {
+//                setSignalOnGateInput(gate2);
+//            }
+//        }
     }
 
     private void setSignalOnGateInput(Gate gate){
-        ArrayList<Line>[] arrayArrayListLines = gate.getArrayArrayListLines();
-        boolean endLoop = false;
-        for (int i = 0; i < arrayArrayListLines.length; i++) {
-            for(Line l : arrayArrayListLines[i]) {
-                if (l.equals(this)) {
-                    endLoop = true;
-                    gate.getArraySignalsInputs()[i] = state;
-                    for(Line line : arrayArrayListLines[i]){
-                        line.setState(state);
-                    }
-                    break;
-                }
-            }
-            if(endLoop){
-                break;
-            }
-        }
-        gate.computeSignal();
+//        ArrayList<Line>[] arrayArrayListLines = gate.getArrayArrayListLines();
+//        boolean endLoop = false;
+//        for (int i = 0; i < arrayArrayListLines.length; i++) {
+//            for(Line l : arrayArrayListLines[i]) {
+//                if (l.equals(this)) {
+//                    endLoop = true;
+//                    gate.getArraySignalsInputs()[i] = state;
+//                    for(Line line : arrayArrayListLines[i]){
+//                        line.setState(state);
+//                    }
+//                    break;
+//                }
+//            }
+//            if(endLoop){
+//                break;
+//            }
+//        }
+//        gate.computeSignal();
     }
 
     public void select(double x, double y){
@@ -255,7 +303,7 @@ public class Line {
     }
 
     public boolean isState() {
-        return state;
+        return state.get();
     }
 
     public double getX1() {

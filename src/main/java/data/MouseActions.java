@@ -310,7 +310,7 @@ public class MouseActions {
                         s.select(x, y);
                     }
                     else if(button == MouseButton.SECONDARY && s.inside(x, y)) {
-                        s.setState(!s.isState());
+                        s.invertState();
                     }
                 }
             }

@@ -7,12 +7,13 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class Switch {
     protected String name;
     protected int rotation = 0;
     protected Point pointCenter;
-    protected boolean state = false;
+    protected AtomicBoolean state = new AtomicBoolean(false);
     protected boolean selected = false;
     protected boolean selectedForDrag = false;
     protected ArrayList<Line> arrayListlines = new ArrayList<>();
@@ -29,9 +30,9 @@ public abstract class Switch {
     }
 
     public void sendSignal(){
-        for(Line l : arrayListlines){
-            l.setState(state);
-        }
+//        for(Line l : arrayListlines){
+//            l.setState(state);
+//        }
     }
 
     public void select(double x, double y){
@@ -48,7 +49,7 @@ public abstract class Switch {
 
     public void draw(GraphicsContext graphicsContext){
         if(selected){
-            if(state){
+            if(state.get()){
                 graphicsContext.drawImage(imageViewSelectedOn.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
             }
             else{
@@ -56,7 +57,7 @@ public abstract class Switch {
             }
         }
         else {
-            if (state) {
+            if (state.get()) {
                 graphicsContext.drawImage(imageViewOn.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
             } else {
                 graphicsContext.drawImage(imageViewOff.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
@@ -126,6 +127,11 @@ public abstract class Switch {
         pointLineHook.setY(pointLineHook.getY() + y - mousePressY);
     }
 
+    public void invertState(){
+        boolean bufferValue = state.get();
+        state.set(!bufferValue);
+    }
+
     public String getName() {
         return name;
     }
@@ -147,11 +153,11 @@ public abstract class Switch {
     }
 
     public boolean isState() {
-        return state;
+        return state.get();
     }
 
     public void setState(boolean state) {
-        this.state = state;
+        this.state.set(state);
     }
 
     public boolean isSelected() {

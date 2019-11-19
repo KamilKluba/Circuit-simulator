@@ -33,16 +33,17 @@ public class Nand3 extends Gate {
 
     @Override
     public void computeSignal(){
-        output = true;
+        output.set(true);
         for(boolean b : arraySignalsInputs) {
             if (!b){
-                output = false;
+                output.set(false);
                 break;
             }
         }
-        output = !output;
+        boolean bufferValue = output.get();
+        output.set(!bufferValue);
         for (Line l : arrayListLinesOutput){
-            l.setState(output);
+            l.setState(output.get());
         }
     }
 

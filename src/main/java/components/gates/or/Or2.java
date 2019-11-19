@@ -28,20 +28,40 @@ public class Or2 extends Gate {
         imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/or/or2_gate_off.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
         imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/or/or2_gate_on.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
         imageViewSelected = new ImageView(new Image(getClass().getResource("/graphics/or/or2_gate_selected.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
+
+        executorService.execute(() -> lifeCycle());
+    }
+
+    public void lifeCycle(){
+        while(true){
+            output.set(false);
+            for(boolean b : arraySignalsInputs) {
+                if (b) {
+                    output.set(true);
+                    break;
+                }
+            }
+
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
     public void computeSignal(){
-        output = false;
-        for(boolean b : arraySignalsInputs) {
-            if (b){
-                output = true;
-                break;
-            }
-        }
-        for (Line l : arrayListLinesOutput){
-            l.setState(output);
-        }
+//        output.set(false);
+//        for(boolean b : arraySignalsInputs) {
+//            if (b){
+//                output.set(true);
+//                break;
+//            }
+//        }
+//        for (Line l : arrayListLinesOutput){
+//            l.setState(output.get());
+//        }
     }
 
     public ArrayList[] getArrayArrayListLines() {

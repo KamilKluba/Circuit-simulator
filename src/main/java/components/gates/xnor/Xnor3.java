@@ -9,7 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
-    
+
 public class Xnor3 extends Gate {
 
     public Xnor3(double x, double y) {
@@ -41,14 +41,14 @@ public class Xnor3 extends Gate {
             }
         }
         if(numberOfHighSignals % 2 == 1){
-            output = false;
+            output.set(false);
         }
         else{
-            output = true;
+            output.set(true);
         }
 
         for (Line l : arrayListLinesOutput){
-            l.setState(output);
+            l.setState(output.get());
         }
     }
 

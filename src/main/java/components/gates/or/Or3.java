@@ -34,15 +34,15 @@ public class Or3 extends Gate {
 
     @Override
     public void computeSignal(){
-        output = false;
+        output.set(false);
         for(boolean b : arraySignalsInputs) {
             if (b){
-                output = true;
+                output.set(true);
                 break;
             }
         }
         for (Line l : arrayListLinesOutput){
-            l.setState(output);
+            l.setState(output.get());
         }
     }
 

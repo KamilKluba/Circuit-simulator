@@ -39,14 +39,14 @@ public class Xnor2 extends Gate {
             }
         }
         if(numberOfHighSignals % 2 == 1){
-            output = false;
+            output.set(false);
         }
         else{
-            output = true;
+            output.set(true);
         }
 
         for (Line l : arrayListLinesOutput){
-            l.setState(output);
+            l.setState(output.get());
         }
     }
 
