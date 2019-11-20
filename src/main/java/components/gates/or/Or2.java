@@ -44,9 +44,6 @@ public class Or2 extends Gate {
                         atLeastOneHigh = true;
                     }
                 }
-                for(Line l : arrayArrayListLines[i]){
-                    l.setState(atLeastOneHigh);
-                }
                 arraySignalsInputs[i] = atLeastOneHigh;
             }
 

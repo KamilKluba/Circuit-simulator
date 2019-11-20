@@ -1,5 +1,6 @@
 package components.switches;
 
+import components.Component;
 import components.Line;
 import components.Point;
 import data.Sizes;
@@ -9,13 +10,8 @@ import javafx.scene.image.ImageView;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class Switch {
-    protected String name;
-    protected int rotation = 0;
-    protected Point pointCenter;
+public abstract class Switch extends Component {
     protected AtomicBoolean state = new AtomicBoolean(false);
-    protected boolean selected = false;
-    protected boolean selectedForDrag = false;
     protected ArrayList<Line> arrayListlines = new ArrayList<>();
     protected Point pointLineHook;
     protected ImageView imageViewOn;
@@ -25,7 +21,7 @@ public abstract class Switch {
 
 
     public Switch(double x, double y){
-        this.pointCenter = new Point("Center", x, y);
+        super(x, y);
         this.pointLineHook = new Point("Output", x, y - 35);
     }
 

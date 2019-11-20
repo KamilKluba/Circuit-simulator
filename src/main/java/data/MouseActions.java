@@ -1,6 +1,7 @@
 package data;
 
 import com.sun.glass.ui.Size;
+import components.Component;
 import components.Line;
 import components.Point;
 import components.TableComponent;
@@ -54,6 +55,7 @@ public class MouseActions {
     private ArrayList<Switch> arrayListCreatedSwitches;
     private ArrayList<Line> arrayListCreatedLines;
     private ArrayList<FlipFlop> arrayListCreatedFlipFlops;
+    private ArrayList<Component> arrayListCreatedComponents;
     private Point pointMousePressed = new Point();
     private Point pointMouseMoved = new Point();
     private Point pointMouseReleased = new Point();
@@ -68,6 +70,7 @@ public class MouseActions {
         this.arrayListCreatedSwitches = mwc.getArrayListCreatedSwitches();
         this.arrayListCreatedLines = mwc.getArrayListCreatedLines();
         this.arrayListCreatedFlipFlops = mwc.getArrayListCreatedFlipFlops();
+        this.arrayListCreatedComponents = mwc.getArrayListCreatedComponents();
     }
 
     public void actionCanvasMouseMoved(double x, double y){
@@ -141,102 +144,83 @@ public class MouseActions {
         }
 
         if(mwc.isWaitForPlaceComponent()){
+            Component newComponent = null;
             graphicsContext.setStroke(Color.BLACK);
             if(newComponentName.equals(Names.gateNotName)){
-                Gate g = new Not(x, y);
-                g.draw(graphicsContext);
+                newComponent = new Not(x, y);
             }
             else if(newComponentName.equals(Names.gateAnd2Name)){
-                Gate g = new And2(x, y);
-                g.draw(graphicsContext);
+                newComponent = new And2(x, y);
             }
             else if(newComponentName.equals(Names.gateAnd3Name)){
-                Gate g = new And3(x, y);
-                g.draw(graphicsContext);
+                newComponent = new And3(x, y);
             }
             else if(newComponentName.equals(Names.gateAnd4Name)){
-                Gate g = new And4(x, y);
-                g.draw(graphicsContext);
+                newComponent = new And4(x, y);
             }
             else if(newComponentName.equals(Names.gateOr2Name)){
-                Gate g = new Or2(x, y);
-                g.draw(graphicsContext);
+                newComponent = new Or2(x, y);
             }
             else if(newComponentName.equals(Names.gateOr3Name)){
-                Gate g = new Or3(x, y);
-                g.draw(graphicsContext);
+                newComponent = new Or3(x, y);
             }
             else if(newComponentName.equals(Names.gateOr4Name)){
-                Gate g = new Or4(x, y);
-                g.draw(graphicsContext);
+                newComponent = new Or4(x, y);
             }
             else if(newComponentName.equals(Names.gateXor2Name)){
-                Gate g = new Xor2(x, y);
-                g.draw(graphicsContext);
+                newComponent = new Xor2(x, y);
             }
             else if(newComponentName.equals(Names.gateXor3Name)){
-                Gate g = new Xor3(x, y);
-                g.draw(graphicsContext);
+                newComponent = new Xor3(x, y);
             }
             else if(newComponentName.equals(Names.gateXor4Name)){
-                Gate g = new Xor4(x, y);
-                g.draw(graphicsContext);
+                newComponent = new Xor4(x, y);
             }
             else if(newComponentName.equals(Names.gateNand2Name)){
-                Gate g = new Nand2(x, y);
-                g.draw(graphicsContext);
+                newComponent = new Nand2(x, y);
             }
             else if(newComponentName.equals(Names.gateNand3Name)){
-                Gate g = new Nand3(x, y);
-                g.draw(graphicsContext);
+                newComponent = new Nand3(x, y);
             }
             else if(newComponentName.equals(Names.gateNand4Name)){
-                Gate g = new Nand4(x, y);
-                g.draw(graphicsContext);
+                newComponent = new Nand4(x, y);
             }
             else if(newComponentName.equals(Names.gateNor2Name)){
-                Gate g = new Nor2(x, y);
-                g.draw(graphicsContext);
+                newComponent = new Nor2(x, y);
             }
             else if(newComponentName.equals(Names.gateNor3Name)){
-                Gate g = new Nor3(x, y);
-                g.draw(graphicsContext);
+                newComponent = new Nor3(x, y);
             }
             else if(newComponentName.equals(Names.gateNor4Name)){
-                Gate g = new Nor4(x, y);
-                g.draw(graphicsContext);
+                newComponent = new Nor4(x, y);
             }
             else if(newComponentName.equals(Names.gateXnor2Name)){
-                Gate g = new Xnor2(x, y);
-                g.draw(graphicsContext);
+                newComponent = new Xnor2(x, y);
             }
             else if(newComponentName.equals(Names.gateXnor3Name)){
-                Gate g = new Xnor3(x, y);
-                g.draw(graphicsContext);
+                newComponent = new Xnor3(x, y);
             }
             else if(newComponentName.equals(Names.gateXnor4Name)){
-                Gate g = new Xnor4(x, y);
-                g.draw(graphicsContext);
+                newComponent = new Xnor4(x, y);
             }
             else if(newComponentName.equals(Names.switchMonostableName)){
-                SwitchMonostable sm = new SwitchMonostable(x, y);
-                sm.draw(graphicsContext);
+                newComponent = new SwitchMonostable(x, y);
             }
             else if(newComponentName.equals(Names.switchBistableName)){
-                SwitchBistatble sb = new SwitchBistatble(x, y);
-                sb.draw(graphicsContext);
+                newComponent = new SwitchBistatble(x, y);
             }
             else if(newComponentName.equals(Names.flipFlopD)){
-                FlipFlopD ffd = new FlipFlopD(x, y);
-                ffd.draw(graphicsContext);
+                newComponent = new FlipFlopD(x, y);
             }
             else if(newComponentName.equals(Names.flipFlopT)){
-                FlipFlopT fft = new FlipFlopT(x, y);
-                fft.draw(graphicsContext);
+                newComponent = new FlipFlopT(x, y);
             }
             else if(newComponentName.equals(Names.flipFlopJK)){
-                FlipFlopJK ffjk = new FlipFlopJK(x, y);
-                ffjk.draw(graphicsContext);
+                newComponent = new FlipFlopJK(x, y);
+            }
+
+            if(newComponent != null){
+                newComponent.draw(graphicsContext);
             }
         }
     }
@@ -298,25 +282,16 @@ public class MouseActions {
             if(Accesses.logMouseActions) {
                 System.out.println("No special action, trying to select a gate");
             }
-            for(Line l : arrayListCreatedLines) {
-                l.select(x, y);
-            }
-            for(Gate g : arrayListCreatedGates){
-                g.select(x, y);
-            }
-            for(Switch s : arrayListCreatedSwitches){
-                if(s.getName().equals(Names.switchBistableName)) {
-                    if(button == MouseButton.PRIMARY){
-                        s.select(x, y);
-                    }
-                    else if(button == MouseButton.SECONDARY && s.inside(x, y)) {
-                        s.invertState();
-                    }
+
+            for(Component c : arrayListCreatedComponents){
+                if(c.getName().equals(Names.switchBistableName) && button == MouseButton.SECONDARY && c.inside(x, y)){
+                    ((Switch)c).invertState();
+                }
+                else{
+                    c.select(x, y);
                 }
             }
-            for(FlipFlop ff : arrayListCreatedFlipFlops){
-                ff.select(x, y);
-            }
+
             mwc.setCoveredError(false);
         }
         //Revert creating component
@@ -338,19 +313,9 @@ public class MouseActions {
         double x = e.getX();
         double y = e.getY();
 
-        for(Gate g : arrayListCreatedGates){
-            if(g.isSelectedForDrag()){
-                g.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY());
-            }
-        }
-        for(Switch s : arrayListCreatedSwitches){
-            if(s.isSelectedForDrag()){
-                s.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY());
-            }
-        }
-        for(FlipFlop ff : arrayListCreatedFlipFlops){
-            if(ff.isSelectedForDrag()){
-                ff.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY());
+        for(Component c : arrayListCreatedComponents) {
+            if (c.isSelectedForDrag()) {
+                c.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY());
             }
         }
 
@@ -385,14 +350,8 @@ public class MouseActions {
             for (Line l : arrayListCreatedLines) {
                 l.select(x1, y1, x2, y2);
             }
-            for (Gate g : arrayListCreatedGates) {
-                g.select(x1, y1, x2, y2);
-            }
-            for (Switch s : arrayListCreatedSwitches) {
-                s.select(x1, y1, x2, y2);
-            }
-            for (FlipFlop ff : arrayListCreatedFlipFlops){
-                ff.select(x1, y1, x2, y2);
+            for (Component c : arrayListCreatedComponents) {
+                c.select(x1, y1, x2, y2);
             }
         }
     }
@@ -424,31 +383,15 @@ public class MouseActions {
                 couldBeSelected = true;
             }
         }
-        for (Gate g : arrayListCreatedGates) {
-            if(g.checkIfCouldBeSelected(e.getX(), e.getY())){
+        for (Component c : arrayListCreatedComponents) {
+            if(c.checkIfCouldBeSelected(e.getX(), e.getY())){
                 couldBeSelected = true;
             }
-            if(g.inside(x, y)){
-                g.selectForDrag(x, y);
-            }
-        }
-        for (Switch s : arrayListCreatedSwitches) {
-            if(s.checkIfCouldBeSelected(e.getX(), e.getY())){
-                couldBeSelected = true;
-            }
-            if(s.inside(x, y)){
-                s.selectForDrag(x, y);
-                if(s.getName().equals(Names.switchMonostableName)){
-                    s.setState(true);
+            if(c.inside(x, y)){
+                c.selectForDrag(x, y);
+                if(c.getName().equals(Names.switchMonostableName)){
+                    ((Switch)c).setState(true);
                 }
-            }
-        }
-        for (FlipFlop ff : arrayListCreatedFlipFlops) {
-            if(ff.checkIfCouldBeSelected(e.getX(), e.getY())){
-                couldBeSelected = true;
-            }
-            if(ff.inside(x, y)){
-                ff.selectForDrag(x, y);
             }
         }
 
@@ -464,18 +407,13 @@ public class MouseActions {
 
         mouseDragged = Math.abs(pointMousePressed.getX() - x) > Sizes.minimalXDragToSelect || Math.abs(pointMousePressed.getY() - y) > Sizes.minimalYDragToSelect;
 
-        for(Gate g : arrayListCreatedGates){
-            g.setSelectedForDrag(false);
-        }
-        for(Switch s : arrayListCreatedSwitches){
-            s.setSelectedForDrag(false);
-            if(s.getName().equals(Names.switchMonostableName)){
-                s.setState(false);
+        for(Component c : arrayListCreatedComponents){
+            c.setSelectedForDrag(false);            
+            if(c.getName().equals(Names.switchMonostableName)){
+                ((Switch)c).setState(false);
             }
         }
-        for(FlipFlop ff : arrayListCreatedFlipFlops){
-            ff.setSelectedForDrag(false);
-        }
+
         mwc.repaint();
     }
 

@@ -1,5 +1,6 @@
 package components.flipflops;
 
+import components.Component;
 import components.Line;
 import components.Point;
 import data.Sizes;
@@ -8,10 +9,7 @@ import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
 
-public abstract class FlipFlop {
-    protected boolean selected = false;
-    protected boolean selectedForDrag = false;
-    protected String name;
+public abstract class FlipFlop extends Component {
     protected boolean signalInput = false;
     protected boolean signalOutput = false;
     protected boolean signalClock = false;
@@ -21,7 +19,6 @@ public abstract class FlipFlop {
     protected ArrayList<Line> arrayListLinesOutputReverted = new ArrayList<>();
     protected ArrayList<Line> arrayListLinesClock = new ArrayList<>();
     protected ArrayList<Line> arrayListLinesReset = new ArrayList<>();
-    protected Point pointCenter;
     protected Point pointInput;
     protected Point pointOutput;
     protected Point pointOutputReversed;
@@ -32,7 +29,7 @@ public abstract class FlipFlop {
     protected ImageView imageViewSelected;
 
     public FlipFlop(double x, double y){
-        pointCenter = new Point("Center", x, y);
+        super(x, y);
         pointInput = new Point("Input", x - 145, y - 75);
         pointOutput = new Point("Output", x + 145, y - 75);
         pointOutputReversed = new Point("Output reversed", x + 145, y + 75);

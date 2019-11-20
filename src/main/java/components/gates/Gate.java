@@ -1,5 +1,6 @@
 package components.gates;
 
+import components.Component;
 import components.Line;
 import components.Point;
 import data.Names;
@@ -14,20 +15,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class Gate {
+public abstract class Gate extends Component {
     protected double inputsNumber;
-    protected String name;
     protected ArrayList<Line>[] arrayArrayListLines;
     protected ArrayList<Line> arrayListLinesOutput = new ArrayList<>();
     protected AtomicBoolean output = new AtomicBoolean(false);
     protected boolean[] arraySignalsInputs;
-    protected boolean selected = false;
-    protected boolean selectedForDrag = false;
     protected Color color = Color.BLACK;
-    protected Point pointCenter;
     protected Point pointOutput;
     protected Point[] arrayPointsInputs;
-    protected int rotation = 0; //0 - right, 1 - down, 2 - left, 3 - up
     protected ImageView imageViewOff;
     protected ImageView imageViewOn;
     protected ImageView imageViewSelected;
@@ -37,6 +33,7 @@ public abstract class Gate {
     }
 
     public Gate(double x, double y){
+        super(x, y);
         pointCenter = new Point(Names.pointCenterName, x, y);
         pointOutput = new Point(Names.pointOutputName, x + 93, y);
     }

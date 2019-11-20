@@ -57,6 +57,7 @@ public class MainWindowController {
     private ArrayList<Gate> arrayListCreatedGates = new ArrayList<>();
     private ArrayList<Switch> arrayListCreatedSwitches = new ArrayList<>();
     private ArrayList<FlipFlop> arrayListCreatedFlipFlops = new ArrayList<>();
+    private ArrayList<Component> arrayListCreatedComponents = new ArrayList<>();
     private GraphicsContext graphicsContext;
     private ArrayList<TableComponent> arrayListPossibleComponents = new ArrayList<>();
     private boolean coveredError = false;
@@ -209,17 +210,20 @@ public class MainWindowController {
                     }
                 }
                 arrayListCreatedGates.remove(g);
+                arrayListCreatedComponents.remove(g);
             }
         }
 
         Iterator<Switch> iteratorSwitches = arrayListCreatedSwitches.iterator();
         if(iteratorSwitches.hasNext()){
+            System.out.println("Halo ");
             Switch s = iteratorSwitches.next();
             if(s.isSelected()){
                 while(s.getArrayListlines().size() > 0){
                     s.getArrayListlines().get(0).delete(arrayListCreatedLines);
                 }
                 arrayListCreatedSwitches.remove(s);
+                arrayListCreatedComponents.remove(s);
             }
         }
 
@@ -248,6 +252,7 @@ public class MainWindowController {
                     ff.getArrayListLinesReset().get(0).delete(arrayListCreatedLines);
                 }
                 arrayListCreatedFlipFlops.remove(ff);
+                arrayListCreatedComponents.remove(ff);
             }
         }
         repaint();
@@ -295,15 +300,9 @@ public class MainWindowController {
     }
 
     public void actionRotate(){
-        for(Gate g : arrayListCreatedGates){
-            if(g.isSelected()){
-                g.rotate();
-            }
-        }
-
-        for(Switch s : arrayListCreatedSwitches){
-            if(s.isSelected()){
-                s.rotate();
+        for(Component c : arrayListCreatedComponents){
+            if(c.isSelected()){
+                c.rotate();
             }
         }
         repaint();
@@ -433,21 +432,13 @@ public class MainWindowController {
     public void repaint(){
         graphicsContext.clearRect(0, 0, canvas.getWidth() + 1, canvas.getHeight() + 1);
 
-        for(Gate g : arrayListCreatedGates){
-            g.draw(graphicsContext);
-        }
-
-        for(Switch s : arrayListCreatedSwitches){
-            s.draw(graphicsContext);
+        for(Component c : arrayListCreatedComponents){
+            c.draw(graphicsContext);
         }
 
         graphicsContext.setLineWidth(Sizes.baseLineWidth);
         for(Line l : arrayListCreatedLines){
             l.draw(graphicsContext);
-        }
-
-        for(FlipFlop ff : arrayListCreatedFlipFlops){
-            ff.draw(graphicsContext);
         }
 
         graphicsContext.setStroke(Color.BLACK);
@@ -514,101 +505,91 @@ public class MainWindowController {
     public void createNewComponent(double x, double y, String newComponentName){
         tableViewComponents.getSelectionModel().clearSelection();
         try {
+            Component newComponent = null;
             if (newComponentName.equals(Names.gateNotName)) {
-                Gate newGate = new Not(x, y);
-                arrayListCreatedGates.add(newGate);
+                newComponent = new Not(x, y);
             }
             else if (newComponentName.equals(Names.gateAnd2Name)) {
-                Gate newGate = new And2(x, y);
-                arrayListCreatedGates.add(newGate);
+                newComponent = new And2(x, y);
             }
             else if (newComponentName.equals(Names.gateAnd3Name)) {
-                Gate newGate = new And3(x, y);
-                arrayListCreatedGates.add(newGate);
+                newComponent = new And3(x, y);
             }
             else if (newComponentName.equals(Names.gateAnd4Name)) {
-                Gate newGate = new And4(x, y);
-                arrayListCreatedGates.add(newGate);
+                newComponent = new And4(x, y);
             }
             else if (newComponentName.equals(Names.gateOr2Name)) {
-                Gate newGate = new Or2(x, y);
-                arrayListCreatedGates.add(newGate);
+                newComponent = new Or2(x, y);
             }
             else if (newComponentName.equals(Names.gateOr3Name)) {
-                Gate newGate = new Or3(x, y);
-                arrayListCreatedGates.add(newGate);
+                newComponent = new Or3(x, y);
             }
             else if (newComponentName.equals(Names.gateOr4Name)) {
-                Gate newGate = new Or4(x, y);
-                arrayListCreatedGates.add(newGate);
+                newComponent = new Or4(x, y);
             }
             else if (newComponentName.equals(Names.gateXor2Name)) {
-                Gate newGate = new Xor2(x, y);
-                arrayListCreatedGates.add(newGate);
+                newComponent = new Xor2(x, y);
             }
             else if (newComponentName.equals(Names.gateXor3Name)) {
-                Gate newGate = new Xor3(x, y);
-                arrayListCreatedGates.add(newGate);
+                newComponent = new Xor3(x, y);
             }
             else if (newComponentName.equals(Names.gateXor4Name)) {
-                Gate newGate = new Xor4(x, y);
-                arrayListCreatedGates.add(newGate);
+                newComponent = new Xor4(x, y);
             }
             else if (newComponentName.equals(Names.gateNand2Name)) {
-                Gate newGate = new Nand2(x, y);
-                arrayListCreatedGates.add(newGate);
+                newComponent = new Nand2(x, y);
             }
             else if (newComponentName.equals(Names.gateNand3Name)) {
-                Gate newGate = new Nand3(x, y);
-                arrayListCreatedGates.add(newGate);
+                newComponent = new Nand3(x, y);
             }
             else if (newComponentName.equals(Names.gateNand4Name)) {
-                Gate newGate = new Nand4(x, y);
-                arrayListCreatedGates.add(newGate);
+                newComponent = new Nand4(x, y);
             }
             else if (newComponentName.equals(Names.gateNor2Name)) {
-                Gate newGate = new Nor2(x, y);
-                arrayListCreatedGates.add(newGate);
+                newComponent = new Nor2(x, y);
             }
             else if (newComponentName.equals(Names.gateNor3Name)) {
-                Gate newGate = new Nor3(x, y);
-                arrayListCreatedGates.add(newGate);
+                newComponent = new Nor3(x, y);
             }
             else if (newComponentName.equals(Names.gateNor4Name)) {
-                Gate newGate = new Nor4(x, y);
-                arrayListCreatedGates.add(newGate);
+                newComponent = new Nor4(x, y);
             }
             else if (newComponentName.equals(Names.gateXnor2Name)) {
-                Gate newGate = new Xnor2(x, y);
-                arrayListCreatedGates.add(newGate);
+                newComponent = new Xnor2(x, y);
             }
             else if (newComponentName.equals(Names.gateXnor3Name)) {
-                Gate newGate = new Xnor3(x, y);
-                arrayListCreatedGates.add(newGate);
+                newComponent = new Xnor3(x, y);
             }
             else if (newComponentName.equals(Names.gateXnor4Name)) {
-                Gate newGate = new Xnor4(x, y);
-                arrayListCreatedGates.add(newGate);
+                newComponent = new Xnor4(x, y);
             }
             else if(newComponentName.equals(Names.switchMonostableName)){
-                SwitchMonostable newSwitch = new SwitchMonostable(x, y);
-                arrayListCreatedSwitches.add(newSwitch);
+                newComponent = new SwitchMonostable(x, y);
             }
             else if(newComponentName.equals(Names.switchBistableName)){
-                SwitchBistatble newSwitch = new SwitchBistatble(x, y);
-                arrayListCreatedSwitches.add(newSwitch);
+                newComponent = new SwitchBistatble(x, y);
             }
             else if(newComponentName.equals(Names.flipFlopD)){
-                FlipFlop newFlipflop = new FlipFlopD(x, y);
-                arrayListCreatedFlipFlops.add(newFlipflop);
+                newComponent = new FlipFlopD(x, y);
             }
             else if(newComponentName.equals(Names.flipFlopT)){
-                FlipFlop newFlipflop = new FlipFlopT(x, y);
-                arrayListCreatedFlipFlops.add(newFlipflop);
+                newComponent = new FlipFlopT(x, y);
             }
             else if(newComponentName.equals(Names.flipFlopJK)){
-                FlipFlop newFlipflop = new FlipFlopJK(x, y);
-                arrayListCreatedFlipFlops.add(newFlipflop);
+                newComponent = new FlipFlopJK(x, y);
+            }
+
+            if(newComponent != null){
+                if(newComponent.getName().contains(Names.gateSearchName)){
+                    arrayListCreatedGates.add((Gate)newComponent);
+                }
+                else if(newComponent.getName().contains(Names.switchSearchName)){
+                    arrayListCreatedSwitches.add((Switch)newComponent);
+                }
+                else if(newComponent.getName().contains(Names.flipFlopSearchName)){
+                    arrayListCreatedFlipFlops.add((FlipFlop)newComponent);
+                }
+                arrayListCreatedComponents.add(newComponent);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -790,6 +771,10 @@ public class MainWindowController {
         waitForComponent2 = false;
         paneWorkspace.getChildren().remove(comboBoxNewLineHook);
 
+        for(Line l : arrayListCreatedLines){
+
+        }
+
         canvas.requestFocus();
         repaint();
     }
@@ -848,6 +833,10 @@ public class MainWindowController {
 
     public ArrayList<FlipFlop> getArrayListCreatedFlipFlops() {
         return arrayListCreatedFlipFlops;
+    }
+
+    public ArrayList<Component> getArrayListCreatedComponents() {
+        return arrayListCreatedComponents;
     }
 
     public ArrayList<TableComponent> getArrayListPossibleComponents() {
