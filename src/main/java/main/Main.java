@@ -4,11 +4,13 @@ import components.ZoomableScrollPane;
 import controllers.MainWindowController;
 import controllers.StartWindowController;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.awt.*;
 import java.io.IOException;
@@ -52,6 +54,12 @@ public class Main extends Application {
         primaryStage.setMinWidth(600);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Symulator układów cyfrowych");
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                System.exit(0);
+            }
+        });
         primaryStage.show();
     }
 

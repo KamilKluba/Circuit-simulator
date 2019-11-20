@@ -786,7 +786,7 @@ public class MainWindowController {
         }
 
         canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));
-        lineBuffer.lifeCycle();
+        //lineBuffer.lifeCycle();
         waitForComponent2 = false;
         paneWorkspace.getChildren().remove(comboBoxNewLineHook);
 

@@ -34,16 +34,34 @@ public class Or2 extends Gate {
 
     public void lifeCycle(){
         while(true){
+            System.out.println("haluwa " + output.get());
             output.set(false);
+
+            for(int i = 0; i < arrayArrayListLines.length; i++){
+                boolean atLeastOneHigh = false;
+                for(Line l : arrayArrayListLines[i]){
+                    if (l.isState()){
+                        atLeastOneHigh = true;
+                    }
+                }
+                for(Line l : arrayArrayListLines[i]){
+                    l.setState(atLeastOneHigh);
+                }
+                arraySignalsInputs[i] = atLeastOneHigh;
+            }
+
             for(boolean b : arraySignalsInputs) {
                 if (b) {
                     output.set(true);
                     break;
                 }
             }
+            for (Line l : arrayListLinesOutput){
+                l.setState(output.get());
+            }
 
             try {
-                Thread.sleep(1);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

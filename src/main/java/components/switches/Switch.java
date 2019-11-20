@@ -30,9 +30,9 @@ public abstract class Switch {
     }
 
     public void sendSignal(){
-//        for(Line l : arrayListlines){
-//            l.setState(state);
-//        }
+        for(Line l : arrayListlines){
+            l.setState(state.get());
+        }
     }
 
     public void select(double x, double y){
@@ -130,6 +130,9 @@ public abstract class Switch {
     public void invertState(){
         boolean bufferValue = state.get();
         state.set(!bufferValue);
+        for(Line l : arrayListlines){
+            l.setState(state.get());
+        }
     }
 
     public String getName() {
