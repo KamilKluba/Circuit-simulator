@@ -57,5 +57,7 @@ public abstract class Component {
     public void setSelectedForDrag(boolean selectedForDrag) {
         this.selectedForDrag = selectedForDrag;
     }
+
+    public boolean isSignalOutput(){return false;}
 }
 

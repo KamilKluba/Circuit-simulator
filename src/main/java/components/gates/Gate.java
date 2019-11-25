@@ -125,10 +125,10 @@ public abstract class Gate extends Component {
                 }
                 for (Line l : al) {
                     if (l != null) {
-                        if (l.getGate1() != null && l.getGate1().equals(this)) {
+                        if (l.getComponent1() != null && l.getComponent1().equals(this)) {
                             l.setX1(pointCenter.getX() + rotatedInputX + nextInputsX * 60 * (double) i / (inputsNumber - 1));
                             l.setY1(pointCenter.getY() + rotatedInputY + nextInputsY * 60 * (double) i / (inputsNumber - 1));
-                        } else if (l.getGate2() != null && l.getGate2().equals(this)) {
+                        } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
                             l.setX2(pointCenter.getX() + rotatedInputX + nextInputsX * 60 * (double) i / (inputsNumber - 1));
                             l.setY2(pointCenter.getY() + rotatedInputY + nextInputsY * 60 * (double) i / (inputsNumber - 1));
                         }
@@ -138,11 +138,11 @@ public abstract class Gate extends Component {
         }
         else{
             for(Line l : arrayArrayListLines[0]){
-                if (l.getGate1() != null && l.getGate1().equals(this)) {
+                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
                     l.setX1(pointCenter.getX() + rotatedInputX * ((rotation + 1) % 2));
                     l.setY1(pointCenter.getY() + rotatedInputY * ((rotation) % 2));
                 }
-                else if(l.getGate2() != null && l.getGate2().equals(this)){
+                else if(l.getComponent2() != null && l.getComponent2().equals(this)){
                     l.setX2(pointCenter.getX() + rotatedInputX * ((rotation + 1) % 2));
                     l.setY2(pointCenter.getY() + rotatedInputY * ((rotation) % 2));
                 }
@@ -151,11 +151,11 @@ public abstract class Gate extends Component {
         pointOutput.setX(pointCenter.getX() + rotatedOutputX);
         pointOutput.setY(pointCenter.getY() + rotatedOutputY);
         for (Line l : arrayListLinesOutput){
-            if (l.getGate1() != null && l.getGate1().equals(this)) {
+            if (l.getComponent1() != null && l.getComponent1().equals(this)) {
                 l.setX1(pointCenter.getX() + rotatedOutputX);
                 l.setY1(pointCenter.getY() + rotatedOutputY);
             }
-            else if(l.getGate2() != null && l.getGate2().equals(this)){
+            else if(l.getComponent2() != null && l.getComponent2().equals(this)){
                 l.setX2(pointCenter.getX() + rotatedOutputX);
                 l.setY2(pointCenter.getY() + rotatedOutputY);
             }
@@ -200,11 +200,11 @@ public abstract class Gate extends Component {
 
     private void changePointCoordinates(Line l, double x, double y, double mousePressX, double mousePressY){
         if(l != null) {
-            if (l.getGate1() != null && l.getGate1().equals(this)) {
+            if (l.getComponent1() != null && l.getComponent1().equals(this)) {
                 l.setX1(l.getX1() + x - mousePressX);
                 l.setY1(l.getY1() + y - mousePressY);
             }
-            else if(l.getGate2() != null && l.getGate2().equals(this)) {
+            else if(l.getComponent2() != null && l.getComponent2().equals(this)) {
                 l.setX2(l.getX2() + x - mousePressX);
                 l.setY2(l.getY2() + y - mousePressY);
             }
@@ -218,6 +218,8 @@ public abstract class Gate extends Component {
     public boolean getOutput(){
         return output.get();
     }
+
+    public boolean isSignalOutput() {return output.get();}
 
     public ArrayList<Line>[] getArrayArrayListLines() {
         return arrayArrayListLines;

@@ -93,11 +93,11 @@ public abstract class Switch extends Component {
         }
 
         for(Line l : arrayListlines){
-            if(l.getSwitch1() != null && l.getSwitch1().equals(this)){
+            if(l.getComponent1() != null && l.getComponent1().equals(this)){
                 l.setX1(pointLineHook.getX());
                 l.setY1(pointLineHook.getY());
             }
-            else if(l.getSwitch2() != null && l.getSwitch2().equals(this)){
+            else if(l.getComponent2() != null && l.getComponent2().equals(this)){
                 l.setX2(pointLineHook.getX());
                 l.setY2(pointLineHook.getY());
             }
@@ -109,11 +109,11 @@ public abstract class Switch extends Component {
         pointCenter.setY(pointCenter.getY() + y - mousePressY);
 
         for(Line l : arrayListlines){
-            if(l.getSwitch1() != null && l.getSwitch1().equals(this)){
+            if(l.getComponent1() != null && l.getComponent1().equals(this)){
                 l.setX1(pointLineHook.getX() + x - mousePressX);
                 l.setY1(pointLineHook.getY() + y - mousePressY);
             }
-            else if(l.getSwitch2() != null && l.getSwitch2().equals(this)){
+            else if(l.getComponent2() != null && l.getComponent2().equals(this)){
                 l.setX2(pointLineHook.getX() + x - mousePressX);
                 l.setY2(pointLineHook.getY() + y - mousePressY);
             }
@@ -150,6 +150,8 @@ public abstract class Switch extends Component {
     public void setPointCenter(Point pointCenter) {
         this.pointCenter = pointCenter;
     }
+
+    public boolean isSignalOutput() {return state.get();}
 
     public boolean isState() {
         return state.get();

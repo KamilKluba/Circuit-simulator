@@ -34,9 +34,6 @@ public class Or2 extends Gate {
 
     public void lifeCycle(){
         while(true){
-            System.out.println("haluwa " + output.get());
-            output.set(false);
-
             for(int i = 0; i < arrayArrayListLines.length; i++){
                 boolean atLeastOneHigh = false;
                 for(Line l : arrayArrayListLines[i]){
@@ -47,14 +44,19 @@ public class Or2 extends Gate {
                 arraySignalsInputs[i] = atLeastOneHigh;
             }
 
+            boolean outputIsToBeHigh = false;
             for(boolean b : arraySignalsInputs) {
                 if (b) {
-                    output.set(true);
+                    outputIsToBeHigh = true;
                     break;
                 }
             }
-            for (Line l : arrayListLinesOutput){
-                l.setState(output.get());
+
+            if(output.get() != outputIsToBeHigh) {
+                output.set(outputIsToBeHigh);
+                for (Line l : arrayListLinesOutput) {
+                    l.setState(output.get());
+                }
             }
 
             try {

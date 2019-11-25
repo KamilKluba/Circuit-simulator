@@ -35,11 +35,11 @@ public class FlipFlopJK extends FlipFlop{
         pointInputK.setY(pointInputK.getY() + y - mousePressY);
 
         for(Line l : arrayListLinesInputK){
-            if(l.getFlipFlop1() != null && l.getFlipFlop1().equals(this)){
+            if(l.getComponent1() != null && l.getComponent1().equals(this)){
                 l.setX1(pointInputK.getX() + x - mousePressX);
                 l.setY1(pointInputK.getY() + y - mousePressY);
             }
-            else if(l.getFlipFlop2() != null && l.getFlipFlop2().equals(this)){
+            else if(l.getComponent2() != null && l.getComponent2().equals(this)){
                 l.setX2(pointInputK.getX() + x - mousePressX);
                 l.setY2(pointInputK.getY() + y - mousePressY);
             }

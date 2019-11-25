@@ -216,7 +216,6 @@ public class MainWindowController {
 
         Iterator<Switch> iteratorSwitches = arrayListCreatedSwitches.iterator();
         if(iteratorSwitches.hasNext()){
-            System.out.println("Halo ");
             Switch s = iteratorSwitches.next();
             if(s.isSelected()){
                 while(s.getArrayListlines().size() > 0){
@@ -255,6 +254,16 @@ public class MainWindowController {
                 arrayListCreatedComponents.remove(ff);
             }
         }
+
+        for(Line l : arrayListCreatedLines){
+            l.getArrayListVisitedLines().clear();
+            l.getArrayListDependentComponents().clear();
+            l.checkForSignals(l.getArrayListDependentComponents(), l.getArrayListVisitedLines());
+        }
+        for(Line l : arrayListCreatedLines){
+            l.lifeCycle();
+        }
+
         repaint();
     }
 
@@ -657,7 +666,7 @@ public class MainWindowController {
         String pointName = p.getName();
 
         if(g != null) {
-            lineBuffer = new Line(p.getX(), p.getY(), x, y, g, null, null, null, null, null,  Color.BLACK);
+            lineBuffer = new Line(p.getX(), p.getY(), x, y, g, null, Color.BLACK);
             if (pointName.contains("Output")) {
                 g.getArrayListLinesOutput().add(lineBuffer);
                 lineBuffer.setInput1IsOutput(true);
@@ -669,13 +678,13 @@ public class MainWindowController {
             }
         }
         else if(s != null){
-            lineBuffer = new Line(p.getX(), p.getY(), x, y, null, null, s, null, null, null,  Color.BLACK);
+            lineBuffer = new Line(p.getX(), p.getY(), x, y, s, null, Color.BLACK);
             s.getArrayListlines().add(lineBuffer);
             lineBuffer.setInput1IsOutput(true);
             s.sendSignal();
         }
         else if(ff != null){
-            lineBuffer = new Line(p.getX(), p.getY(), x, y, null, null, null, null, ff, null, Color.BLACK);
+            lineBuffer = new Line(p.getX(), p.getY(), x, y, ff, null, Color.BLACK);
             if(pointName.equals("Input") || pointName.equals("Input J")){
                 ff.getArrayListLinesInput().add(lineBuffer);
                 lineBuffer.setInput1IsOutput(false);
@@ -721,7 +730,7 @@ public class MainWindowController {
         lineBuffer.setState(lineBuffer.isState());
 
         if(g != null) {
-            lineBuffer.setGate2(g);
+            lineBuffer.setComponent2(g);
             if (pointName.contains("Output")) {
                 g.getArrayListLinesOutput().add(lineBuffer);
                 lineBuffer.setInput2IsOutput(true);
@@ -733,13 +742,13 @@ public class MainWindowController {
             }
         }
         else if(s != null){
-            lineBuffer.setSwitch2(s);
+            lineBuffer.setComponent2(s);
             s.getArrayListlines().add(lineBuffer);
             lineBuffer.setInput2IsOutput(true);
             s.sendSignal();
         }
         else if(ff != null){
-            lineBuffer.setFlipFlop2(ff);
+            lineBuffer.setComponent2(ff);
             if(pointName.equals("Input") || pointName.equals("Input J")){
                 ff.getArrayListLinesInput().add(lineBuffer);
                 lineBuffer.setInput2IsOutput(false);
@@ -772,8 +781,12 @@ public class MainWindowController {
         paneWorkspace.getChildren().remove(comboBoxNewLineHook);
 
         for(Line l : arrayListCreatedLines){
-            l.checkForSignals(l.getArrayListDependentComponents(), l.getArrayListDependentComponentPin(),
-                    l.getArrayListVisitedComponents());
+            l.getArrayListVisitedLines().clear();
+            l.getArrayListDependentComponents().clear();
+            l.checkForSignals(l.getArrayListDependentComponents(), l.getArrayListVisitedLines());
+        }
+        for(Line l : arrayListCreatedLines){
+            l.lifeCycle();
         }
 
         canvas.requestFocus();

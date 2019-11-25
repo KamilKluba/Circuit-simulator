@@ -87,55 +87,55 @@ public abstract class FlipFlop extends Component {
         pointClock.setY(pointClock.getY() + y - mousePressY);
 
         for(Line l : arrayListLinesInput){
-            if(l.getFlipFlop1() != null && l.getFlipFlop1().equals(this)){
+            if(l.getComponent1() != null && l.getComponent1().equals(this)){
                 l.setX1(pointInput.getX() + x - mousePressX);
                 l.setY1(pointInput.getY() + y - mousePressY);
             }
-            else if(l.getFlipFlop2() != null && l.getFlipFlop2().equals(this)){
+            else if(l.getComponent2() != null && l.getComponent2().equals(this)){
                 l.setX2(pointInput.getX() + x - mousePressX);
                 l.setY2(pointInput.getY() + y - mousePressY);
             }
         }
 
         for(Line l : arrayListLinesOutput){
-            if(l.getFlipFlop1() != null && l.getFlipFlop1().equals(this)){
+            if(l.getComponent1() != null && l.getComponent1().equals(this)){
                 l.setX1(pointOutput.getX() + x - mousePressX);
                 l.setY1(pointOutput.getY() + y - mousePressY);
             }
-            else if(l.getFlipFlop2() != null && l.getFlipFlop2().equals(this)){
+            else if(l.getComponent2() != null && l.getComponent2().equals(this)){
                 l.setX2(pointOutput.getX() + x - mousePressX);
                 l.setY2(pointOutput.getY() + y - mousePressY);
             }
         }
 
         for(Line l : arrayListLinesOutputReverted){
-            if(l.getFlipFlop1() != null && l.getFlipFlop1().equals(this)){
+            if(l.getComponent1() != null && l.getComponent1().equals(this)){
                 l.setX1(pointOutputReversed.getX() + x - mousePressX);
                 l.setY1(pointOutputReversed.getY() + y - mousePressY);
             }
-            else if(l.getFlipFlop2() != null && l.getFlipFlop2().equals(this)){
+            else if(l.getComponent2() != null && l.getComponent2().equals(this)){
                 l.setX2(pointOutputReversed.getX() + x - mousePressX);
                 l.setY2(pointOutputReversed.getY() + y - mousePressY);
             }
         }
 
         for(Line l : arrayListLinesClock){
-            if(l.getFlipFlop1() != null && l.getFlipFlop1().equals(this)){
+            if(l.getComponent1() != null && l.getComponent1().equals(this)){
                 l.setX1(pointClock.getX() + x - mousePressX);
                 l.setY1(pointClock.getY() + y - mousePressY);
             }
-            else if(l.getFlipFlop2() != null && l.getFlipFlop2().equals(this)){
+            else if(l.getComponent2() != null && l.getComponent2().equals(this)){
                 l.setX2(pointClock.getX() + x - mousePressX);
                 l.setY2(pointClock.getY() + y - mousePressY);
             }
         }
 
         for(Line l : arrayListLinesReset){
-            if(l.getFlipFlop1() != null && l.getFlipFlop1().equals(this)){
+            if(l.getComponent1() != null && l.getComponent1().equals(this)){
                 l.setX1(pointReset.getX() + x - mousePressX);
                 l.setY1(pointReset.getY() + y - mousePressY);
             }
-            else if(l.getFlipFlop2() != null && l.getFlipFlop2().equals(this)){
+            else if(l.getComponent2() != null && l.getComponent2().equals(this)){
                 l.setX2(pointReset.getX() + x - mousePressX);
                 l.setY2(pointReset.getY() + y - mousePressY);
             }
