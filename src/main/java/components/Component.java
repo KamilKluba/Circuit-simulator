@@ -3,6 +3,8 @@ package components;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 
+import java.util.ArrayList;
+
 public abstract class Component {
     protected boolean selected = false;
     protected boolean selectedForDrag = false;
@@ -21,6 +23,8 @@ public abstract class Component {
         this.pointCenter = new Point("Center", x, y);
     }
 
+    public void searchForSignals(Line line, ArrayList<Line> arrayListDependentComponents,
+                                 ArrayList<String> arrayListDependentComponentsPin, ArrayList<Line> arayListVisitedComponents){}
     public void select(double x, double y){}
     public void select(double x1, double y1, double x2, double y2){}
     public boolean checkIfCouldBeSelected(double x, double y){

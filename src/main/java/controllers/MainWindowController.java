@@ -772,7 +772,8 @@ public class MainWindowController {
         paneWorkspace.getChildren().remove(comboBoxNewLineHook);
 
         for(Line l : arrayListCreatedLines){
-
+            l.checkForSignals(l.getArrayListDependentComponents(), l.getArrayListDependentComponentPin(),
+                    l.getArrayListVisitedComponents());
         }
 
         canvas.requestFocus();

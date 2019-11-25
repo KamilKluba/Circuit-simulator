@@ -33,6 +33,9 @@ public class Line {
     private FlipFlop flipFlop2;
     private Color color;
     private Color selectionColor = new Color(0.459, 0, 0, 1);
+    private ArrayList<Component> arrayListDependentComponents = new ArrayList<>();
+    private ArrayList<String> arrayListDependentComponentPin = new ArrayList<>();
+    private ArrayList<Component> arrayListVisitedComponents = new ArrayList<>();
 
     public Line(double x1, double y1, double x2, double y2, Gate gate1, Gate gate2, Switch switch1, Switch switch2,
                 FlipFlop flipFlop1, FlipFlop flipFlop2, Color color){
@@ -47,6 +50,48 @@ public class Line {
         this.flipFlop1 = flipFlop1;
         this.flipFlop2 = flipFlop2;
         this.color = color;
+    }
+
+    public void checkForSignals(ArrayList<Component> arrayListDependentComponents, ArrayList<String> arrayListDependentComponentPin, ArrayList<Component> arrayListVisitedComponents){
+        if(gate1 != null && !arrayListVisitedComponents.contains(gate1)){ //2
+            checkForSignalsGate(gate1, arrayListDependentComponents, arrayListDependentComponentPin, arrayListVisitedComponents);
+        }
+        else if(switch1 != null && !arrayListVisitedComponents.contains(switch1)){ //2
+
+        }
+        else if(flipFlop1 != null && !arrayListVisitedComponents.contains(flipFlop1)){ //2
+
+        }
+
+        if(gate2 != null && !arrayListVisitedComponents.contains(gate2)){ //2
+            checkForSignalsGate(gate2, arrayListDependentComponents, arrayListDependentComponentPin, arrayListVisitedComponents);
+        }
+        else if(switch2 != null && !arrayListVisitedComponents.contains(switch2)){ //2
+
+        }
+        else if(flipFlop2 != null && !arrayListVisitedComponents.contains(flipFlop2)){ //2
+
+        }
+    }
+
+    public void checkForSignalsGate(Gate gate, ArrayList<Component> arrayListDependentComponents, ArrayList<String> arrayListDependentComponentPin, ArrayList<Component> arrayListVisitedComponents){
+        arrayListVisitedComponents.add(gate);
+        if(gate.getArrayListLinesOutput().contains(this)){
+            arrayListDependentComponents.add(gate);
+            arrayListDependentComponentPin.add("Output");
+            for(Line l : gate.getArrayListLinesOutput()){ //3
+                l.checkForSignals(arrayListDependentComponents, arrayListDependentComponentPin, arrayListVisitedComponents);
+            }
+        }
+        else {
+            for (int i = 0; i < gate.getArrayArrayListLines().length; i++) {
+                if (gate.getArrayArrayListLines()[i].contains(this)) {
+                    for (Line l : gate.getArrayArrayListLines()[i]) { //3
+                        l.checkForSignals(arrayListDependentComponents, arrayListDependentComponentPin, arrayListVisitedComponents);
+                    }
+                }
+            }
+        }
     }
 
     public void lifeCycle(){
@@ -418,8 +463,15 @@ public class Line {
         this.color = color;
     }
 
-    //this method is implemented only to show line in tableview
-    public int getArrayListInputSize(){
-        return 2;
+    public ArrayList<Component> getArrayListDependentComponents() {
+        return arrayListDependentComponents;
+    }
+
+    public ArrayList<Component> getArrayListVisitedComponents() {
+        return arrayListVisitedComponents;
+    }
+
+    public ArrayList<String> getArrayListDependentComponentPin() {
+        return arrayListDependentComponentPin;
     }
 }
