@@ -49,6 +49,8 @@ import javafx.scene.paint.Color;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
 public class MainWindowController {
@@ -194,80 +196,91 @@ public class MainWindowController {
 
     public void actionDebug(){
         for(Line l : arrayListCreatedLines){
-            System.out.println("Line id:" + l.getId() + ", depedentComponentSize:" + l.getArrayListDependentComponents().size() +
-                    ", visitedLinesSize:" + l.getArrayListVisitedLines().size());
-            for(Component c : l.getArrayListDependentComponents()){
-                System.out.println("   " + c.getId() + " " + c.getName());
+            System.out.println("Line id:" + l.getId() + l.getComponent1() + " " + l.getComponent2());
+        }
+        for(Switch sw : arrayListCreatedSwitches){
+            System.out.println(sw.getId());
+            for(Line l : sw.getArrayListlines()){
+                System.out.print(l + ", ");
             }
+            System.out.println("");
         }
     }
 
     public void actionDelete(){
-        Iterator<Line> iteratorLines = arrayListCreatedLines.iterator();
-        if(iteratorLines.hasNext()){
-            Line l = iteratorLines.next();
-            if(l.isSelected()){
-                l.delete(arrayListCreatedLines);
-            }
-        }
+        boolean deletedSomething = false;
+        do {
+            deletedSomething = false;
 
-        Iterator<Gate> iteratorGates = arrayListCreatedGates.iterator();
-        if(iteratorGates.hasNext()){
-            Gate g = iteratorGates.next();
-            if(g.isSelected()){
-                while(g.getArrayListLinesOutput().size() > 0){
-                    g.getArrayListLinesOutput().get(0).delete(arrayListCreatedLines);
+            Iterator<Line> iteratorLines = arrayListCreatedLines.iterator();
+            if (iteratorLines.hasNext()) {
+                Line l = iteratorLines.next();
+                if (l.isSelected()) {
+                    l.delete(arrayListCreatedLines);
+                    deletedSomething = true;
                 }
-                for(ArrayList<Line> al : g.getArrayArrayListLines()){
-                    while(al.size() > 0){
-                        al.get(0).delete(arrayListCreatedLines);
+            }
+
+            Iterator<Gate> iteratorGates = arrayListCreatedGates.iterator();
+            if (iteratorGates.hasNext()) {
+                Gate g = iteratorGates.next();
+                if (g.isSelected()) {
+                    while (g.getArrayListLinesOutput().size() > 0) {
+                        g.getArrayListLinesOutput().get(0).delete(arrayListCreatedLines);
                     }
-                }
-                arrayListCreatedGates.remove(g);
-                arrayListCreatedComponents.remove(g);
-            }
-        }
-
-        Iterator<Switch> iteratorSwitches = arrayListCreatedSwitches.iterator();
-        if(iteratorSwitches.hasNext()){
-            Switch s = iteratorSwitches.next();
-            if(s.isSelected()){
-                while(s.getArrayListlines().size() > 0){
-                    s.getArrayListlines().get(0).delete(arrayListCreatedLines);
-                }
-                arrayListCreatedSwitches.remove(s);
-                arrayListCreatedComponents.remove(s);
-            }
-        }
-
-        Iterator<FlipFlop> iteratorFlipFlops = arrayListCreatedFlipFlops.iterator();
-        if(iteratorFlipFlops.hasNext()){
-            FlipFlop ff = iteratorFlipFlops.next();
-            if(ff.isSelected()){
-                while(ff.getArrayListLinesInput().size() > 0){
-                    ff.getArrayListLinesInput().get(0).delete(arrayListCreatedLines);
-                }
-                if(ff.getName().equals(Names.flipFlopJK)) {
-                    while (((FlipFlopJK)ff).getArrayListLinesInputK().size() > 0) {
-                        ((FlipFlopJK)ff).getArrayListLinesInputK().get(0).delete(arrayListCreatedLines);
+                    for (ArrayList<Line> al : g.getArrayArrayListLines()) {
+                        while (al.size() > 0) {
+                            al.get(0).delete(arrayListCreatedLines);
+                        }
                     }
+                    arrayListCreatedGates.remove(g);
+                    arrayListCreatedComponents.remove(g);
+                    deletedSomething = true;
                 }
-                while(ff.getArrayListLinesOutput().size() > 0){
-                    ff.getArrayListLinesOutput().get(0).delete(arrayListCreatedLines);
-                }
-                while(ff.getArrayListLinesOutputReverted().size() > 0){
-                    ff.getArrayListLinesOutputReverted().get(0).delete(arrayListCreatedLines);
-                }
-                while(ff.getArrayListLinesClock().size() > 0){
-                    ff.getArrayListLinesClock().get(0).delete(arrayListCreatedLines);
-                }
-                while(ff.getArrayListLinesReset().size() > 0){
-                    ff.getArrayListLinesReset().get(0).delete(arrayListCreatedLines);
-                }
-                arrayListCreatedFlipFlops.remove(ff);
-                arrayListCreatedComponents.remove(ff);
             }
-        }
+
+            Iterator<Switch> iteratorSwitches = arrayListCreatedSwitches.iterator();
+            if (iteratorSwitches.hasNext()) {
+                Switch s = iteratorSwitches.next();
+                if (s.isSelected()) {
+                    while (s.getArrayListlines().size() > 0) {
+                        s.getArrayListlines().get(0).delete(arrayListCreatedLines);
+                    }
+                    arrayListCreatedSwitches.remove(s);
+                    arrayListCreatedComponents.remove(s);
+                    deletedSomething = true;
+                }
+            }
+
+            Iterator<FlipFlop> iteratorFlipFlops = arrayListCreatedFlipFlops.iterator();
+            if (iteratorFlipFlops.hasNext()) {
+                FlipFlop ff = iteratorFlipFlops.next();
+                if (ff.isSelected()) {
+                    while (ff.getArrayListLinesInput().size() > 0) {
+                        ff.getArrayListLinesInput().get(0).delete(arrayListCreatedLines);
+                    }
+                    if (ff.getName().equals(Names.flipFlopJK)) {
+                        while (((FlipFlopJK) ff).getArrayListLinesInputK().size() > 0) {
+                            ((FlipFlopJK) ff).getArrayListLinesInputK().get(0).delete(arrayListCreatedLines);
+                        }
+                    }
+                    while (ff.getArrayListLinesOutput().size() > 0) {
+                        ff.getArrayListLinesOutput().get(0).delete(arrayListCreatedLines);
+                    }
+                    while (ff.getArrayListLinesOutputReverted().size() > 0) {
+                        ff.getArrayListLinesOutputReverted().get(0).delete(arrayListCreatedLines);
+                    }
+                    while (ff.getArrayListLinesClock().size() > 0) {
+                        ff.getArrayListLinesClock().get(0).delete(arrayListCreatedLines);
+                    }
+                    while (ff.getArrayListLinesReset().size() > 0) {
+                        ff.getArrayListLinesReset().get(0).delete(arrayListCreatedLines);
+                    }
+                    arrayListCreatedFlipFlops.remove(ff);
+                    arrayListCreatedComponents.remove(ff);
+                }
+            }
+        } while(deletedSomething);
 
         for(Line l : arrayListCreatedLines){
             l.getArrayListVisitedLines().clear();
@@ -746,9 +759,8 @@ public class MainWindowController {
         lineBuffer.setY2(comboBoxNewLineHook.getSelectionModel().getSelectedItem().getY());
         lineCounter++;
         lineBuffer.setId(lineCounter);
-        arrayListCreatedLines.add(lineBuffer);
         lineBuffer.setState(lineBuffer.isState());
-
+        arrayListCreatedLines.add(lineBuffer);
 
         if(g != null) {
             lineBuffer.setComponent2(g);
@@ -795,6 +807,7 @@ public class MainWindowController {
             }
         }
 
+        lineBuffer = null;
         canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));
         waitForComponent2 = false;
         paneWorkspace.getChildren().remove(comboBoxNewLineHook);

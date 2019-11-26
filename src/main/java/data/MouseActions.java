@@ -408,7 +408,7 @@ public class MouseActions {
         mouseDragged = Math.abs(pointMousePressed.getX() - x) > Sizes.minimalXDragToSelect || Math.abs(pointMousePressed.getY() - y) > Sizes.minimalYDragToSelect;
 
         for(Component c : arrayListCreatedComponents){
-            c.setSelectedForDrag(false);            
+            c.setSelectedForDrag(false);
             if(c.getName().equals(Names.switchMonostableName)){
                 ((Switch)c).setState(false);
             }
