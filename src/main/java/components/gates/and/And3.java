@@ -10,7 +10,7 @@ import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
 
-public class And3 extends Gate {
+public class And3 extends And {
     public And3(double x, double y) {
         super(x, y);
 
@@ -29,20 +29,8 @@ public class And3 extends Gate {
         imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/and/and3_gate_off.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
         imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/and/and3_gate_on.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
         imageViewSelected = new ImageView(new Image(getClass().getResource("/graphics/and/and3_gate_selected.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
-    }
 
-    @Override
-    public void computeSignal(){
-        output.set(true);
-        for(boolean b : arraySignalsInputs) {
-            if (!b){
-                output.set(false);
-                break;
-            }
-        }
-        for (Line l : arrayListLinesOutput){
-            l.setState(output.get());
-        }
+        executorService.execute(() -> lifeCycle());
     }
 
     public ArrayList[] getArrayArrayListLines() {

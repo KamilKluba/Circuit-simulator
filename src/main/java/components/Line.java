@@ -53,7 +53,6 @@ public class Line {
                 checkForSignalsFlipFlop((FlipFlop) component1, arrayListDependentComponents, arrayListVisitedLines);
             }
         }
-        System.out.println(component2);
         if (!arrayListVisitedLines.contains(this)) { //2
             arrayListVisitedLines.add(this);
             if (component2.getName().contains(Names.gateSearchName)) {
@@ -116,6 +115,11 @@ public class Line {
         }
         if(flipFlop.getArrayListLinesInput().contains(this)){
             for(Line l : flipFlop.getArrayListLinesInput()){
+                l.checkForSignals(arrayListDependentComponents, arrayListVisitedLines);
+            }
+        }
+        if(flipFlop.getName().equals(Names.flipFlopJK) && ((FlipFlopJK) flipFlop).getArrayListLinesInputK().contains(this)){
+            for(Line l : ((FlipFlopJK) flipFlop).getArrayListLinesInputK()){
                 l.checkForSignals(arrayListDependentComponents, arrayListVisitedLines);
             }
         }

@@ -10,7 +10,7 @@ import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
 
-public class Nor4 extends Gate {
+public class Nor4 extends Nor {
 
     public Nor4(double x, double y) {
         super(x, y);
@@ -28,26 +28,13 @@ public class Nor4 extends Gate {
         arrayPointsInputs[3] = new Point(Names.pointInputName + "4", x - 93, y + 30);
         arraySignalsInputs = new boolean[4];
         name = Names.gateOr4Name;
+        output.set(true);
 
         imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/nor/nor4_gate_off.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
         imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/nor/nor4_gate_on.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
         imageViewSelected = new ImageView(new Image(getClass().getResource("/graphics/nor/nor4_gate_selected.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
-    }
 
-    @Override
-    public void computeSignal(){
-        output.set(false);
-        for(boolean b : arraySignalsInputs) {
-            if (b){
-                output.set(true);
-                break;
-            }
-        }
-        boolean bufferValue = output.get();
-        output.set(!bufferValue);
-        for (Line l : arrayListLinesOutput){
-            l.setState(output.get());
-        }
+        executorService.execute(() -> lifeCycle());
     }
 
     public ArrayList[] getArrayArrayListLines() {

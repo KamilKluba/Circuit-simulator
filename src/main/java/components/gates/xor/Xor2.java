@@ -10,7 +10,7 @@ import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
 
-public class Xor2 extends Gate {
+public class Xor2 extends Xor {
 
     public Xor2(double x, double y) {
         super(x, y);
@@ -28,26 +28,8 @@ public class Xor2 extends Gate {
         imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/xor/xor2_gate_off.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
         imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/xor/xor2_gate_on.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
         imageViewSelected = new ImageView(new Image(getClass().getResource("/graphics/xor/xor2_gate_selected.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
-    }
 
-    @Override
-    public void computeSignal(){
-        int numberOfHighSignals = 0;
-        for(boolean b : arraySignalsInputs) {
-            if (b){
-                numberOfHighSignals++;
-            }
-        }
-        if(numberOfHighSignals % 2 == 1){
-            output.set(true);
-        }
-        else{
-            output.set(false);
-        }
-
-        for (Line l : arrayListLinesOutput){
-            l.setState(output.get());
-        }
+        executorService.execute(() -> lifeCycle());
     }
 
     public ArrayList[] getArrayArrayListLines() {

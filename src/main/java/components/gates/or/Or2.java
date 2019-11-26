@@ -10,7 +10,7 @@ import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
 
-public class Or2 extends Gate {
+public class Or2 extends Or {
 
     public Or2(double x, double y) {
         super(x, y);
@@ -30,55 +30,6 @@ public class Or2 extends Gate {
         imageViewSelected = new ImageView(new Image(getClass().getResource("/graphics/or/or2_gate_selected.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
 
         executorService.execute(() -> lifeCycle());
-    }
-
-    public void lifeCycle(){
-        while(true){
-            for(int i = 0; i < arrayArrayListLines.length; i++){
-                boolean atLeastOneHigh = false;
-                for(Line l : arrayArrayListLines[i]){
-                    if (l.isState()){
-                        atLeastOneHigh = true;
-                    }
-                }
-                arraySignalsInputs[i] = atLeastOneHigh;
-            }
-
-            boolean outputIsToBeHigh = false;
-            for(boolean b : arraySignalsInputs) {
-                if (b) {
-                    outputIsToBeHigh = true;
-                    break;
-                }
-            }
-
-            if(output.get() != outputIsToBeHigh) {
-                output.set(outputIsToBeHigh);
-                for (Line l : arrayListLinesOutput) {
-                    l.setState(output.get());
-                }
-            }
-
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
-    public void computeSignal(){
-//        output.set(false);
-//        for(boolean b : arraySignalsInputs) {
-//            if (b){
-//                output.set(true);
-//                break;
-//            }
-//        }
-//        for (Line l : arrayListLinesOutput){
-//            l.setState(output.get());
-//        }
     }
 
     public ArrayList[] getArrayArrayListLines() {

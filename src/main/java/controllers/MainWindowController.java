@@ -258,6 +258,8 @@ public class MainWindowController {
         for(Line l : arrayListCreatedLines){
             l.getArrayListVisitedLines().clear();
             l.getArrayListDependentComponents().clear();
+        }
+        for(Line l : arrayListCreatedLines){
             l.checkForSignals(l.getArrayListDependentComponents(), l.getArrayListVisitedLines());
         }
         for(Line l : arrayListCreatedLines){
@@ -776,13 +778,14 @@ public class MainWindowController {
         }
 
         canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));
-        //lineBuffer.lifeCycle();
         waitForComponent2 = false;
         paneWorkspace.getChildren().remove(comboBoxNewLineHook);
 
-        for(Line l : arrayListCreatedLines){
+        for(Line l : arrayListCreatedLines) {
             l.getArrayListVisitedLines().clear();
             l.getArrayListDependentComponents().clear();
+        }
+        for(Line l : arrayListCreatedLines){
             l.checkForSignals(l.getArrayListDependentComponents(), l.getArrayListVisitedLines());
         }
         for(Line l : arrayListCreatedLines){
