@@ -6,6 +6,7 @@ import javafx.scene.image.ImageView;
 import java.util.ArrayList;
 
 public abstract class Component {
+    protected int id;
     protected boolean selected = false;
     protected boolean selectedForDrag = false;
     protected String name;
@@ -37,6 +38,14 @@ public abstract class Component {
     }
     public void rotate(){}
     public void move(double x, double y, double mousePressX, double mousePressY){};
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

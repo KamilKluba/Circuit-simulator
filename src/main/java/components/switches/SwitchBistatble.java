@@ -27,6 +27,5 @@ public class SwitchBistatble extends Switch{
     public void setState(boolean state){
         this.state.set(state);
 
-        sendSignal();
     }
 }

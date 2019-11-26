@@ -25,12 +25,6 @@ public abstract class Switch extends Component {
         this.pointLineHook = new Point("Output", x, y - 35);
     }
 
-    public void sendSignal(){
-        for(Line l : arrayListlines){
-            l.setState(state.get());
-        }
-    }
-
     public void select(double x, double y){
         selected = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseSwitchXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseSwitchYShift);
     }

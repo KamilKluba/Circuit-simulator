@@ -256,7 +256,7 @@ public class MouseActions {
             if(Accesses.logMouseActions) {
                 System.out.println("Stopped creating line");
             }
-            mwc.setLineBuffer(null);
+            mwc.deleteLineBuffer();
             mwc.setWaitForComponent2(false);
             mwc.setCoveredError(false);
         }

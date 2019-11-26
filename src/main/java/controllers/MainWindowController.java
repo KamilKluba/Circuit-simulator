@@ -67,6 +67,10 @@ public class MainWindowController {
     private boolean waitForPlaceComponent = false;
     private ComboBox<Point> comboBoxNewLineHook;
     private MouseActions mouseActions;
+    private int lineCounter = 0;
+    private int gateCounter = 0;
+    private int switchCounter = 0;
+    private int flipFlopCounter = 0;
 
     private ZoomableScrollPane zsp;
     @FXML private Canvas canvas;
@@ -188,6 +192,16 @@ public class MainWindowController {
 
     }
 
+    public void actionDebug(){
+        for(Line l : arrayListCreatedLines){
+            System.out.println("Line id:" + l.getId() + ", depedentComponentSize:" + l.getArrayListDependentComponents().size() +
+                    ", visitedLinesSize:" + l.getArrayListVisitedLines().size());
+            for(Component c : l.getArrayListDependentComponents()){
+                System.out.println("   " + c.getId() + " " + c.getName());
+            }
+        }
+    }
+
     public void actionDelete(){
         Iterator<Line> iteratorLines = arrayListCreatedLines.iterator();
         if(iteratorLines.hasNext()){
@@ -283,7 +297,7 @@ public class MainWindowController {
         }
         coveredError = false;
         waitForComponent2 = false;
-        lineBuffer = null;
+        deleteLineBuffer();
         paneWorkspace.getChildren().remove(comboBoxNewLineHook);
         comboBoxNewLineHook = null;
         canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));
@@ -460,8 +474,8 @@ public class MainWindowController {
             coveredError = false;
             repaint();
             tableViewComponents.getSelectionModel().clearSelection();
-            lineBuffer = null;
             waitForComponent2 = false;
+            deleteLineBuffer();
         }
         else if(code == KeyCode.CONTROL){
             scrollPaneWorkspace.setPannable(true);
@@ -593,12 +607,18 @@ public class MainWindowController {
             if(newComponent != null){
                 if(newComponent.getName().contains(Names.gateSearchName)){
                     arrayListCreatedGates.add((Gate)newComponent);
+                    gateCounter++;
+                    newComponent.setId(gateCounter);
                 }
                 else if(newComponent.getName().contains(Names.switchSearchName)){
                     arrayListCreatedSwitches.add((Switch)newComponent);
+                    switchCounter++;
+                    newComponent.setId(switchCounter);
                 }
                 else if(newComponent.getName().contains(Names.flipFlopSearchName)){
                     arrayListCreatedFlipFlops.add((FlipFlop)newComponent);
+                    flipFlopCounter++;
+                    newComponent.setId(flipFlopCounter);
                 }
                 arrayListCreatedComponents.add(newComponent);
             }
@@ -654,7 +674,6 @@ public class MainWindowController {
         final Gate finalG = g;
         final Switch finalS = s;
         final FlipFlop finalFF = ff;
-
         if(!waitForComponent2) {
             comboBoxNewLineHook.setOnAction(e -> chooseNewLineHook1(x, y, finalG, finalS, finalFF, comboBoxNewLineHook));
         }
@@ -683,7 +702,6 @@ public class MainWindowController {
             lineBuffer = new Line(p.getX(), p.getY(), x, y, s, null, Color.BLACK);
             s.getArrayListlines().add(lineBuffer);
             lineBuffer.setInput1IsOutput(true);
-            s.sendSignal();
         }
         else if(ff != null){
             lineBuffer = new Line(p.getX(), p.getY(), x, y, ff, null, Color.BLACK);
@@ -712,7 +730,6 @@ public class MainWindowController {
                 lineBuffer.setInput1IsOutput(false);
             }
         }
-
         canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));
         waitForComponent2 = true;
         paneWorkspace.getChildren().remove(comboBoxNewLineHook);
@@ -727,9 +744,11 @@ public class MainWindowController {
 
         lineBuffer.setX2(comboBoxNewLineHook.getSelectionModel().getSelectedItem().getX());
         lineBuffer.setY2(comboBoxNewLineHook.getSelectionModel().getSelectedItem().getY());
-
+        lineCounter++;
+        lineBuffer.setId(lineCounter);
         arrayListCreatedLines.add(lineBuffer);
         lineBuffer.setState(lineBuffer.isState());
+
 
         if(g != null) {
             lineBuffer.setComponent2(g);
@@ -747,7 +766,6 @@ public class MainWindowController {
             lineBuffer.setComponent2(s);
             s.getArrayListlines().add(lineBuffer);
             lineBuffer.setInput2IsOutput(true);
-            s.sendSignal();
         }
         else if(ff != null){
             lineBuffer.setComponent2(ff);
@@ -794,6 +812,40 @@ public class MainWindowController {
 
         canvas.requestFocus();
         repaint();
+    }
+
+    public void deleteLineBuffer(){
+        if(lineBuffer != null) {
+            Component component = lineBuffer.getComponent1();
+            String name = lineBuffer.getComponent1().getName();
+
+            if (name.contains(Names.gateSearchName)) {
+                Gate gate = (Gate) component;
+                if (gate.getArrayListLinesOutput().contains(lineBuffer)) {
+                    gate.getArrayListLinesOutput().remove(lineBuffer);
+                } else {
+                    for (ArrayList<Line> al : gate.getArrayArrayListLines()) {
+                        if (al.contains(lineBuffer)) {
+                            al.remove(lineBuffer);
+                            return;
+                        }
+                    }
+                }
+            } else if (name.contains(Names.switchSearchName)) {
+                Switch sw = (Switch) component;
+                sw.getArrayListlines().remove(lineBuffer);
+            } else if (name.contains(Names.flipFlopSearchName)) {
+                FlipFlop flipFlop = (FlipFlop) component;
+                flipFlop.getArrayListLinesOutput().remove(lineBuffer);
+                flipFlop.getArrayListLinesOutputReverted().remove(lineBuffer);
+                flipFlop.getArrayListLinesReset().remove(lineBuffer);
+                flipFlop.getArrayListLinesClock().remove(lineBuffer);
+                flipFlop.getArrayListLinesInput().remove(lineBuffer);
+                if (flipFlop.getName().equals(Names.flipFlopJK)) {
+                    ((FlipFlopJK) flipFlop).getArrayListLinesInputK().remove(lineBuffer);
+                }
+            }
+        }
     }
 
     public boolean isCoveredError() {

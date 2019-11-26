@@ -15,6 +15,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Line {
+    private int id;
     private double x1;
     private double y1;
     private boolean input1IsOutput;
@@ -43,6 +44,7 @@ public class Line {
     }
 
     public void checkForSignals(ArrayList<Component> arrayListDependentComponents, ArrayList<Line> arrayListVisitedLines) {
+        System.out.println("Line: " + id);
         if (!arrayListVisitedLines.contains(this)) { //2
             arrayListVisitedLines.add(this);
             if (component1.getName().contains(Names.gateSearchName)) {
@@ -52,9 +54,6 @@ public class Line {
             } else if (component1.getName().contains(Names.flipFlopSearchName)) {
                 checkForSignalsFlipFlop((FlipFlop) component1, arrayListDependentComponents, arrayListVisitedLines);
             }
-        }
-        if (!arrayListVisitedLines.contains(this)) { //2
-            arrayListVisitedLines.add(this);
             if (component2.getName().contains(Names.gateSearchName)) {
                 checkForSignalsGate((Gate) component2, arrayListDependentComponents, arrayListVisitedLines);
             } else if (component2.getName().contains(Names.switchSearchName)) {
@@ -67,7 +66,9 @@ public class Line {
 
     public void checkForSignalsGate(Gate gate, ArrayList<Component> arrayListDependentComponents, ArrayList<Line> arrayListVisitedLines) {
         if (gate.getArrayListLinesOutput().contains(this)) {
-            arrayListDependentComponents.add(gate);
+            if(!arrayListDependentComponents.contains(gate)) {
+                arrayListDependentComponents.add(gate);
+            }
             for (Line l : gate.getArrayListLinesOutput()) { //3
                 l.checkForSignals(arrayListDependentComponents, arrayListVisitedLines);
             }
@@ -84,7 +85,9 @@ public class Line {
     }
 
     public void checkForSignalsSwitch(Switch sw, ArrayList<Component> arrayListDependentComponents, ArrayList<Line> arrayListVisitedLines) {
-        arrayListDependentComponents.add(sw);
+        if(!arrayListDependentComponents.contains(sw)) {
+            arrayListDependentComponents.add(sw);
+        }
         for(Line l : sw.getArrayListlines()){
             l.checkForSignals(arrayListDependentComponents, arrayListVisitedLines);
         }
@@ -92,13 +95,17 @@ public class Line {
 
     public void checkForSignalsFlipFlop(FlipFlop flipFlop, ArrayList<Component> arrayListDependentComponents, ArrayList<Line> arrayListVisitedLines) {
         if(flipFlop.getArrayListLinesOutput().contains(this)){
-            arrayListDependentComponents.add(flipFlop);
+            if(!arrayListDependentComponents.contains(flipFlop)) {
+                arrayListDependentComponents.add(flipFlop);
+            }
             for(Line l : flipFlop.getArrayListLinesOutput()){
                 l.checkForSignals(arrayListDependentComponents, arrayListVisitedLines);
             }
         }
         if(flipFlop.getArrayListLinesOutputReverted().contains(this)){
-            arrayListDependentComponents.add(flipFlop);
+            if(!arrayListDependentComponents.contains(flipFlop)) {
+                arrayListDependentComponents.add(flipFlop);
+            }
             for(Line l : flipFlop.getArrayListLinesOutputReverted()){
                 l.checkForSignals(arrayListDependentComponents, arrayListVisitedLines);
             }
@@ -133,6 +140,7 @@ public class Line {
                 for(Component c : arrayListDependentComponents){
                     if(c.isSignalOutput()){
                         dependentComponentsState = true;
+                        break;
                     }
                 }
 
@@ -150,7 +158,7 @@ public class Line {
                 }
 
                 try {
-                    Thread.sleep(1);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -352,6 +360,14 @@ public class Line {
             flipFlop.getArrayListLinesClock().remove(this);
             flipFlop.getArrayListLinesReset().remove(this);
         }
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public boolean isState() {
