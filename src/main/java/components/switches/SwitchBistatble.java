@@ -3,6 +3,7 @@ package components.switches;
 import data.Names;
 import data.Sizes;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -22,6 +23,24 @@ public class SwitchBistatble extends Switch{
         imageViewSelectedOn = new ImageView(new Image(getClass().getResource("/graphics/switches/switch_selected.png").toExternalForm(), Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false));
         imageViewSelectedOn.setRotate(180);
         imageViewSelectedOn.setImage(imageViewSelectedOn.snapshot(snapshotParameters, null));
+    }
+
+    public void draw(GraphicsContext graphicsContext){
+        if(selected){
+            if(state.get()){
+                graphicsContext.drawImage(imageViewSelectedOn.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
+            }
+            else{
+                graphicsContext.drawImage(imageViewSelectedOff.getImage(),pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
+            }
+        }
+        else {
+            if (state.get()) {
+                graphicsContext.drawImage(imageViewOn.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
+            } else {
+                graphicsContext.drawImage(imageViewOff.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
+            }
+        }
     }
 
     public void setState(boolean state){

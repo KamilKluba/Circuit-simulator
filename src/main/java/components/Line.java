@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class Line {
+public class Line extends Component{
     private int id;
     private double x1;
     private double y1;
@@ -24,7 +24,6 @@ public class Line {
     private boolean input2IsOutput;
     private AtomicBoolean state = new AtomicBoolean(false);
     private boolean lastState = false;
-    private boolean selected = false;
     private Component component1;
     private Component component2;
     private Color color;
@@ -41,10 +40,10 @@ public class Line {
         this.component1 = component1;
         this.component2 = component2;
         this.color = color;
+        this.name = Names.lineName;
     }
 
     public void checkForSignals(ArrayList<Component> arrayListDependentComponents, ArrayList<Line> arrayListVisitedLines) {
-        System.out.println("Line: " + id);
         if (!arrayListVisitedLines.contains(this)) { //2
             arrayListVisitedLines.add(this);
             if (component1.getName().contains(Names.gateSearchName)) {
@@ -338,7 +337,6 @@ public class Line {
     }
 
     private void deleteComponent(Component component){
-        System.out.println(component.getName());
         if(component.getName().contains(Names.gateSearchName)){
             Gate gate = (Gate)component;
             gate.getArrayListLinesOutput().remove(this);

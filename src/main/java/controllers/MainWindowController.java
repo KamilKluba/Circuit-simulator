@@ -208,79 +208,72 @@ public class MainWindowController {
     }
 
     public void actionDelete(){
-        boolean deletedSomething = false;
-        do {
-            deletedSomething = false;
-
-            Iterator<Line> iteratorLines = arrayListCreatedLines.iterator();
-            if (iteratorLines.hasNext()) {
-                Line l = iteratorLines.next();
-                if (l.isSelected()) {
-                    l.delete(arrayListCreatedLines);
-                    deletedSomething = true;
-                }
+        ArrayList<Component> arrayListComponentsToDelete = new ArrayList<>();
+        for (Line l : arrayListCreatedLines) {
+            if (l.isSelected()) {
+                arrayListComponentsToDelete.add(l);
             }
+        }
 
-            Iterator<Gate> iteratorGates = arrayListCreatedGates.iterator();
-            if (iteratorGates.hasNext()) {
-                Gate g = iteratorGates.next();
-                if (g.isSelected()) {
-                    while (g.getArrayListLinesOutput().size() > 0) {
-                        g.getArrayListLinesOutput().get(0).delete(arrayListCreatedLines);
-                    }
-                    for (ArrayList<Line> al : g.getArrayArrayListLines()) {
-                        while (al.size() > 0) {
-                            al.get(0).delete(arrayListCreatedLines);
-                        }
-                    }
-                    arrayListCreatedGates.remove(g);
-                    arrayListCreatedComponents.remove(g);
-                    deletedSomething = true;
+        for (Gate g : arrayListCreatedGates) {
+            if (g.isSelected()) {
+                while (g.getArrayListLinesOutput().size() > 0) {
+                    g.getArrayListLinesOutput().get(0).delete(arrayListCreatedLines);
                 }
+                for (ArrayList<Line> al : g.getArrayArrayListLines()) {
+                    while (al.size() > 0) {
+                        al.get(0).delete(arrayListCreatedLines);
+                    }
+                }
+                arrayListComponentsToDelete.add(g);
             }
+        }
 
-            Iterator<Switch> iteratorSwitches = arrayListCreatedSwitches.iterator();
-            if (iteratorSwitches.hasNext()) {
-                Switch s = iteratorSwitches.next();
-                if (s.isSelected()) {
-                    while (s.getArrayListlines().size() > 0) {
-                        s.getArrayListlines().get(0).delete(arrayListCreatedLines);
-                    }
-                    arrayListCreatedSwitches.remove(s);
-                    arrayListCreatedComponents.remove(s);
-                    deletedSomething = true;
+        for (Switch s : arrayListCreatedSwitches) {
+            if (s.isSelected()) {
+                while (s.getArrayListlines().size() > 0) {
+                    s.getArrayListlines().get(0).delete(arrayListCreatedLines);
                 }
+                arrayListComponentsToDelete.add(s);
             }
+        }
 
-            Iterator<FlipFlop> iteratorFlipFlops = arrayListCreatedFlipFlops.iterator();
-            if (iteratorFlipFlops.hasNext()) {
-                FlipFlop ff = iteratorFlipFlops.next();
-                if (ff.isSelected()) {
-                    while (ff.getArrayListLinesInput().size() > 0) {
-                        ff.getArrayListLinesInput().get(0).delete(arrayListCreatedLines);
-                    }
-                    if (ff.getName().equals(Names.flipFlopJK)) {
-                        while (((FlipFlopJK) ff).getArrayListLinesInputK().size() > 0) {
-                            ((FlipFlopJK) ff).getArrayListLinesInputK().get(0).delete(arrayListCreatedLines);
-                        }
-                    }
-                    while (ff.getArrayListLinesOutput().size() > 0) {
-                        ff.getArrayListLinesOutput().get(0).delete(arrayListCreatedLines);
-                    }
-                    while (ff.getArrayListLinesOutputReverted().size() > 0) {
-                        ff.getArrayListLinesOutputReverted().get(0).delete(arrayListCreatedLines);
-                    }
-                    while (ff.getArrayListLinesClock().size() > 0) {
-                        ff.getArrayListLinesClock().get(0).delete(arrayListCreatedLines);
-                    }
-                    while (ff.getArrayListLinesReset().size() > 0) {
-                        ff.getArrayListLinesReset().get(0).delete(arrayListCreatedLines);
-                    }
-                    arrayListCreatedFlipFlops.remove(ff);
-                    arrayListCreatedComponents.remove(ff);
+        for (FlipFlop ff : arrayListCreatedFlipFlops) {
+            if (ff.isSelected()) {
+                while (ff.getArrayListLinesInput().size() > 0) {
+                    ff.getArrayListLinesInput().get(0).delete(arrayListCreatedLines);
                 }
+                if (ff.getName().equals(Names.flipFlopJK)) {
+                    while (((FlipFlopJK) ff).getArrayListLinesInputK().size() > 0) {
+                        ((FlipFlopJK) ff).getArrayListLinesInputK().get(0).delete(arrayListCreatedLines);
+                    }
+                }
+                while (ff.getArrayListLinesOutput().size() > 0) {
+                    ff.getArrayListLinesOutput().get(0).delete(arrayListCreatedLines);
+                }
+                while (ff.getArrayListLinesOutputReverted().size() > 0) {
+                    ff.getArrayListLinesOutputReverted().get(0).delete(arrayListCreatedLines);
+                }
+                while (ff.getArrayListLinesAsynchronousInput().size() > 0) {
+                    ff.getArrayListLinesAsynchronousInput().get(0).delete(arrayListCreatedLines);
+                }
+                while (ff.getArrayListLinesClock().size() > 0) {
+                    ff.getArrayListLinesClock().get(0).delete(arrayListCreatedLines);
+                }
+                while (ff.getArrayListLinesReset().size() > 0) {
+                    ff.getArrayListLinesReset().get(0).delete(arrayListCreatedLines);
+                }
+                arrayListComponentsToDelete.add(ff);
             }
-        } while(deletedSomething);
+        }
+
+        for(Component c : arrayListComponentsToDelete){
+            arrayListCreatedLines.remove(c);
+            arrayListCreatedGates.remove(c);
+            arrayListCreatedSwitches.remove(c);
+            arrayListCreatedFlipFlops.remove(c);
+            arrayListCreatedComponents.remove(c);
+        }
 
         for(Line l : arrayListCreatedLines){
             l.getArrayListVisitedLines().clear();
@@ -470,13 +463,13 @@ public class MainWindowController {
     public void repaint(){
         graphicsContext.clearRect(0, 0, canvas.getWidth() + 1, canvas.getHeight() + 1);
 
-        for(Component c : arrayListCreatedComponents){
-            c.draw(graphicsContext);
-        }
-
         graphicsContext.setLineWidth(Sizes.baseLineWidth);
         for(Line l : arrayListCreatedLines){
             l.draw(graphicsContext);
+        }
+
+        for(Component c : arrayListCreatedComponents){
+            c.draw(graphicsContext);
         }
 
         graphicsContext.setStroke(Color.BLACK);
@@ -672,6 +665,7 @@ public class MainWindowController {
             }
             comboBoxNewLineHook.getItems().add(ff.getPointOutput());
             comboBoxNewLineHook.getItems().add(ff.getPointOutputReversed());
+            comboBoxNewLineHook.getItems().add(ff.getPointAsynchronousInput());
             comboBoxNewLineHook.getItems().add(ff.getPointClock());
             comboBoxNewLineHook.getItems().add(ff.getPointReset());
             g = null;
@@ -734,6 +728,10 @@ public class MainWindowController {
                 ff.getArrayListLinesOutputReverted().add(lineBuffer);
                 lineBuffer.setInput1IsOutput(true);
             }
+            else if(pointName.equals("Asynchronous input")){
+                ff.getArrayListLinesAsynchronousInput().add(lineBuffer);
+                lineBuffer.setInput1IsOutput(false);
+            }
             else if(pointName.equals("Clock")){
                 ff.getArrayListLinesClock().add(lineBuffer);
                 lineBuffer.setInput1IsOutput(false);
@@ -795,6 +793,10 @@ public class MainWindowController {
             }
             else if(pointName.equals("Output Reversed")){
                 ff.getArrayListLinesOutputReverted().add(lineBuffer);
+                lineBuffer.setInput2IsOutput(true);
+            }
+            else if(pointName.equals("Asynchronous input")){
+                ff.getArrayListLinesAsynchronousInput().add(lineBuffer);
                 lineBuffer.setInput2IsOutput(true);
             }
             else if(pointName.equals("Clock")){

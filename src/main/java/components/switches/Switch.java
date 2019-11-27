@@ -38,21 +38,6 @@ public abstract class Switch extends Component {
     }
 
     public void draw(GraphicsContext graphicsContext){
-        if(selected){
-            if(state.get()){
-                graphicsContext.drawImage(imageViewSelectedOn.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
-            }
-            else{
-                graphicsContext.drawImage(imageViewSelectedOff.getImage(),pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
-            }
-        }
-        else {
-            if (state.get()) {
-                graphicsContext.drawImage(imageViewOn.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
-            } else {
-                graphicsContext.drawImage(imageViewOff.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
-            }
-        }
     }
 
     public void selectForDrag(double x, double y){

@@ -17,11 +17,13 @@ public abstract class FlipFlop extends Component {
     protected ArrayList<Line> arrayListLinesInput = new ArrayList<>();
     protected ArrayList<Line> arrayListLinesOutput = new ArrayList<>();
     protected ArrayList<Line> arrayListLinesOutputReverted = new ArrayList<>();
+    protected ArrayList<Line> arrayListLinesAsynchronousInput = new ArrayList<>();
     protected ArrayList<Line> arrayListLinesClock = new ArrayList<>();
     protected ArrayList<Line> arrayListLinesReset = new ArrayList<>();
     protected Point pointInput;
     protected Point pointOutput;
     protected Point pointOutputReversed;
+    protected Point pointAsynchronousInput;
     protected Point pointReset;
     protected Point pointClock;
     protected ImageView imageViewOff;
@@ -33,8 +35,9 @@ public abstract class FlipFlop extends Component {
         pointInput = new Point("Input", x - 145, y - 75);
         pointOutput = new Point("Output", x + 145, y - 75);
         pointOutputReversed = new Point("Output reversed", x + 145, y + 75);
-        pointReset = new Point("Reset", x, y - 195);
-        pointClock = new Point("Clock", x, y + 195);
+        pointAsynchronousInput = new Point("Asynchronous input", x, y - 195);
+        pointReset = new Point("Reset", x, y + 195);
+        pointClock = new Point("Clock", x - 145, y);
     }
 
     public void draw(GraphicsContext graphicsContext) {
@@ -80,6 +83,9 @@ public abstract class FlipFlop extends Component {
         pointOutputReversed.setX(pointOutputReversed.getX() + x - mousePressX);
         pointOutputReversed.setY(pointOutputReversed.getY() + y - mousePressY);
 
+        pointAsynchronousInput.setX(pointAsynchronousInput.getX() + x - mousePressX);
+        pointAsynchronousInput.setY(pointAsynchronousInput.getY() + y - mousePressY);
+
         pointReset.setX(pointReset.getX() + x - mousePressX);
         pointReset.setY(pointReset.getY() + y - mousePressY);
 
@@ -116,6 +122,17 @@ public abstract class FlipFlop extends Component {
             else if(l.getComponent2() != null && l.getComponent2().equals(this)){
                 l.setX2(pointOutputReversed.getX() + x - mousePressX);
                 l.setY2(pointOutputReversed.getY() + y - mousePressY);
+            }
+        }
+
+        for(Line l : arrayListLinesAsynchronousInput){
+            if(l.getComponent1() != null && l.getComponent1().equals(this)){
+                l.setX1(pointAsynchronousInput.getX() + x - mousePressX);
+                l.setY1(pointAsynchronousInput.getY() + y - mousePressY);
+            }
+            else if(l.getComponent2() != null && l.getComponent2().equals(this)){
+                l.setX2(pointAsynchronousInput.getX() + x - mousePressX);
+                l.setY2(pointAsynchronousInput.getY() + y - mousePressY);
             }
         }
 
@@ -211,6 +228,10 @@ public abstract class FlipFlop extends Component {
         return arrayListLinesOutputReverted;
     }
 
+    public ArrayList<Line> getArrayListLinesAsynchronousInput() {
+        return arrayListLinesAsynchronousInput;
+    }
+
     public ArrayList<Line> getArrayListLinesClock() {
         return arrayListLinesClock;
     }
@@ -233,6 +254,10 @@ public abstract class FlipFlop extends Component {
 
     public Point getPointOutputReversed() {
         return pointOutputReversed;
+    }
+
+    public Point getPointAsynchronousInput() {
+        return pointAsynchronousInput;
     }
 
     public Point getPointReset() {

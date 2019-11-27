@@ -284,11 +284,11 @@ public class MouseActions {
             }
 
             for(Component c : arrayListCreatedComponents){
-                if(c.getName().equals(Names.switchBistableName) && button == MouseButton.SECONDARY && c.inside(x, y)){
-                    ((Switch)c).invertState();
-                }
-                else{
+                if(button == MouseButton.PRIMARY){
                     c.select(x, y);
+                }
+                else if(c.getName().equals(Names.switchBistableName) && c.inside(x, y)){
+                    ((Switch)c).invertState();
                 }
             }
 
@@ -389,7 +389,7 @@ public class MouseActions {
             }
             if(c.inside(x, y)){
                 c.selectForDrag(x, y);
-                if(c.getName().equals(Names.switchMonostableName)){
+                if(c.getName().equals(Names.switchMonostableName) && e.getButton() == MouseButton.SECONDARY){
                     ((Switch)c).setState(true);
                 }
             }

@@ -14,7 +14,6 @@ public abstract class Nor extends Gate {
             for(int i = 0; i < arrayArrayListLines.length; i++){
                 arraySignalsInputs[i] = arrayArrayListLines[i].size() > 0 && arrayArrayListLines[i].get(0).isState();
             }
-
             boolean nextState = true;
             for(boolean b : arraySignalsInputs) {
                 if (b) {
@@ -22,19 +21,26 @@ public abstract class Nor extends Gate {
                     break;
                 }
             }
-
             if(output.get() != nextState) {
                 try {
                     Thread.sleep(Sizes.gatePropagationTime);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                output.set(nextState);
-                for (Line l : arrayListLinesOutput) {
-                    l.setState(output.get());
+                for(int i = 0; i < arrayArrayListLines.length; i++){
+                    arraySignalsInputs[i] = arrayArrayListLines[i].size() > 0 && arrayArrayListLines[i].get(0).isState();
+                }
+                boolean nextState2 = true;
+                for(boolean b : arraySignalsInputs) {
+                    if (b) {
+                        nextState2 = false;
+                        break;
+                    }
+                }
+                if(nextState == nextState2) {
+                    output.set(nextState);
                 }
             }
-
             try {
                 Thread.sleep(Sizes.gateSleepTime);
             } catch (InterruptedException e) {

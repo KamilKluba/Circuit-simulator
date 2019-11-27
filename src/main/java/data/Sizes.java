@@ -23,7 +23,9 @@ public class Sizes {
     public static final double baseFlipFlopYShift = baseFlipFlopYSize * 0.5;
     public static final double baseFlipFLopImageInTableXSize = 60;
     public static final double baseFlipFLopImageInTableYSize = 80;
+    public static final int lineSleepTime = 1;
     public static final int gatePropagationTime = 500;
     public static final int gateSleepTime = 1;
-    public static final int lineSleepTime = 1;
+    public static final int flipFlopPropagationTime = 1000;
+    public static final int flipFlopSleepTime = 1;
 }
