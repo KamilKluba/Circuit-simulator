@@ -8,12 +8,16 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class FlipFlop extends Component {
+    protected boolean lastState = false;
     protected boolean signalInput = false;
-    protected boolean signalOutput = false;
+    protected AtomicBoolean signalOutput = new AtomicBoolean(false);
+    protected AtomicBoolean signalReversedOutput = new AtomicBoolean(true);
+    protected boolean signalAsynchronousInput = false;
     protected boolean signalClock = false;
-    protected boolean signalReset = false;
+    protected boolean signalReset = true;
     protected ArrayList<Line> arrayListLinesInput = new ArrayList<>();
     protected ArrayList<Line> arrayListLinesOutput = new ArrayList<>();
     protected ArrayList<Line> arrayListLinesOutputReverted = new ArrayList<>();
@@ -30,8 +34,9 @@ public abstract class FlipFlop extends Component {
     protected ImageView imageViewOn;
     protected ImageView imageViewSelected;
 
-    public FlipFlop(double x, double y){
-        super(x, y);
+    public FlipFlop(double x, double y, boolean startLife){
+        super(x, y, startLife);
+
         pointInput = new Point("Input", x - 145, y - 75);
         pointOutput = new Point("Output", x + 145, y - 75);
         pointOutputReversed = new Point("Output reversed", x + 145, y + 75);
@@ -43,7 +48,7 @@ public abstract class FlipFlop extends Component {
     public void draw(GraphicsContext graphicsContext) {
         if (selected) {
             graphicsContext.drawImage(imageViewSelected.getImage(), pointCenter.getX() - Sizes.baseFlipFlopXShift, pointCenter.getY() - Sizes.baseFlipFlopYShift);
-        } else if (signalOutput) {
+        } else if (signalOutput.get()) {
             graphicsContext.drawImage(imageViewOn.getImage(), pointCenter.getX() - Sizes.baseFlipFlopXShift, pointCenter.getY() - Sizes.baseFlipFlopYShift);
         } else {
             graphicsContext.drawImage(imageViewOff.getImage(), pointCenter.getX() - Sizes.baseFlipFlopXShift, pointCenter.getY() - Sizes.baseFlipFlopYShift);
@@ -169,11 +174,27 @@ public abstract class FlipFlop extends Component {
     }
 
     public boolean isSignalOutput() {
-        return signalOutput;
+        return signalOutput.get();
     }
 
     public void setSignalOutput(boolean signalOutput) {
-        this.signalOutput = signalOutput;
+        this.signalOutput.set(signalOutput);
+    }
+
+    public boolean isSignalReversedOutput() {
+        return signalReversedOutput.get();
+    }
+
+    public void setSignalReversedOutput(boolean signalReversedOutput) {
+        this.signalReversedOutput.set(signalReversedOutput);
+    }
+
+    public boolean isSignalAsynchronousInput() {
+        return signalAsynchronousInput;
+    }
+
+    public void setSignalAsynchronousInput(boolean signalAsynchronousInput) {
+        this.signalAsynchronousInput = signalAsynchronousInput;
     }
 
     public boolean isSignalClock() {

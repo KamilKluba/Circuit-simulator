@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 public class And2 extends And {
 
-    public And2(double x, double y) {
-        super(x, y);
+    public And2(double x, double y, boolean startLife) {
+        super(x, y, startLife);
 
         inputsNumber = 2;
         arrayArrayListLines = new ArrayList[2];

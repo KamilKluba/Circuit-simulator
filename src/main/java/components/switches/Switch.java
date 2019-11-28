@@ -20,8 +20,8 @@ public abstract class Switch extends Component {
     protected ImageView imageViewSelectedOff;
 
 
-    public Switch(double x, double y){
-        super(x, y);
+    public Switch(double x, double y, boolean startLife){
+        super(x, y, startLife);
         this.pointLineHook = new Point("Output", x, y - 35);
     }
 

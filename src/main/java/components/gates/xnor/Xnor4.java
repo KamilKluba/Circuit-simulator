@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 public class Xnor4 extends Xnor {
 
-    public Xnor4(double x, double y) {
-        super(x, y);
+    public Xnor4(double x, double y, boolean startLife) {
+        super(x, y, startLife);
 
         inputsNumber = 4;
         arrayArrayListLines = new ArrayList[4];
@@ -32,8 +32,6 @@ public class Xnor4 extends Xnor {
         imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/xnor/xnor4_gate_off.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
         imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/xnor/xnor4_gate_on.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
         imageViewSelected = new ImageView(new Image(getClass().getResource("/graphics/xnor/xnor4_gate_selected.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
-
-        executorService.execute(() -> lifeCycle());
     }
 
 

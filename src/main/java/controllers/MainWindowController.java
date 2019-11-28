@@ -196,12 +196,8 @@ public class MainWindowController {
 
     public void actionDebug(){
         for(Line l : arrayListCreatedLines){
-            System.out.println("Line id:" + l.getId() + l.getComponent1() + " " + l.getComponent2());
-        }
-        for(Switch sw : arrayListCreatedSwitches){
-            System.out.println(sw.getId());
-            for(Line l : sw.getArrayListlines()){
-                System.out.print(l + ", ");
+            for(Component c : l.getArrayListDependentComponents()){
+                System.out.print(l.getId() + ", " +c.getName() + ", ");
             }
             System.out.println("");
         }
@@ -538,76 +534,76 @@ public class MainWindowController {
         try {
             Component newComponent = null;
             if (newComponentName.equals(Names.gateNotName)) {
-                newComponent = new Not(x, y);
+                newComponent = new Not(x, y, true);
             }
             else if (newComponentName.equals(Names.gateAnd2Name)) {
-                newComponent = new And2(x, y);
+                newComponent = new And2(x, y, true);
             }
             else if (newComponentName.equals(Names.gateAnd3Name)) {
-                newComponent = new And3(x, y);
+                newComponent = new And3(x, y, true);
             }
             else if (newComponentName.equals(Names.gateAnd4Name)) {
-                newComponent = new And4(x, y);
+                newComponent = new And4(x, y, true);
             }
             else if (newComponentName.equals(Names.gateOr2Name)) {
-                newComponent = new Or2(x, y);
+                newComponent = new Or2(x, y, true);
             }
             else if (newComponentName.equals(Names.gateOr3Name)) {
-                newComponent = new Or3(x, y);
+                newComponent = new Or3(x, y, true);
             }
             else if (newComponentName.equals(Names.gateOr4Name)) {
-                newComponent = new Or4(x, y);
+                newComponent = new Or4(x, y, true);
             }
             else if (newComponentName.equals(Names.gateXor2Name)) {
-                newComponent = new Xor2(x, y);
+                newComponent = new Xor2(x, y, true);
             }
             else if (newComponentName.equals(Names.gateXor3Name)) {
-                newComponent = new Xor3(x, y);
+                newComponent = new Xor3(x, y, true);
             }
             else if (newComponentName.equals(Names.gateXor4Name)) {
-                newComponent = new Xor4(x, y);
+                newComponent = new Xor4(x, y, true);
             }
             else if (newComponentName.equals(Names.gateNand2Name)) {
-                newComponent = new Nand2(x, y);
+                newComponent = new Nand2(x, y, true);
             }
             else if (newComponentName.equals(Names.gateNand3Name)) {
-                newComponent = new Nand3(x, y);
+                newComponent = new Nand3(x, y, true);
             }
             else if (newComponentName.equals(Names.gateNand4Name)) {
-                newComponent = new Nand4(x, y);
+                newComponent = new Nand4(x, y, true);
             }
             else if (newComponentName.equals(Names.gateNor2Name)) {
-                newComponent = new Nor2(x, y);
+                newComponent = new Nor2(x, y, true);
             }
             else if (newComponentName.equals(Names.gateNor3Name)) {
-                newComponent = new Nor3(x, y);
+                newComponent = new Nor3(x, y, true);
             }
             else if (newComponentName.equals(Names.gateNor4Name)) {
-                newComponent = new Nor4(x, y);
+                newComponent = new Nor4(x, y, true);
             }
             else if (newComponentName.equals(Names.gateXnor2Name)) {
-                newComponent = new Xnor2(x, y);
+                newComponent = new Xnor2(x, y, true);
             }
             else if (newComponentName.equals(Names.gateXnor3Name)) {
-                newComponent = new Xnor3(x, y);
+                newComponent = new Xnor3(x, y, true);
             }
             else if (newComponentName.equals(Names.gateXnor4Name)) {
-                newComponent = new Xnor4(x, y);
+                newComponent = new Xnor4(x, y, true);
             }
             else if(newComponentName.equals(Names.switchMonostableName)){
-                newComponent = new SwitchMonostable(x, y);
+                newComponent = new SwitchMonostable(x, y, true);
             }
             else if(newComponentName.equals(Names.switchBistableName)){
-                newComponent = new SwitchBistatble(x, y);
+                newComponent = new SwitchBistatble(x, y, true);
             }
             else if(newComponentName.equals(Names.flipFlopD)){
-                newComponent = new FlipFlopD(x, y);
+                newComponent = new FlipFlopD(x, y, true);
             }
             else if(newComponentName.equals(Names.flipFlopT)){
-                newComponent = new FlipFlopT(x, y);
+                newComponent = new FlipFlopT(x, y, true);
             }
             else if(newComponentName.equals(Names.flipFlopJK)){
-                newComponent = new FlipFlopJK(x, y);
+                newComponent = new FlipFlopJK(x, y, true);
             }
 
             if(newComponent != null){
@@ -724,7 +720,7 @@ public class MainWindowController {
                 ff.getArrayListLinesOutput().add(lineBuffer);
                 lineBuffer.setInput1IsOutput(true);
             }
-            else if(pointName.equals("OutputReverted")){
+            else if(pointName.equals("Output reversed")){
                 ff.getArrayListLinesOutputReverted().add(lineBuffer);
                 lineBuffer.setInput1IsOutput(true);
             }
@@ -791,7 +787,7 @@ public class MainWindowController {
                 ff.getArrayListLinesOutput().add(lineBuffer);
                 lineBuffer.setInput2IsOutput(true);
             }
-            else if(pointName.equals("Output Reversed")){
+            else if(pointName.equals("Output reversed")){
                 ff.getArrayListLinesOutputReverted().add(lineBuffer);
                 lineBuffer.setInput2IsOutput(true);
             }

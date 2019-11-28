@@ -6,8 +6,8 @@ import components.gates.Gate;
 import data.Sizes;
 
 public abstract class Xnor extends Gate {
-    public Xnor(double x, double y){
-        super(x, y);
+    public Xnor(double x, double y, boolean startLife) {
+        super(x, y, startLife);
     }
 
     public void lifeCycle(){

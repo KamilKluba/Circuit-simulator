@@ -9,8 +9,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 public class SwitchBistatble extends Switch{
-    public SwitchBistatble(double x, double y){
-        super(x, y);
+    public SwitchBistatble(double x, double y, boolean startLife){
+        super(x, y, startLife);
         name = Names.switchBistableName;
         SnapshotParameters snapshotParameters = new SnapshotParameters();
         snapshotParameters.setFill(Color.TRANSPARENT);

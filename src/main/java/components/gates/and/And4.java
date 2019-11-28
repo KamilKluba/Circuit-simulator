@@ -11,8 +11,8 @@ import javafx.scene.image.ImageView;
 import java.util.ArrayList;
 
 public class And4 extends And {
-    public And4(double x, double y) {
-        super(x, y);
+    public And4(double x, double y, boolean startLife) {
+        super(x, y, startLife);
 
         inputsNumber = 4;
         arrayArrayListLines = new ArrayList[4];
@@ -31,8 +31,6 @@ public class And4 extends And {
         imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/and/and4_gate_off.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
         imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/and/and4_gate_on.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
         imageViewSelected = new ImageView(new Image(getClass().getResource("/graphics/and/and4_gate_selected.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
-
-        executorService.execute(() -> lifeCycle());
     }
 
     public ArrayList[] getArrayArrayListLines() {

@@ -11,8 +11,9 @@ import java.util.ArrayList;
 
 public class Not extends Gate {
 
-    public Not(double x, double y){
-        super(x,y);
+    public Not(double x, double y, boolean startLife){
+        super(x, y, startLife);
+
         inputsNumber = 1;
         arrayArrayListLines = new ArrayList[1];
         arrayArrayListLines[0] = new ArrayList<>();
@@ -25,14 +26,4 @@ public class Not extends Gate {
         imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/not/not_on.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
         imageViewSelected = new ImageView(new Image(getClass().getResource("/graphics/not/not_selected.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
     }
-
-    @Override
-    public void computeSignal(){
-        output.set(!arraySignalsInputs[0]);
-        for (Line l : arrayListLinesOutput){
-            l.setState(output.get());
-        }
-    }
-
-
 }

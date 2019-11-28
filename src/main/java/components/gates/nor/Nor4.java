@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 public class Nor4 extends Nor {
 
-    public Nor4(double x, double y) {
-        super(x, y);
+    public Nor4(double x, double y, boolean startLife) {
+        super(x, y, startLife);
 
         inputsNumber = 4;
         arrayArrayListLines = new ArrayList[4];;
@@ -33,8 +33,6 @@ public class Nor4 extends Nor {
         imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/nor/nor4_gate_off.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
         imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/nor/nor4_gate_on.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
         imageViewSelected = new ImageView(new Image(getClass().getResource("/graphics/nor/nor4_gate_selected.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
-
-        executorService.execute(() -> lifeCycle());
     }
 
     public ArrayList[] getArrayArrayListLines() {

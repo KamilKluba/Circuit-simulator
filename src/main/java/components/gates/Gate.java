@@ -11,8 +11,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class Gate extends Component {
@@ -27,19 +25,17 @@ public abstract class Gate extends Component {
     protected ImageView imageViewOff;
     protected ImageView imageViewOn;
     protected ImageView imageViewSelected;
-    protected ExecutorService executorService = Executors.newFixedThreadPool(1);
 
     public Gate(){
     }
 
-    public Gate(double x, double y){
-        super(x, y);
+    public Gate(double x, double y, boolean startLife){
+        super(x, y, startLife);
         pointCenter = new Point(Names.pointCenterName, x, y);
         pointOutput = new Point(Names.pointOutputName, x + 93, y);
     }
 
-    public void computeSignal(){
-
+    public void lifeCycle(){
     }
 
     public void select(double x, double y) {

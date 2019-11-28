@@ -132,12 +132,17 @@ public class Line extends Component{
     }
 
     public void lifeCycle(){
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
         executorService.execute(() -> {
             while(true){
                 boolean dependentComponentsState = false;
                 for(Component c : arrayListDependentComponents){
-                    if(c.isSignalOutput()){
+                    if(!c.getName().contains(Names.flipFlopSearchName) && c.isSignalOutput()){
+                        dependentComponentsState = true;
+                        break;
+                    }
+                    else if(c.getName().contains(Names.flipFlopSearchName) && (((FlipFlop)c).getArrayListLinesOutputReverted().contains(this) &&
+                            ((FlipFlop)c).isSignalReversedOutput() || ((FlipFlop)c).getArrayListLinesOutput().contains(this) &&
+                            ((FlipFlop)c).isSignalOutput())){
                         dependentComponentsState = true;
                         break;
                     }
@@ -366,6 +371,10 @@ public class Line extends Component{
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public boolean isSignalOutput() {
+        return state.get();
     }
 
     public boolean isState() {

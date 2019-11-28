@@ -14,8 +14,8 @@ public class FlipFlopJK extends FlipFlop{
     private ArrayList<Line> arrayListLinesInputK = new ArrayList<>();
     private Point pointInputK;
 
-    public FlipFlopJK(double x, double y) {
-        super(x, y);
+    public FlipFlopJK(double x, double y, boolean startLife){
+        super(x, y, startLife);
 
         name = Names.flipFlopJK;
 

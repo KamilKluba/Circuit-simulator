@@ -5,8 +5,12 @@ import components.gates.Gate;
 import data.Sizes;
 
 public abstract class Nand extends Gate {
-    public Nand(double x, double y){
-        super(x, y);
+    public Nand(double x, double y, boolean startLife) {
+        super(x, y, startLife);
+
+        if(startLife){
+            executorService.execute(() -> lifeCycle());
+        }
     }
 
     public void lifeCycle(){

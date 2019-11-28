@@ -10,8 +10,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 public class SwitchMonostable extends Switch{
-    public SwitchMonostable(double x, double y){
-        super(x, y);
+    public SwitchMonostable(double x, double y, boolean startLife){
+        super(x, y, startLife);
         name = Names.switchMonostableName;
         pointLineHook.setY(pointCenter.getY() + 35);
 

@@ -4,6 +4,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public abstract class Component {
     protected int id;
@@ -17,13 +19,19 @@ public abstract class Component {
     protected ImageView imageViewSelected;
     protected ImageView imageViewSelectedOff;
     protected ImageView imageViewSelectgedOn;
+    protected ExecutorService executorService = Executors.newFixedThreadPool(1);
 
     public Component(){}
 
-    public Component(double x, double y){
+    public Component(double x, double y, boolean startLife){
         this.pointCenter = new Point("Center", x, y);
+
+        if (startLife) {
+            executorService.execute(() -> lifeCycle());
+        }
     }
 
+    public void lifeCycle(){};
     public void searchForSignals(Line line, ArrayList<Line> arrayListDependentComponents,
                                  ArrayList<String> arrayListDependentComponentsPin, ArrayList<Line> arayListVisitedComponents){}
     public void select(double x, double y){}

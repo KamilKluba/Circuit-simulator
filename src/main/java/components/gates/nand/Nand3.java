@@ -11,8 +11,8 @@ import javafx.scene.image.ImageView;
 import java.util.ArrayList;
 
 public class Nand3 extends Nand {
-    public Nand3(double x, double y) {
-        super(x, y);
+    public Nand3(double x, double y, boolean startLife) {
+        super(x, y, startLife);
 
         inputsNumber = 3;
         arrayArrayListLines = new ArrayList[3];
@@ -29,8 +29,6 @@ public class Nand3 extends Nand {
         imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/nand/nand3_gate_off.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
         imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/nand/nand3_gate_on.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
         imageViewSelected = new ImageView(new Image(getClass().getResource("/graphics/nand/nand3_gate_selected.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
-
-        executorService.execute(() -> lifeCycle());
     }
 
     public ArrayList[] getArrayArrayListLines() {

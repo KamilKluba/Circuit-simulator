@@ -5,8 +5,8 @@ import components.gates.Gate;
 import data.Sizes;
 
 public abstract class And extends Gate {
-    public And(double x, double y){
-        super(x, y);
+    public And(double x, double y, boolean startLife) {
+        super(x, y, startLife);
     }
 
     public void lifeCycle(){
