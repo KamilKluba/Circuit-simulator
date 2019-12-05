@@ -212,17 +212,20 @@ public class MainWindowController {
         for (Line l : arrayListCreatedLines) {
             if (l.isSelected()) {
                 arrayListComponentsToDelete.add(l);
+                l.delete();
             }
         }
 
         for (Gate g : arrayListCreatedGates) {
             if (g.isSelected()) {
                 while (g.getArrayListLinesOutput().size() > 0) {
-                    g.getArrayListLinesOutput().get(0).delete(arrayListCreatedLines);
+                    arrayListComponentsToDelete.add(g.getArrayListLinesOutput().get(0));
+                    g.getArrayListLinesOutput().get(0).delete();
                 }
                 for (ArrayList<Line> al : g.getArrayArrayListLines()) {
                     while (al.size() > 0) {
-                        al.get(0).delete(arrayListCreatedLines);
+                        arrayListComponentsToDelete.add(al.get(0));
+                        al.get(0).delete();
                     }
                 }
                 arrayListComponentsToDelete.add(g);
@@ -232,7 +235,8 @@ public class MainWindowController {
         for (Switch s : arrayListCreatedSwitches) {
             if (s.isSelected()) {
                 while (s.getArrayListlines().size() > 0) {
-                    s.getArrayListlines().get(0).delete(arrayListCreatedLines);
+                    arrayListComponentsToDelete.add(s.getArrayListlines().get(0));
+                    s.getArrayListlines().get(0).delete();
                 }
                 arrayListComponentsToDelete.add(s);
             }
@@ -241,27 +245,34 @@ public class MainWindowController {
         for (FlipFlop ff : arrayListCreatedFlipFlops) {
             if (ff.isSelected()) {
                 while (ff.getArrayListLinesInput().size() > 0) {
-                    ff.getArrayListLinesInput().get(0).delete(arrayListCreatedLines);
+                    arrayListComponentsToDelete.add(ff.getArrayListLinesInput().get(0));
+                    ff.getArrayListLinesInput().get(0).delete();
                 }
                 if (ff.getName().equals(Names.flipFlopJK)) {
                     while (((FlipFlopJK) ff).getArrayListLinesInputK().size() > 0) {
-                        ((FlipFlopJK) ff).getArrayListLinesInputK().get(0).delete(arrayListCreatedLines);
+                        arrayListComponentsToDelete.add(((FlipFlopJK) ff).getArrayListLinesInputK().get(0));
+                        ((FlipFlopJK) ff).getArrayListLinesInputK().get(0).delete();
                     }
                 }
                 while (ff.getArrayListLinesOutput().size() > 0) {
-                    ff.getArrayListLinesOutput().get(0).delete(arrayListCreatedLines);
+                    arrayListComponentsToDelete.add(ff.getArrayListLinesOutput().get(0));
+                    ff.getArrayListLinesOutput().get(0).delete();
                 }
                 while (ff.getArrayListLinesOutputReverted().size() > 0) {
-                    ff.getArrayListLinesOutputReverted().get(0).delete(arrayListCreatedLines);
+                    arrayListComponentsToDelete.add(ff.getArrayListLinesOutputReverted().get(0));
+                    ff.getArrayListLinesOutputReverted().get(0).delete();
                 }
                 while (ff.getArrayListLinesAsynchronousInput().size() > 0) {
-                    ff.getArrayListLinesAsynchronousInput().get(0).delete(arrayListCreatedLines);
+                    arrayListComponentsToDelete.add(ff.getArrayListLinesAsynchronousInput().get(0));
+                    ff.getArrayListLinesAsynchronousInput().get(0).delete();
                 }
                 while (ff.getArrayListLinesClock().size() > 0) {
-                    ff.getArrayListLinesClock().get(0).delete(arrayListCreatedLines);
+                    arrayListComponentsToDelete.add(ff.getArrayListLinesClock().get(0));
+                    ff.getArrayListLinesClock().get(0).delete();
                 }
                 while (ff.getArrayListLinesReset().size() > 0) {
-                    ff.getArrayListLinesReset().get(0).delete(arrayListCreatedLines);
+                    arrayListComponentsToDelete.add(ff.getArrayListLinesReset().get(0));
+                    ff.getArrayListLinesReset().get(0).delete();
                 }
                 arrayListComponentsToDelete.add(ff);
             }

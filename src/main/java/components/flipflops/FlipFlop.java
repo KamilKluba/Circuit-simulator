@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class FlipFlop extends Component {
+    protected boolean risingEdge = true;
     protected boolean lastState = false;
     protected boolean signalInput = false;
     protected AtomicBoolean signalOutput = new AtomicBoolean(false);

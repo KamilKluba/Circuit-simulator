@@ -162,7 +162,7 @@ public class Line extends Component{
                 }
 
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(Sizes.lineSleepTime);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -334,11 +334,9 @@ public class Line extends Component{
         graphicsContext.strokeLine(x1, y1, x2, y2);
     }
     
-    public void delete(ArrayList<Line> arrayListCreatedLines){
+    public void delete(){
         deleteComponent(component1);
         deleteComponent(component2);
-
-        arrayListCreatedLines.remove(this);
     }
 
     private void deleteComponent(Component component){

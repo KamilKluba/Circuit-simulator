@@ -31,8 +31,9 @@ public class FlipFlopT extends FlipFlop {
                 }
                 else {
                     signalClock = arrayListLinesClock.size() > 0 && arrayListLinesClock.get(0).isSignalOutput();
-                    if (signalClock) {
+                    if (signalClock && risingEdge) {
                         boolean nextState = arrayListLinesInput.size() > 0 && arrayListLinesInput.get(0).isSignalOutput();
+                        risingEdge = false;
                         if (signalOutput.get() != nextState) {
                             try {
                                 Thread.sleep(Sizes.flipFlopPropagationTime);
@@ -62,10 +63,13 @@ public class FlipFlopT extends FlipFlop {
                             }
                         }
                     }
+                    else if(!signalClock){
+                        risingEdge = true;
+                    }
                 }
             }
             try {
-                Thread.sleep(Sizes.flipFlopSleepTime * 100);
+                Thread.sleep(Sizes.flipFlopSleepTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
