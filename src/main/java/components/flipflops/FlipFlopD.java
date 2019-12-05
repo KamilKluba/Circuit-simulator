@@ -18,7 +18,7 @@ public class FlipFlopD extends FlipFlop{
     }
 
     public void lifeCycle(){
-        while(true) {
+        while(alive) {
             signalReset = !(arrayListLinesReset.size() > 0 && arrayListLinesReset.get(0).isSignalOutput());
             if (signalReset) {
                 signalOutput.set(false);

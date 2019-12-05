@@ -25,6 +25,7 @@ import components.gates.xor.Xor4;
 import components.switches.Switch;
 import components.switches.SwitchBistatble;
 import components.switches.SwitchMonostable;
+import components.switches.SwitchPulse;
 import data.Accesses;
 import data.MouseActions;
 import main.Main;
@@ -94,6 +95,9 @@ public class MainWindowController {
                                         new ImageView(new Image(getClass().getResource("/graphics/switches/switch_monostable_off.png").toExternalForm(),
                                                 Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
         arrayListPossibleComponents.add(new TableComponent(Names.switchBistableName, 1,
+                                        new ImageView(new Image(getClass().getResource("/graphics/switches/switch_bistable_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent(Names.switchPulseName, 1,
                                         new ImageView(new Image(getClass().getResource("/graphics/switches/switch_bistable_off.png").toExternalForm(),
                                                 Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
         arrayListPossibleComponents.add(new TableComponent(Names.gateNotName, 1,
@@ -264,6 +268,7 @@ public class MainWindowController {
         }
 
         for(Component c : arrayListComponentsToDelete){
+            c.kill();
             arrayListCreatedLines.remove(c);
             arrayListCreatedGates.remove(c);
             arrayListCreatedSwitches.remove(c);
@@ -595,6 +600,9 @@ public class MainWindowController {
             }
             else if(newComponentName.equals(Names.switchBistableName)){
                 newComponent = new SwitchBistatble(x, y, true);
+            }
+            else if(newComponentName.equals(Names.switchPulseName)){
+                newComponent = new SwitchPulse(x, y, true);
             }
             else if(newComponentName.equals(Names.flipFlopD)){
                 newComponent = new FlipFlopD(x, y, true);

@@ -14,7 +14,7 @@ public abstract class Nand extends Gate {
     }
 
     public void lifeCycle(){
-        while(true){
+        while(alive){
             for(int i = 0; i < arrayArrayListLines.length; i++){
                 arraySignalsInputs[i] = arrayArrayListLines[i].size() > 0 && arrayArrayListLines[i].get(0).isState();
             }

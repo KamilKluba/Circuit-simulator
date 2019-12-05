@@ -11,6 +11,7 @@ public abstract class Component {
     protected int id;
     protected boolean selected = false;
     protected boolean selectedForDrag = false;
+    protected boolean alive = true;
     protected String name;
     protected int rotation = 0;
     protected Point pointCenter;
@@ -29,6 +30,10 @@ public abstract class Component {
         if (startLife) {
             executorService.execute(() -> lifeCycle());
         }
+    }
+
+    public void kill(){
+        alive = false;
     }
 
     public void lifeCycle(){};

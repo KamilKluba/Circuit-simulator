@@ -25,6 +25,7 @@ public class Names {
     public static String switchSearchName = "Switch";
     public static String switchMonostableName = "Switch monostable";
     public static String switchBistableName = "Switch bistable";
+    public static String switchPulseName = "Switch pulse";
     public static String flipFlopSearchName = "Flip-flop";
     public static String flipFlopD = "Flip-flop D";
     public static String flipFlopT = "Flip-flop T";

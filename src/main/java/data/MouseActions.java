@@ -32,6 +32,7 @@ import components.gates.xor.Xor4;
 import components.switches.Switch;
 import components.switches.SwitchBistatble;
 import components.switches.SwitchMonostable;
+import components.switches.SwitchPulse;
 import controllers.MainWindowController;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
@@ -208,6 +209,9 @@ public class MouseActions {
             }
             else if(newComponentName.equals(Names.switchBistableName)){
                 newComponent = new SwitchBistatble(x, y, false);
+            }
+            else if(newComponentName.equals(Names.switchPulseName)){
+                newComponent = new SwitchPulse(x, y, false);
             }
             else if(newComponentName.equals(Names.flipFlopD)){
                 newComponent = new FlipFlopD(x, y, false);
