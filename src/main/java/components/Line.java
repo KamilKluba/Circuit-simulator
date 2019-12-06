@@ -358,6 +358,7 @@ public class Line extends Component{
             }
             flipFlop.getArrayListLinesOutput().remove(this);
             flipFlop.getArrayListLinesOutputReverted().remove(this);
+            flipFlop.getArrayListLinesAsynchronousInput().remove(this);
             flipFlop.getArrayListLinesClock().remove(this);
             flipFlop.getArrayListLinesReset().remove(this);
         }

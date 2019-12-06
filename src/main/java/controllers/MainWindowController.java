@@ -49,9 +49,6 @@ import javafx.scene.paint.Color;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
 public class MainWindowController {
@@ -161,10 +158,10 @@ public class MainWindowController {
                                         new ImageView(new Image(getClass().getResource("/graphics/flipflops/jk_off.png").toExternalForm(),
                                                 Sizes.baseFlipFLopImageInTableXSize, Sizes.baseFlipFLopImageInTableYSize, false, false))));
         arrayListPossibleComponents.add(new TableComponent(Names.flipFlopD, 1,
-                                        new ImageView(new Image(getClass().getResource("/graphics/flipflops/D_off.png").toExternalForm(),
+                                        new ImageView(new Image(getClass().getResource("/graphics/flipflops/d_off.png").toExternalForm(),
                                                 Sizes.baseFlipFLopImageInTableXSize, Sizes.baseFlipFLopImageInTableYSize, false, false))));
         arrayListPossibleComponents.add(new TableComponent(Names.flipFlopT, 1,
-                                        new ImageView(new Image(getClass().getResource("/graphics/flipflops/T_off.png").toExternalForm(),
+                                        new ImageView(new Image(getClass().getResource("/graphics/flipflops/d_off.png").toExternalForm(),
                                                 Sizes.baseFlipFLopImageInTableXSize, Sizes.baseFlipFLopImageInTableYSize, false, false))));
 
         ObservableList<TableComponent> ol = FXCollections.observableList(arrayListPossibleComponents);
@@ -186,7 +183,7 @@ public class MainWindowController {
         tableViewComponents.setOnKeyPressed(e -> actionCanvasKeyPressed(e.getCode()));
     }
 
-    public void myInitialize(Main main){
+    public void myInitialize(main.Main main){
         this.main = main;
         this.zsp = main.getZsp();
         main.getScene().setOnKeyPressed(e -> actionCanvasKeyPressed(e.getCode()));

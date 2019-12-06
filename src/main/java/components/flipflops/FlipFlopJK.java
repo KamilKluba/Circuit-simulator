@@ -46,6 +46,101 @@ public class FlipFlopJK extends FlipFlop{
         }
     }
 
+    public void lifeCycle(){
+        while(alive) {
+            signalReset = !(arrayListLinesReset.size() > 0 && arrayListLinesReset.get(0).isSignalOutput());
+            if (signalReset) {
+                signalOutput.set(false);
+                signalReversedOutput.set(true);
+            }
+            else {
+                signalAsynchronousInput = arrayListLinesAsynchronousInput.size() > 0 && arrayListLinesAsynchronousInput.get(0).isSignalOutput();
+                if(signalAsynchronousInput){
+                    signalOutput.set(true);
+                    signalReversedOutput.set(false);
+                }
+                else {
+                    signalClock = arrayListLinesClock.size() > 0 && arrayListLinesClock.get(0).isSignalOutput();
+                    if (signalClock && risingEdge) {
+                        boolean nextStateJ = arrayListLinesInput.size() > 0 && arrayListLinesInput.get(0).isSignalOutput();
+                        boolean nextStateK = arrayListLinesInputK.size() > 0 && arrayListLinesInputK.get(0).isSignalOutput();
+                        risingEdge = false;
+                        if(!nextStateJ && !nextStateK){
+                            try {
+                                Thread.sleep(Sizes.flipFlopPropagationTime);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            boolean signalClock2 = arrayListLinesClock.size() > 0 && arrayListLinesClock.get(0).isSignalOutput();
+                            boolean nextStateJ2 = arrayListLinesInput.size() > 0 && arrayListLinesInput.get(0).isSignalOutput();
+                            boolean nextStateK2 = arrayListLinesInputK.size() > 0 && arrayListLinesInputK.get(0).isSignalOutput();
+
+                            if (nextStateJ == nextStateJ2 && nextStateK == nextStateK2 && signalClock == signalClock2) {
+                                boolean signalBuffer = signalOutput.get();
+                                signalOutput.set(signalBuffer);
+                                signalReversedOutput.set(!signalBuffer);
+                            }
+                        }
+                        else if(!nextStateJ && nextStateK){
+                            try {
+                                Thread.sleep(Sizes.flipFlopPropagationTime);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            boolean signalClock2 = arrayListLinesClock.size() > 0 && arrayListLinesClock.get(0).isSignalOutput();
+                            boolean nextStateJ2 = arrayListLinesInput.size() > 0 && arrayListLinesInput.get(0).isSignalOutput();
+                            boolean nextStateK2 = arrayListLinesInputK.size() > 0 && arrayListLinesInputK.get(0).isSignalOutput();
+
+                            if (nextStateJ == nextStateJ2 && nextStateK == nextStateK2 && signalClock == signalClock2) {
+                                signalOutput.set(false);
+                                signalReversedOutput.set(true);
+                            }
+                        }
+                        else if(nextStateJ && !nextStateK){
+                            try {
+                                Thread.sleep(Sizes.flipFlopPropagationTime);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            boolean signalClock2 = arrayListLinesClock.size() > 0 && arrayListLinesClock.get(0).isSignalOutput();
+                            boolean nextStateJ2 = arrayListLinesInput.size() > 0 && arrayListLinesInput.get(0).isSignalOutput();
+                            boolean nextStateK2 = arrayListLinesInputK.size() > 0 && arrayListLinesInputK.get(0).isSignalOutput();
+
+                            if (nextStateJ == nextStateJ2 && nextStateK == nextStateK2 && signalClock == signalClock2) {
+                                signalOutput.set(true);
+                                signalReversedOutput.set(false);
+                            }
+                        }
+                        else {
+                            try {
+                                Thread.sleep(Sizes.flipFlopPropagationTime);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            boolean signalClock2 = arrayListLinesClock.size() > 0 && arrayListLinesClock.get(0).isSignalOutput();
+                            boolean nextStateJ2 = arrayListLinesInput.size() > 0 && arrayListLinesInput.get(0).isSignalOutput();
+                            boolean nextStateK2 = arrayListLinesInputK.size() > 0 && arrayListLinesInputK.get(0).isSignalOutput();
+
+                            if (nextStateJ == nextStateJ2 && nextStateK == nextStateK2 && signalClock == signalClock2) {
+                                boolean signalBuffer = signalOutput.get();
+                                signalOutput.set(!signalBuffer);
+                                signalReversedOutput.set(signalBuffer);
+                            }
+                        }
+                    }
+                    else if(!signalClock){
+                        risingEdge = true;
+                    }
+                }
+            }
+            try {
+                Thread.sleep(Sizes.flipFlopSleepTime);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public boolean isSignalInputK() {
         return signalInputK;
     }
