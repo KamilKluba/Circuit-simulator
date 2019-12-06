@@ -82,6 +82,10 @@ public class Main extends Application {
         return flowPane;
     }
 
+    public BorderPane getBorderPane() {
+        return borderPane;
+    }
+
     public MainWindowController getMainWindowController() {
         return mainWindowController;
     }

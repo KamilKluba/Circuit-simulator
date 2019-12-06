@@ -28,6 +28,10 @@ import components.switches.SwitchMonostable;
 import components.switches.SwitchPulse;
 import data.Accesses;
 import data.MouseActions;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.layout.AnchorPane;
 import main.Main;
 import data.Names;
 import data.Sizes;
@@ -82,6 +86,11 @@ public class MainWindowController {
     @FXML private Button buttonRotate;
     @FXML private ScrollPane scrollPaneWorkspace;
     @FXML private Pane paneWorkspace;
+    @FXML private ScrollPane scrollPaneOptions;
+    @FXML private AnchorPane anchorPaneOptions;
+    @FXML private ScrollPane scrollPaneChart;
+    @FXML private LineChart lineChartStates;
+
 
     @FXML
     public void initialize(){
@@ -189,6 +198,61 @@ public class MainWindowController {
         main.getScene().setOnKeyPressed(e -> actionCanvasKeyPressed(e.getCode()));
         main.getScene().setOnKeyTyped(e -> actionCanvasKeyTyped(e.getCharacter()));
         main.getScene().setOnKeyReleased(e -> actionCanvasKeyReleased(e.getCode()));
+
+        //Defining X axis
+        NumberAxis xAxis = new NumberAxis(1960, 2020, 10);
+        xAxis.setLabel("Years");
+
+//Defining y axis
+        NumberAxis yAxis = new NumberAxis(0, 350, 50);
+        yAxis.setLabel("No.of schools");
+        LineChart linechart = new LineChart(xAxis, yAxis);
+
+        XYChart.Series series = new XYChart.Series();
+        series.setName("No of schools in an year");
+
+        series.getData().add(new XYChart.Data(1970, 15));
+        series.getData().add(new XYChart.Data(1980, 30));
+        series.getData().add(new XYChart.Data(1990, 60));
+        series.getData().add(new XYChart.Data(2000, 120));
+        series.getData().add(new XYChart.Data(2013, 240));
+        series.getData().add(new XYChart.Data(2014, 300));
+
+        //Setting the data to Line chart
+        linechart.getData().add(series);
+
+        scrollPaneChart.setContent( linechart);
+        System.out.println(paneWorkspace.getHeight() + " " + scrollPaneOptions.getHeight());
+        scrollPaneChart.setOnMouseEntered(e -> {
+            new Thread(() -> {
+                for(int i = 0; i < 350; i++){
+                    scrollPaneWorkspace.setPrefHeight(scrollPaneWorkspace.getPrefHeight() - 1);
+                    anchorPaneOptions.setPrefHeight(anchorPaneOptions.getPrefHeight() - 1);
+                    scrollPaneChart.setPrefHeight(scrollPaneChart.getPrefHeight() + 1);
+
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }).start();
+        });
+        scrollPaneChart.setOnMouseExited(e -> {
+            new Thread(() -> {
+                for(int i = 0; i < 350; i++){
+                    scrollPaneWorkspace.setPrefHeight(scrollPaneWorkspace.getPrefHeight() + 1);
+                    anchorPaneOptions.setPrefHeight(anchorPaneOptions.getPrefHeight() + 1);
+                    scrollPaneChart.setPrefHeight(scrollPaneChart.getPrefHeight() - 1);
+
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }).start();
+        });
     }
 
     public void loadCircuit(File file){
