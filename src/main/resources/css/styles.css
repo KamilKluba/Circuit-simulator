@@ -29,3 +29,11 @@
 .table-cell{
     -fx-font-size: 25;
 }
+
+.chart{
+    -fx-fill: #000000;
+}
+
+.chart-series-line{
+    -fx-stroke: #000000;
+}

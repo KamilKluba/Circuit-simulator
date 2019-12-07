@@ -1,6 +1,5 @@
 package data;
 
-import com.sun.glass.ui.Size;
 import components.Component;
 import components.Line;
 import components.Point;
@@ -34,14 +33,10 @@ import components.switches.SwitchBistatble;
 import components.switches.SwitchMonostable;
 import components.switches.SwitchPulse;
 import controllers.MainWindowController;
-import javafx.event.EventHandler;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
@@ -369,10 +364,10 @@ public class MouseActions {
         }
 
         if(e.getButton() == MouseButton.SECONDARY){
-            mwc.getZsp().setPannable(true);
+            mwc.getZoomableScrollPaneWorkspace().setPannable(true);
         }
         else{
-            mwc.getZsp().setPannable(false);
+            mwc.getZoomableScrollPaneWorkspace().setPannable(false);
         }
 
         pointMousePressed.setX(x);

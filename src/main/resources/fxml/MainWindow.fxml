@@ -13,13 +13,13 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainWindowController">
+<BorderPane fx:id="borderPaneMainView" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainWindowController">
    <center>
       <ScrollPane fx:id="scrollPaneWorkspace" prefHeight="200.0" prefWidth="200.0" styleClass="background" stylesheets="@../css/styles.css" BorderPane.alignment="CENTER">
          <content>
             <Pane fx:id="paneWorkspace" prefHeight="2000.0" prefWidth="4000.0" styleClass="background" stylesheets="@../css/styles.css">
                <children>
-                  <Canvas fx:id="canvas" height="2000.0" layoutY="14.0" width="4000.0" />
+                  <Canvas fx:id="canvas" height="2000.0" layoutX="6.0" layoutY="14.0" width="4000.0" />
                </children>
             </Pane>
          </content>
@@ -48,12 +48,12 @@
    <bottom>
       <ScrollPane fx:id="scrollPaneChart" prefHeight="150.0" vbarPolicy="ALWAYS" BorderPane.alignment="CENTER">
          <content>
-            <LineChart fx:id="lineChartStates" prefHeight="1500.0" prefWidth="1024.0">
+            <LineChart fx:id="lineChartStates" prefHeight="500.0" prefWidth="1024.0" stylesheets="@../css/styles.css">
               <xAxis>
-                <CategoryAxis side="BOTTOM" />
+                <NumberAxis side="BOTTOM" />
               </xAxis>
               <yAxis>
-                <NumberAxis side="LEFT" />
+                <CategoryAxis side="LEFT" />
               </yAxis>
             </LineChart>
          </content>

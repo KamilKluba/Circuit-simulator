@@ -1,6 +1,6 @@
 package main;
 
-import components.ZoomableScrollPane;
+import components.ZoomableScrollPaneWorkspace;
 import controllers.MainWindowController;
 import controllers.StartWindowController;
 import javafx.application.Application;
@@ -22,7 +22,7 @@ public class Main extends Application {
     private BorderPane borderPane;
     private Scene scene;
     private Stage primaryStage;
-    private ZoomableScrollPane zsp;
+
 
     public static void main(String[] args) {
         launch(args);
@@ -41,8 +41,6 @@ public class Main extends Application {
         mainWindowController = loaderMainWindow.getController();
         Pane pane = mainWindowController.getPaneWorkspace();
         Canvas canvas = mainWindowController.getCanvas();
-        zsp = new ZoomableScrollPane(pane);
-        borderPane.setCenter(zsp);
 
         scene = new Scene(flowPane);
 
@@ -96,9 +94,5 @@ public class Main extends Application {
 
     public Stage getPrimaryStage() {
         return primaryStage;
-    }
-
-    public ZoomableScrollPane getZsp() {
-        return zsp;
     }
 }
