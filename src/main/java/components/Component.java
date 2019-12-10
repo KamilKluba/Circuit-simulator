@@ -1,11 +1,13 @@
 package components;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.chart.XYChart;
 import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class Component {
     protected int id;
@@ -21,11 +23,14 @@ public abstract class Component {
     protected ImageView imageViewSelectedOff;
     protected ImageView imageViewSelectgedOn;
     protected ExecutorService executorService = Executors.newFixedThreadPool(1);
+    protected AtomicBoolean stateChanged = new AtomicBoolean(false);
+    protected XYChart.Series<Integer, String> series;
 
     public Component(){}
 
-    public Component(double x, double y, boolean startLife){
+    public Component(double x, double y, boolean startLife, XYChart.Series<Integer, String> series){
         this.pointCenter = new Point("Center", x, y);
+        this.series = series;
 
         if (startLife) {
             executorService.execute(() -> lifeCycle());
@@ -81,5 +86,17 @@ public abstract class Component {
     }
 
     public boolean isSignalOutput(){return false;}
+
+    public boolean isStateChanged() {
+        return stateChanged.get();
+    }
+
+    public void setStateChanged(boolean stateChanged) {
+        this.stateChanged.set(stateChanged);
+    }
+
+    public XYChart.Series<Integer, String> getSeries() {
+        return series;
+    }
 }
 

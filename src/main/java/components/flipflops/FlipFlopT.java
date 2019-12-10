@@ -2,12 +2,13 @@ package components.flipflops;
 
 import data.Names;
 import data.Sizes;
+import javafx.scene.chart.XYChart;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class FlipFlopT extends FlipFlop {
-    public FlipFlopT(double x, double y, boolean startLife){
-        super(x, y, startLife);
+    public FlipFlopT(double x, double y, boolean startLife, XYChart.Series<Integer, String> series){
+        super(x, y, startLife, series);
 
         name = Names.flipFlopT;
 

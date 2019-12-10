@@ -3,10 +3,11 @@ package components.gates.or;
 import components.Line;
 import components.gates.Gate;
 import data.Sizes;
+import javafx.scene.chart.XYChart;
 
 public abstract class Or extends Gate {
-    public Or(double x, double y, boolean startLife) {
-        super(x, y, startLife);
+    public Or(double x, double y, boolean startLife, XYChart.Series<Integer, String> series) {
+        super(x, y, startLife, series);
     }
 
     public void lifeCycle(){
@@ -38,6 +39,7 @@ public abstract class Or extends Gate {
                     }
                 }
                 if(nextState == nextState2) {
+                    stateChanged.set(true);
                     output.set(nextState);
                 }
             }

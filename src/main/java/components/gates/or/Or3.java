@@ -5,6 +5,7 @@ import components.Point;
 import components.gates.Gate;
 import data.Names;
 import data.Sizes;
+import javafx.scene.chart.XYChart;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -12,8 +13,8 @@ import java.util.ArrayList;
 
 public class Or3 extends Or {
 
-    public Or3(double x, double y, boolean startLife) {
-        super(x, y, startLife);
+    public Or3(double x, double y, boolean startLife, XYChart.Series<Integer, String> series) {
+        super(x, y, startLife, series);
 
         inputsNumber = 3;
         arrayArrayListLines = new ArrayList[3];

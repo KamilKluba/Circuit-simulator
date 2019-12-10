@@ -28,11 +28,13 @@ import components.switches.SwitchMonostable;
 import components.switches.SwitchPulse;
 import data.Accesses;
 import data.MouseActions;
+import javafx.application.Platform;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import main.Main;
 import data.Names;
 import data.Sizes;
@@ -55,6 +57,7 @@ import javafx.scene.paint.Color;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 public class MainWindowController {
@@ -72,6 +75,9 @@ public class MainWindowController {
     @FXML private AnchorPane anchorPaneOptions;
     @FXML private ScrollPane scrollPaneChart;
     @FXML private LineChart lineChartStates;
+    @FXML private HBox hBoxChartArea;
+    @FXML private AnchorPane anchorPaneChartOptions;
+
 
     private Main main;
     private ArrayList<Line> arrayListCreatedLines = new ArrayList<>();
@@ -93,6 +99,7 @@ public class MainWindowController {
     private int gateCounter = 0;
     private int switchCounter = 0;
     private int flipFlopCounter = 0;
+    private AtomicInteger chartMillis = new AtomicInteger(0);
 
     private ZoomableScrollPaneWorkspace zoomableScrollPaneWorkspace;
     private ZoomableScrollPaneChart zoomableScrollPaneChart;
@@ -186,6 +193,12 @@ public class MainWindowController {
 
         graphicsContext = canvas.getGraphicsContext2D();
 
+        zoomableScrollPaneWorkspace = new ZoomableScrollPaneWorkspace(paneWorkspace);
+        borderPaneMainView.setCenter(zoomableScrollPaneWorkspace);
+        zoomableScrollPaneChart = new ZoomableScrollPaneChart(lineChartStates);
+//        zoomableScrollPaneChart.setPrefWidth(1820);
+        hBoxChartArea.getChildren().remove(scrollPaneChart);
+        hBoxChartArea.getChildren().add(zoomableScrollPaneChart);
         mouseActions = new MouseActions(this);
 
         canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));
@@ -193,13 +206,10 @@ public class MainWindowController {
         canvas.setOnMouseDragged(e -> mouseActions.actionCanvasMouseDragged(e));
         canvas.setOnMousePressed(e -> mouseActions.actionCanvasMousePressed(e));
         canvas.setOnMouseReleased(e -> mouseActions.actionCanvasMouseReleased(e.getX(), e.getY()));
+        hBoxChartArea.setOnMouseClicked(e -> mouseActions.actionZoomableScrollPaneClicked());
 
         tableViewComponents.setOnKeyPressed(e -> actionCanvasKeyPressed(e.getCode()));
 
-        zoomableScrollPaneWorkspace = new ZoomableScrollPaneWorkspace(paneWorkspace);
-        borderPaneMainView.setCenter(zoomableScrollPaneWorkspace);
-        zoomableScrollPaneChart = new ZoomableScrollPaneChart(lineChartStates);
-        borderPaneMainView.setBottom(zoomableScrollPaneChart);
     }
 
     private void setChart(){
@@ -227,32 +237,40 @@ public class MainWindowController {
 
         //Setting the data to Line chart
         lineChartStates.getData().addAll(arrayListSeries);
-
         zoomableScrollPaneChart.setPrefHeight(150);
-        zoomableScrollPaneChart.setOnMouseEntered(e -> {
-            new Thread(() -> {
-                while(zoomableScrollPaneChart.getPrefHeight() < main.getPrimaryStage().getHeight() - 200){
-                    zoomableScrollPaneChart.setPrefHeight(zoomableScrollPaneChart.getPrefHeight() + 1.5);
-                    try {
-                        Thread.sleep(1);
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }).start();
-        });
-        zoomableScrollPaneChart.setOnMouseExited(e -> {
-            new Thread(() -> {
-                while(zoomableScrollPaneChart.getPrefHeight() > 150){
-                    zoomableScrollPaneChart.setPrefHeight(zoomableScrollPaneChart.getPrefHeight() - 1.5);
-                    try {
-                        Thread.sleep(1);
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }).start();
-        });
+
+//        new Thread(() -> {
+//            int chartMillis = 0;
+//            while(true) {
+//                chartMillis += 10;
+//                final int finalChartMillis = chartMillis;
+//                Platform.runLater(() -> {
+//                    for (Component c : arrayListCreatedComponents) {
+//                        if (c.isStateChanged()) {
+//                            System.out.println("Halo " + finalChartMillis);
+//                            lineChartStates.setPrefWidth(1024 + finalChartMillis / 5);
+//                            for(int i = 0; i < arrayListCreatedComponents.size(); i++) {
+//                                Component drawnComponent = arrayListCreatedComponents.get(i);
+//                                if (drawnComponent.isSignalOutput()) {
+//                                    arrayListSeries.get(i).getData().add(new XYChart.Data<Integer, String>(finalChartMillis, drawnComponent.getName() + " " + drawnComponent.getId() + ": 0"));
+//                                    arrayListSeries.get(i).getData().add(new XYChart.Data<Integer, String>(finalChartMillis, drawnComponent.getName() + " " + drawnComponent.getId() + ": 1"));
+//                                } else {
+//                                    arrayListSeries.get(i).getData().add(new XYChart.Data<Integer, String>(finalChartMillis, drawnComponent.getName() + " " + drawnComponent.getId() + ": 1"));
+//                                    arrayListSeries.get(i).getData().add(new XYChart.Data<Integer, String>(finalChartMillis, drawnComponent.getName() + " " + drawnComponent.getId() + ": 0"));
+//                                }
+//                                drawnComponent.setStateChanged(false);
+//                            }
+//                            break;
+//                        }
+//                    }
+//                });
+//                try {
+//                    Thread.sleep(10);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
     }
 
     public void myInitialize(main.Main main){
@@ -269,37 +287,37 @@ public class MainWindowController {
     }
 
     public void actionDebug(){
-        lineChartStates.setPrefWidth(((XYChart.Series)lineChartStates.getData().get(0)).getData().size() * 50);
-        arrayListSeries.get(0).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(0).getData().size(), "Testseries11"));
-        arrayListSeries.get(0).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(0).getData().size() + 1, "Testseries12"));
-        arrayListSeries.get(1).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(1).getData().size(), "Testseries21"));
-        arrayListSeries.get(1).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(1).getData().size() + 1, "Testseries22"));
-        arrayListSeries.get(2).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(2).getData().size(), "Testseries31"));
-        arrayListSeries.get(2).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(2).getData().size() + 1, "Testseries32"));
-        arrayListSeries.get(3).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(3).getData().size(), "Testseries41"));
-        arrayListSeries.get(3).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(3).getData().size() + 1, "Testseries42"));
-        arrayListSeries.get(4).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(4).getData().size(), "Testseries51"));
-        arrayListSeries.get(4).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(4).getData().size() + 1, "Testseries52"));
-        arrayListSeries.get(5).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(5).getData().size(), "Testseries61"));
-        arrayListSeries.get(5).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(5).getData().size() + 1, "Testseries62"));
-        arrayListSeries.get(6).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(6).getData().size(), "Testseries71"));
-        arrayListSeries.get(6).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(6).getData().size() + 1, "Testseries72"));
-        arrayListSeries.get(7).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(7).getData().size(), "Testseries81"));
-        arrayListSeries.get(7).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(7).getData().size() + 1, "Testseries82"));
-        arrayListSeries.get(8).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(8).getData().size(), "Testseries91"));
-        arrayListSeries.get(8).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(8).getData().size() + 1, "Testseries92"));
-        arrayListSeries.get(9).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(9).getData().size(), "Testseries101"));
-        arrayListSeries.get(9).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(9).getData().size() + 1, "Testseries102"));
-        arrayListSeries.get(10).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(10).getData().size(), "Testseries111"));
-        arrayListSeries.get(10).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(10).getData().size() + 1, "Testseries112"));
-        arrayListSeries.get(11).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(11).getData().size(), "Testseries121"));
-        arrayListSeries.get(11).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(11).getData().size() + 1, "Testseries122"));
-        arrayListSeries.get(12).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(12).getData().size(), "Testseries131"));
-        arrayListSeries.get(12).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(12).getData().size() + 1, "Testseries132"));
-        arrayListSeries.get(13).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(13).getData().size(), "Testseries141"));
-        arrayListSeries.get(13).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(13).getData().size() + 1, "Testseries142"));
-        arrayListSeries.get(14).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(14).getData().size(), "Testseries151"));
-        arrayListSeries.get(14).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(14).getData().size() + 1, "Testseries152"));
+//        lineChartStates.setPrefWidth(((XYChart.Series)lineChartStates.getData().get(0)).getData().size() * 50);
+//        arrayListSeries.get(0).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(0).getData().size(), "Testseries11"));
+//        arrayListSeries.get(0).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(0).getData().size() + 1, "Testseries12"));
+//        arrayListSeries.get(1).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(1).getData().size(), "Testseries21"));
+//        arrayListSeries.get(1).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(1).getData().size() + 1, "Testseries22"));
+//        arrayListSeries.get(2).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(2).getData().size(), "Testseries31"));
+//        arrayListSeries.get(2).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(2).getData().size() + 1, "Testseries32"));
+//        arrayListSeries.get(3).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(3).getData().size(), "Testseries41"));
+//        arrayListSeries.get(3).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(3).getData().size() + 1, "Testseries42"));
+//        arrayListSeries.get(4).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(4).getData().size(), "Testseries51"));
+//        arrayListSeries.get(4).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(4).getData().size() + 1, "Testseries52"));
+//        arrayListSeries.get(5).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(5).getData().size(), "Testseries61"));
+//        arrayListSeries.get(5).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(5).getData().size() + 1, "Testseries62"));
+//        arrayListSeries.get(6).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(6).getData().size(), "Testseries71"));
+//        arrayListSeries.get(6).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(6).getData().size() + 1, "Testseries72"));
+//        arrayListSeries.get(7).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(7).getData().size(), "Testseries81"));
+//        arrayListSeries.get(7).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(7).getData().size() + 1, "Testseries82"));
+//        arrayListSeries.get(8).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(8).getData().size(), "Testseries91"));
+//        arrayListSeries.get(8).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(8).getData().size() + 1, "Testseries92"));
+//        arrayListSeries.get(9).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(9).getData().size(), "Testseries101"));
+//        arrayListSeries.get(9).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(9).getData().size() + 1, "Testseries102"));
+//        arrayListSeries.get(10).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(10).getData().size(), "Testseries111"));
+//        arrayListSeries.get(10).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(10).getData().size() + 1, "Testseries112"));
+//        arrayListSeries.get(11).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(11).getData().size(), "Testseries121"));
+//        arrayListSeries.get(11).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(11).getData().size() + 1, "Testseries122"));
+//        arrayListSeries.get(12).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(12).getData().size(), "Testseries131"));
+//        arrayListSeries.get(12).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(12).getData().size() + 1, "Testseries132"));
+//        arrayListSeries.get(13).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(13).getData().size(), "Testseries141"));
+//        arrayListSeries.get(13).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(13).getData().size() + 1, "Testseries142"));
+//        arrayListSeries.get(14).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(14).getData().size(), "Testseries151"));
+//        arrayListSeries.get(14).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(14).getData().size() + 1, "Testseries152"));
     }
 
     public void actionDelete(){
@@ -644,80 +662,81 @@ public class MainWindowController {
         tableViewComponents.getSelectionModel().clearSelection();
         try {
             Component newComponent = null;
+            XYChart.Series<Integer, String> newSeries= new XYChart.Series<>();
             if (newComponentName.equals(Names.gateNotName)) {
-                newComponent = new Not(x, y, true);
+                newComponent = new Not(x, y, true, newSeries);
             }
             else if (newComponentName.equals(Names.gateAnd2Name)) {
-                newComponent = new And2(x, y, true);
+                newComponent = new And2(x, y, true, newSeries);
             }
             else if (newComponentName.equals(Names.gateAnd3Name)) {
-                newComponent = new And3(x, y, true);
+                newComponent = new And3(x, y, true, newSeries);
             }
             else if (newComponentName.equals(Names.gateAnd4Name)) {
-                newComponent = new And4(x, y, true);
+                newComponent = new And4(x, y, true, newSeries);
             }
             else if (newComponentName.equals(Names.gateOr2Name)) {
-                newComponent = new Or2(x, y, true);
+                newComponent = new Or2(x, y, true, newSeries);
             }
             else if (newComponentName.equals(Names.gateOr3Name)) {
-                newComponent = new Or3(x, y, true);
+                newComponent = new Or3(x, y, true, newSeries);
             }
             else if (newComponentName.equals(Names.gateOr4Name)) {
-                newComponent = new Or4(x, y, true);
+                newComponent = new Or4(x, y, true, newSeries);
             }
             else if (newComponentName.equals(Names.gateXor2Name)) {
-                newComponent = new Xor2(x, y, true);
+                newComponent = new Xor2(x, y, true, newSeries);
             }
             else if (newComponentName.equals(Names.gateXor3Name)) {
-                newComponent = new Xor3(x, y, true);
+                newComponent = new Xor3(x, y, true, newSeries);
             }
             else if (newComponentName.equals(Names.gateXor4Name)) {
-                newComponent = new Xor4(x, y, true);
+                newComponent = new Xor4(x, y, true, newSeries);
             }
             else if (newComponentName.equals(Names.gateNand2Name)) {
-                newComponent = new Nand2(x, y, true);
+                newComponent = new Nand2(x, y, true, newSeries);
             }
             else if (newComponentName.equals(Names.gateNand3Name)) {
-                newComponent = new Nand3(x, y, true);
+                newComponent = new Nand3(x, y, true, newSeries);
             }
             else if (newComponentName.equals(Names.gateNand4Name)) {
-                newComponent = new Nand4(x, y, true);
+                newComponent = new Nand4(x, y, true, newSeries);
             }
             else if (newComponentName.equals(Names.gateNor2Name)) {
-                newComponent = new Nor2(x, y, true);
+                newComponent = new Nor2(x, y, true, newSeries);
             }
             else if (newComponentName.equals(Names.gateNor3Name)) {
-                newComponent = new Nor3(x, y, true);
+                newComponent = new Nor3(x, y, true, newSeries);
             }
             else if (newComponentName.equals(Names.gateNor4Name)) {
-                newComponent = new Nor4(x, y, true);
+                newComponent = new Nor4(x, y, true, newSeries);
             }
             else if (newComponentName.equals(Names.gateXnor2Name)) {
-                newComponent = new Xnor2(x, y, true);
+                newComponent = new Xnor2(x, y, true, newSeries);
             }
             else if (newComponentName.equals(Names.gateXnor3Name)) {
-                newComponent = new Xnor3(x, y, true);
+                newComponent = new Xnor3(x, y, true, newSeries);
             }
             else if (newComponentName.equals(Names.gateXnor4Name)) {
-                newComponent = new Xnor4(x, y, true);
+                newComponent = new Xnor4(x, y, true, newSeries);
             }
             else if(newComponentName.equals(Names.switchMonostableName)){
-                newComponent = new SwitchMonostable(x, y, true);
+                newComponent = new SwitchMonostable(x, y, true, newSeries);
             }
             else if(newComponentName.equals(Names.switchBistableName)){
-                newComponent = new SwitchBistatble(x, y, true);
+                newComponent = new SwitchBistatble(x, y, true, newSeries);
             }
             else if(newComponentName.equals(Names.switchPulseName)){
-                newComponent = new SwitchPulse(x, y, true);
+                newComponent = new SwitchPulse(x, y, true, newSeries);
             }
             else if(newComponentName.equals(Names.flipFlopD)){
-                newComponent = new FlipFlopD(x, y, true);
+                newComponent = new FlipFlopD(x, y, true, newSeries);
             }
             else if(newComponentName.equals(Names.flipFlopT)){
-                newComponent = new FlipFlopT(x, y, true);
+                newComponent = new FlipFlopT(x, y, true, newSeries);
             }
             else if(newComponentName.equals(Names.flipFlopJK)){
-                newComponent = new FlipFlopJK(x, y, true);
+                newComponent = new FlipFlopJK(x, y, true, newSeries);
             }
 
             if(newComponent != null){
@@ -728,7 +747,7 @@ public class MainWindowController {
                 }
                 else if(newComponent.getName().contains(Names.switchSearchName)){
                     arrayListCreatedSwitches.add((Switch)newComponent);
-                    switchCounter++;
+                    switchCounter++;    
                     newComponent.setId(switchCounter);
                 }
                 else if(newComponent.getName().contains(Names.flipFlopSearchName)){
@@ -738,8 +757,15 @@ public class MainWindowController {
                 }
                 arrayListCreatedComponents.add(newComponent);
 
-                lineChartStates.setPrefWidth(1024 + arrayListCreatedComponents.size() * 50);
-                arrayListSeries.add(new XYChart.Series<>());
+                if(newComponent.isSignalOutput()) {
+                    newSeries.getData().add(new XYChart.Data<Integer, String>(0, newComponent.getName() + " " + newComponent.getId() + ": 1"));
+                    newSeries.getData().add(new XYChart.Data<Integer, String>(chartMillis, newComponent.getName() + " " + newComponent.getId() + ": 1"));
+                }
+                else{
+                    newSeries.getData().add(new XYChart.Data<Integer, String>(0, newComponent.getName() + " " + newComponent.getId() + ": 0"));
+                    newSeries.getData().add(new XYChart.Data<Integer, String>(chartMillis, newComponent.getName() + " " + newComponent.getId() + ": 0"));
+                }
+                arrayListSeries.add(newSeries);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1054,6 +1080,18 @@ public class MainWindowController {
 
     public ZoomableScrollPaneWorkspace getZoomableScrollPaneWorkspace() {
         return zoomableScrollPaneWorkspace;
+    }
+
+    public ZoomableScrollPaneChart getZoomableScrollPaneChart() {
+        return zoomableScrollPaneChart;
+    }
+
+    public Main getMain() {
+        return main;
+    }
+
+    public HBox gethBoxChartArea() {
+        return hBoxChartArea;
     }
 }
 

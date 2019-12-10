@@ -5,6 +5,7 @@ import components.Line;
 import components.Point;
 import data.Sizes;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.chart.XYChart;
 import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
@@ -35,8 +36,8 @@ public abstract class FlipFlop extends Component {
     protected ImageView imageViewOn;
     protected ImageView imageViewSelected;
 
-    public FlipFlop(double x, double y, boolean startLife){
-        super(x, y, startLife);
+    public FlipFlop(double x, double y, boolean startLife, XYChart.Series<Integer, String> series){
+        super(x, y, startLife, series);
 
         pointInput = new Point("Input", x - 145, y - 75);
         pointOutput = new Point("Output", x + 145, y - 75);

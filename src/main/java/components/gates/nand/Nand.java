@@ -3,14 +3,11 @@ package components.gates.nand;
 import components.Line;
 import components.gates.Gate;
 import data.Sizes;
+import javafx.scene.chart.XYChart;
 
 public abstract class Nand extends Gate {
-    public Nand(double x, double y, boolean startLife) {
-        super(x, y, startLife);
-
-        if(startLife){
-            executorService.execute(() -> lifeCycle());
-        }
+    public Nand(double x, double y, boolean startLife, XYChart.Series<Integer, String> series) {
+        super(x, y, startLife, series);
     }
 
     public void lifeCycle(){

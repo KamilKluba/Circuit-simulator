@@ -14,6 +14,7 @@ import javafx.stage.WindowEvent;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main extends Application {
     private StartWindowController startWindowController;

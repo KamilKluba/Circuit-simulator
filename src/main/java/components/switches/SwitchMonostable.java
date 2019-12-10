@@ -5,13 +5,14 @@ import data.Names;
 import data.Sizes;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.chart.XYChart;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 public class SwitchMonostable extends Switch{
-    public SwitchMonostable(double x, double y, boolean startLife){
-        super(x, y, startLife);
+    public SwitchMonostable(double x, double y, boolean startLife, XYChart.Series<Integer, String> series){
+        super(x, y, startLife, series);
         name = Names.switchMonostableName;
         pointLineHook.setY(pointCenter.getY() + 35);
 

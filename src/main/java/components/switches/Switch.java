@@ -5,6 +5,7 @@ import components.Line;
 import components.Point;
 import data.Sizes;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.chart.XYChart;
 import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
@@ -20,8 +21,8 @@ public abstract class Switch extends Component {
     protected ImageView imageViewSelectedOff;
 
 
-    public Switch(double x, double y, boolean startLife){
-        super(x, y, startLife);
+    public Switch(double x, double y, boolean startLife, XYChart.Series<Integer, String> series){
+        super(x, y, startLife, series);
         this.pointLineHook = new Point("Output", x, y - 35);
     }
 
@@ -137,6 +138,7 @@ public abstract class Switch extends Component {
     }
 
     public void setState(boolean state) {
+        this.stateChanged.set(true);
         this.state.set(state);
     }
 

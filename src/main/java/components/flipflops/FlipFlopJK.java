@@ -4,6 +4,7 @@ import components.Line;
 import components.Point;
 import data.Names;
 import data.Sizes;
+import javafx.scene.chart.XYChart;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -14,8 +15,8 @@ public class FlipFlopJK extends FlipFlop{
     private ArrayList<Line> arrayListLinesInputK = new ArrayList<>();
     private Point pointInputK;
 
-    public FlipFlopJK(double x, double y, boolean startLife){
-        super(x, y, startLife);
+    public FlipFlopJK(double x, double y, boolean startLife, XYChart.Series<Integer, String> series){
+        super(x, y, startLife, series);
 
         name = Names.flipFlopJK;
 

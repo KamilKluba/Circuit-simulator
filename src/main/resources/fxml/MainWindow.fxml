@@ -11,6 +11,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 
 <BorderPane fx:id="borderPaneMainView" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" stylesheets="@../css/styles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainWindowController">
@@ -30,33 +31,43 @@
          <content>
             <AnchorPane fx:id="anchorPaneOptions" prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <TextField fx:id="textFieldFilterComponents" layoutX="14.0" layoutY="179.0" onKeyReleased="#actionFilterComponents" onMousePressed="#actionClearTextFilterComponents" prefHeight="30.0" prefWidth="150.0" promptText="Filtruj komponenty" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="90.0" />
-                  <TableView fx:id="tableViewComponents" layoutY="120.0" prefHeight="350.0" prefWidth="200.0" styleClass="table-column" stylesheets="@../css/styles.css" AnchorPane.topAnchor="130.0">
+                  <TextField fx:id="textFieldFilterComponents" layoutX="14.0" layoutY="179.0" onKeyReleased="#actionFilterComponents" onMousePressed="#actionClearTextFilterComponents" prefHeight="30.0" prefWidth="150.0" promptText="Filtruj komponenty" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="10.0" />
+                  <TableView fx:id="tableViewComponents" layoutY="120.0" prefHeight="350.0" prefWidth="200.0" styleClass="table-column" stylesheets="@../css/styles.css" AnchorPane.topAnchor="50.0">
                     <columns>
                       <TableColumn fx:id="tableColumnComponentsPictures" editable="false" minWidth="92.0" prefWidth="-1.0" sortable="false" text="Rodzaj:" />
                         <TableColumn fx:id="tableColumnComponentInputsNumber" editable="false" minWidth="92.0" prefWidth="-1.0" sortable="false" text="Liczba wejść:" />
                     </columns>
                   </TableView>
-                  <Button fx:id="buttonDelete" layoutX="134.0" layoutY="588.0" mnemonicParsing="false" onAction="#actionDelete" prefHeight="25.0" prefWidth="180.0" text="Usuń" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                  <Button fx:id="buttonRotate" layoutX="74.0" layoutY="555.0" mnemonicParsing="false" onAction="#actionRotate" prefHeight="30.0" prefWidth="180.0" text="Obróć" AnchorPane.bottomAnchor="60.0" AnchorPane.rightAnchor="10.0" />
-                  <Button layoutX="10.0" layoutY="502.0" mnemonicParsing="false" onAction="#actionDebug" prefHeight="25.0" prefWidth="180.0" text="DebugButton" AnchorPane.bottomAnchor="100.0" AnchorPane.rightAnchor="10.0" />
+                  <Button fx:id="buttonDelete" layoutX="134.0" layoutY="588.0" mnemonicParsing="false" onAction="#actionDelete" prefHeight="30.0" prefWidth="180.0" text="Usuń" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="450.0" />
+                  <Button fx:id="buttonRotate" layoutX="74.0" layoutY="555.0" mnemonicParsing="false" onAction="#actionRotate" prefHeight="30.0" prefWidth="180.0" text="Obróć" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="410.0" />
+                  <Button layoutX="10.0" layoutY="502.0" mnemonicParsing="false" onAction="#actionDebug" prefHeight="25.0" prefWidth="180.0" text="DebugButton" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="500.0" />
                </children>
             </AnchorPane>
          </content>
       </ScrollPane>
    </right>
    <bottom>
-      <ScrollPane fx:id="scrollPaneChart" prefHeight="150.0" vbarPolicy="ALWAYS" BorderPane.alignment="CENTER">
-         <content>
-            <LineChart fx:id="lineChartStates" prefHeight="500.0" prefWidth="1024.0" stylesheets="@../css/styles.css">
-              <xAxis>
-                <NumberAxis side="BOTTOM" />
-              </xAxis>
-              <yAxis>
-                <CategoryAxis side="LEFT" />
-              </yAxis>
-            </LineChart>
-         </content>
-      </ScrollPane>
+      <HBox fx:id="hBoxChartArea" BorderPane.alignment="CENTER">
+         <children>
+            <AnchorPane fx:id="anchorPaneChartOptions" prefWidth="100.0">
+               <children>
+                  <Button layoutX="21.0" layoutY="111.0" mnemonicParsing="false" prefWidth="70.0" text="Button" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                  <Button layoutX="21.0" layoutY="63.0" mnemonicParsing="false" prefWidth="70.0" text="Button" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                  <Button layoutX="27.0" layoutY="23.0" mnemonicParsing="false" prefWidth="70.0" text="Button" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+               </children></AnchorPane>
+            <ScrollPane fx:id="scrollPaneChart" prefHeight="150.0" vbarPolicy="ALWAYS">
+               <content>
+                  <LineChart fx:id="lineChartStates" prefHeight="500.0" prefWidth="1024.0" stylesheets="@../css/styles.css">
+                    <xAxis>
+                      <NumberAxis side="BOTTOM" />
+                    </xAxis>
+                    <yAxis>
+                      <CategoryAxis side="LEFT" />
+                    </yAxis>
+                  </LineChart>
+               </content>
+            </ScrollPane>
+         </children>
+      </HBox>
    </bottom>
 </BorderPane>

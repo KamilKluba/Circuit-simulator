@@ -3,12 +3,13 @@ package components.switches;
 import data.Names;
 import data.Sizes;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.chart.XYChart;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class SwitchPulse extends Switch {
-    public SwitchPulse(double x, double y, boolean startLife) {
-        super(x, y, startLife);
+    public SwitchPulse(double x, double y, boolean startLife, XYChart.Series<Integer, String> series) {
+        super(x, y, startLife, series);
         name = Names.switchPulseName;
 
         imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/switches/switch_bistable_off.png").toExternalForm(), Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false));
