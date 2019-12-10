@@ -6,10 +6,12 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 
 public class FlipFlopD extends FlipFlop{
-    public FlipFlopD(double x, double y, boolean startLife, XYChart.Series<Integer, String> series){
-        super(x, y, startLife, series);
+    public FlipFlopD(double x, double y, boolean startLife, XYChart.Series<Integer, String> series, AtomicInteger chartMillisCounter){
+        super(x, y, startLife, series, chartMillisCounter);
 
         name = Names.flipFlopD;
 
@@ -22,13 +24,13 @@ public class FlipFlopD extends FlipFlop{
         while(alive) {
             signalReset = !(arrayListLinesReset.size() > 0 && arrayListLinesReset.get(0).isSignalOutput());
             if (signalReset) {
-                signalOutput.set(false);
+                output.set(false);
                 signalReversedOutput.set(true);
             }
             else {
                 signalAsynchronousInput = arrayListLinesAsynchronousInput.size() > 0 && arrayListLinesAsynchronousInput.get(0).isSignalOutput();
                 if(signalAsynchronousInput){
-                    signalOutput.set(true);
+                    output.set(true);
                     signalReversedOutput.set(false);
                 }
                 else {
@@ -36,7 +38,7 @@ public class FlipFlopD extends FlipFlop{
                     if (signalClock && risingEdge) {
                         boolean nextState = arrayListLinesInput.size() > 0 && arrayListLinesInput.get(0).isSignalOutput();
                         risingEdge = false;
-                        if (signalOutput.get() != nextState) {
+                        if (output.get() != nextState) {
                             try {
                                 Thread.sleep(Sizes.flipFlopPropagationTime);
                             } catch (InterruptedException e) {
@@ -46,8 +48,9 @@ public class FlipFlopD extends FlipFlop{
                             boolean nextState2 = arrayListLinesInput.size() > 0 && arrayListLinesInput.get(0).isSignalOutput();
 
                             if (nextState == nextState2 && signalClock == signalClock2) {
-                                signalOutput.set(nextState);
+                                output.set(nextState);
                                 signalReversedOutput.set(!nextState);
+                                addDataToSeries();
                             }
                         }
                     }

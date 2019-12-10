@@ -9,9 +9,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class SwitchBistatble extends Switch{
-    public SwitchBistatble(double x, double y, boolean startLife, XYChart.Series<Integer, String> series){
-        super(x, y, startLife, series);
+    public SwitchBistatble(double x, double y, boolean startLife, XYChart.Series<Integer, String> series, AtomicInteger chartMillisCounter){
+        super(x, y, startLife, series, chartMillisCounter);
         name = Names.switchBistableName;
         SnapshotParameters snapshotParameters = new SnapshotParameters();
         snapshotParameters.setFill(Color.TRANSPARENT);
@@ -28,7 +30,7 @@ public class SwitchBistatble extends Switch{
 
     public void draw(GraphicsContext graphicsContext){
         if(selected){
-            if(state.get()){
+            if(output.get()){
                 graphicsContext.drawImage(imageViewSelectedOn.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
             }
             else{
@@ -36,7 +38,7 @@ public class SwitchBistatble extends Switch{
             }
         }
         else {
-            if (state.get()) {
+            if (output.get()) {
                 graphicsContext.drawImage(imageViewOn.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
             } else {
                 graphicsContext.drawImage(imageViewOff.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
@@ -45,7 +47,7 @@ public class SwitchBistatble extends Switch{
     }
 
     public void setState(boolean state){
-        this.state.set(state);
-
+        this.output.set(state);
+        addDataToSeries();
     }
 }

@@ -28,7 +28,6 @@ import components.switches.SwitchMonostable;
 import components.switches.SwitchPulse;
 import data.Accesses;
 import data.MouseActions;
-import javafx.application.Platform;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -56,7 +55,6 @@ import javafx.scene.paint.Color;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
@@ -116,7 +114,7 @@ public class MainWindowController {
                                         new ImageView(new Image(getClass().getResource("/graphics/switches/switch_bistable_off.png").toExternalForm(),
                                                 Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
         arrayListPossibleComponents.add(new TableComponent(Names.switchPulseName, 1,
-                                        new ImageView(new Image(getClass().getResource("/graphics/switches/switch_bistable_off.png").toExternalForm(),
+                                        new ImageView(new Image(getClass().getResource("/graphics/switches/switch_pulse_off.png").toExternalForm(),
                                                 Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
         arrayListPossibleComponents.add(new TableComponent(Names.gateNotName, 1,
                                         new ImageView(new Image(getClass().getResource("/graphics/not/not_off.png").toExternalForm(),
@@ -182,7 +180,7 @@ public class MainWindowController {
                                         new ImageView(new Image(getClass().getResource("/graphics/flipflops/d_off.png").toExternalForm(),
                                                 Sizes.baseFlipFLopImageInTableXSize, Sizes.baseFlipFLopImageInTableYSize, false, false))));
         arrayListPossibleComponents.add(new TableComponent(Names.flipFlopT, 1,
-                                        new ImageView(new Image(getClass().getResource("/graphics/flipflops/d_off.png").toExternalForm(),
+                                        new ImageView(new Image(getClass().getResource("/graphics/flipflops/t_off.png").toExternalForm(),
                                                 Sizes.baseFlipFLopImageInTableXSize, Sizes.baseFlipFLopImageInTableYSize, false, false))));
 
         ObservableList<TableComponent> ol = FXCollections.observableList(arrayListPossibleComponents);
@@ -238,6 +236,36 @@ public class MainWindowController {
         //Setting the data to Line chart
         lineChartStates.getData().addAll(arrayListSeries);
         zoomableScrollPaneChart.setPrefHeight(150);
+
+        new Thread(() -> {
+            long timeStart = System.currentTimeMillis();
+            while(true){
+                chartMillis.set((int)(System.currentTimeMillis() - timeStart));
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        new Thread(() -> {
+            while(true){
+                int maxLength = 0;
+                for(XYChart.Series s : arrayListSeries){
+                    if(s.getData().size() > maxLength){
+                        maxLength = s.getData().size();
+                    }
+                }
+                if(maxLength > 0){
+                    lineChartStates.setPrefWidth(924 + maxLength * 20);
+                }
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
 //        new Thread(() -> {
 //            int chartMillis = 0;
@@ -664,79 +692,79 @@ public class MainWindowController {
             Component newComponent = null;
             XYChart.Series<Integer, String> newSeries= new XYChart.Series<>();
             if (newComponentName.equals(Names.gateNotName)) {
-                newComponent = new Not(x, y, true, newSeries);
+                newComponent = new Not(x, y, true, newSeries, chartMillis);
             }
             else if (newComponentName.equals(Names.gateAnd2Name)) {
-                newComponent = new And2(x, y, true, newSeries);
+                newComponent = new And2(x, y, true, newSeries, chartMillis);
             }
             else if (newComponentName.equals(Names.gateAnd3Name)) {
-                newComponent = new And3(x, y, true, newSeries);
+                newComponent = new And3(x, y, true, newSeries, chartMillis);
             }
             else if (newComponentName.equals(Names.gateAnd4Name)) {
-                newComponent = new And4(x, y, true, newSeries);
+                newComponent = new And4(x, y, true, newSeries, chartMillis);
             }
             else if (newComponentName.equals(Names.gateOr2Name)) {
-                newComponent = new Or2(x, y, true, newSeries);
+                newComponent = new Or2(x, y, true, newSeries, chartMillis);
             }
             else if (newComponentName.equals(Names.gateOr3Name)) {
-                newComponent = new Or3(x, y, true, newSeries);
+                newComponent = new Or3(x, y, true, newSeries, chartMillis);
             }
             else if (newComponentName.equals(Names.gateOr4Name)) {
-                newComponent = new Or4(x, y, true, newSeries);
+                newComponent = new Or4(x, y, true, newSeries, chartMillis);
             }
             else if (newComponentName.equals(Names.gateXor2Name)) {
-                newComponent = new Xor2(x, y, true, newSeries);
+                newComponent = new Xor2(x, y, true, newSeries, chartMillis);
             }
             else if (newComponentName.equals(Names.gateXor3Name)) {
-                newComponent = new Xor3(x, y, true, newSeries);
+                newComponent = new Xor3(x, y, true, newSeries, chartMillis);
             }
             else if (newComponentName.equals(Names.gateXor4Name)) {
-                newComponent = new Xor4(x, y, true, newSeries);
+                newComponent = new Xor4(x, y, true, newSeries, chartMillis);
             }
             else if (newComponentName.equals(Names.gateNand2Name)) {
-                newComponent = new Nand2(x, y, true, newSeries);
+                newComponent = new Nand2(x, y, true, newSeries, chartMillis);
             }
             else if (newComponentName.equals(Names.gateNand3Name)) {
-                newComponent = new Nand3(x, y, true, newSeries);
+                newComponent = new Nand3(x, y, true, newSeries, chartMillis);
             }
             else if (newComponentName.equals(Names.gateNand4Name)) {
-                newComponent = new Nand4(x, y, true, newSeries);
+                newComponent = new Nand4(x, y, true, newSeries, chartMillis);
             }
             else if (newComponentName.equals(Names.gateNor2Name)) {
-                newComponent = new Nor2(x, y, true, newSeries);
+                newComponent = new Nor2(x, y, true, newSeries, chartMillis);
             }
             else if (newComponentName.equals(Names.gateNor3Name)) {
-                newComponent = new Nor3(x, y, true, newSeries);
+                newComponent = new Nor3(x, y, true, newSeries, chartMillis);
             }
             else if (newComponentName.equals(Names.gateNor4Name)) {
-                newComponent = new Nor4(x, y, true, newSeries);
+                newComponent = new Nor4(x, y, true, newSeries, chartMillis);
             }
             else if (newComponentName.equals(Names.gateXnor2Name)) {
-                newComponent = new Xnor2(x, y, true, newSeries);
+                newComponent = new Xnor2(x, y, true, newSeries, chartMillis);
             }
             else if (newComponentName.equals(Names.gateXnor3Name)) {
-                newComponent = new Xnor3(x, y, true, newSeries);
+                newComponent = new Xnor3(x, y, true, newSeries, chartMillis);
             }
             else if (newComponentName.equals(Names.gateXnor4Name)) {
-                newComponent = new Xnor4(x, y, true, newSeries);
+                newComponent = new Xnor4(x, y, true, newSeries, chartMillis);
             }
             else if(newComponentName.equals(Names.switchMonostableName)){
-                newComponent = new SwitchMonostable(x, y, true, newSeries);
+                newComponent = new SwitchMonostable(x, y, true, newSeries, chartMillis);
             }
             else if(newComponentName.equals(Names.switchBistableName)){
-                newComponent = new SwitchBistatble(x, y, true, newSeries);
+                newComponent = new SwitchBistatble(x, y, true, newSeries, chartMillis);
             }
             else if(newComponentName.equals(Names.switchPulseName)){
-                newComponent = new SwitchPulse(x, y, true, newSeries);
+                newComponent = new SwitchPulse(x, y, true, newSeries, chartMillis);
             }
             else if(newComponentName.equals(Names.flipFlopD)){
-                newComponent = new FlipFlopD(x, y, true, newSeries);
+                newComponent = new FlipFlopD(x, y, true, newSeries, chartMillis);
             }
             else if(newComponentName.equals(Names.flipFlopT)){
-                newComponent = new FlipFlopT(x, y, true, newSeries);
+                newComponent = new FlipFlopT(x, y, true, newSeries, chartMillis);
             }
             else if(newComponentName.equals(Names.flipFlopJK)){
-                newComponent = new FlipFlopJK(x, y, true, newSeries);
+                newComponent = new FlipFlopJK(x, y, true, newSeries, chartMillis);
             }
 
             if(newComponent != null){
@@ -757,15 +785,12 @@ public class MainWindowController {
                 }
                 arrayListCreatedComponents.add(newComponent);
 
-                if(newComponent.isSignalOutput()) {
-                    newSeries.getData().add(new XYChart.Data<Integer, String>(0, newComponent.getName() + " " + newComponent.getId() + ": 1"));
-                    newSeries.getData().add(new XYChart.Data<Integer, String>(chartMillis, newComponent.getName() + " " + newComponent.getId() + ": 1"));
-                }
-                else{
-                    newSeries.getData().add(new XYChart.Data<Integer, String>(0, newComponent.getName() + " " + newComponent.getId() + ": 0"));
-                    newSeries.getData().add(new XYChart.Data<Integer, String>(chartMillis, newComponent.getName() + " " + newComponent.getId() + ": 0"));
-                }
+                newSeries.getData().add(new XYChart.Data<Integer, String>(0, newComponent.getName() + " " + newComponent.getId() + ": 0"));
+                newSeries.getData().add(new XYChart.Data<Integer, String>(0, newComponent.getName() + " " + newComponent.getId() + ": 1"));
+                newSeries.getData().add(new XYChart.Data<Integer, String>(0, newComponent.getName() + " " + newComponent.getId() + ": 0"));
+
                 arrayListSeries.add(newSeries);
+                lineChartStates.getData().add(newSeries);
             }
         } catch (Exception e) {
             e.printStackTrace();

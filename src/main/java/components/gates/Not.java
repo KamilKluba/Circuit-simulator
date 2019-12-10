@@ -9,11 +9,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Not extends Gate {
 
-    public Not(double x, double y, boolean startLife, XYChart.Series<Integer, String> series){
-        super(x, y, startLife, series);
+    public Not(double x, double y, boolean startLife, XYChart.Series<Integer, String> series, AtomicInteger chartMillisCounter){
+        super(x, y, startLife, series, chartMillisCounter);
 
         inputsNumber = 1;
         arrayArrayListLines = new ArrayList[1];

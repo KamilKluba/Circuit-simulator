@@ -145,79 +145,79 @@ public class MouseActions {
             Component newComponent = null;
             graphicsContext.setStroke(Color.BLACK);
             if(newComponentName.equals(Names.gateNotName)){
-                newComponent = new Not(x, y, false, null);
+                newComponent = new Not(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateAnd2Name)){
-                newComponent = new And2(x, y, false, null);
+                newComponent = new And2(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateAnd3Name)){
-                newComponent = new And3(x, y, false, null);
+                newComponent = new And3(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateAnd4Name)){
-                newComponent = new And4(x, y, false, null);
+                newComponent = new And4(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateOr2Name)){
-                newComponent = new Or2(x, y, false, null);
+                newComponent = new Or2(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateOr3Name)){
-                newComponent = new Or3(x, y, false, null);
+                newComponent = new Or3(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateOr4Name)){
-                newComponent = new Or4(x, y, false, null);
+                newComponent = new Or4(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateXor2Name)){
-                newComponent = new Xor2(x, y, false, null);
+                newComponent = new Xor2(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateXor3Name)){
-                newComponent = new Xor3(x, y, false, null);
+                newComponent = new Xor3(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateXor4Name)){
-                newComponent = new Xor4(x, y, false, null);
+                newComponent = new Xor4(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateNand2Name)){
-                newComponent = new Nand2(x, y, false, null);
+                newComponent = new Nand2(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateNand3Name)){
-                newComponent = new Nand3(x, y, false, null);
+                newComponent = new Nand3(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateNand4Name)){
-                newComponent = new Nand4(x, y, false, null);
+                newComponent = new Nand4(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateNor2Name)){
-                newComponent = new Nor2(x, y, false, null);
+                newComponent = new Nor2(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateNor3Name)){
-                newComponent = new Nor3(x, y, false, null);
+                newComponent = new Nor3(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateNor4Name)){
-                newComponent = new Nor4(x, y, false, null);
+                newComponent = new Nor4(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateXnor2Name)){
-                newComponent = new Xnor2(x, y, false, null);
+                newComponent = new Xnor2(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateXnor3Name)){
-                newComponent = new Xnor3(x, y, false, null);
+                newComponent = new Xnor3(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateXnor4Name)){
-                newComponent = new Xnor4(x, y, false, null);
+                newComponent = new Xnor4(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.switchMonostableName)){
-                newComponent = new SwitchMonostable(x, y, false, null);
+                newComponent = new SwitchMonostable(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.switchBistableName)){
-                newComponent = new SwitchBistatble(x, y, false, null);
+                newComponent = new SwitchBistatble(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.switchPulseName)){
-                newComponent = new SwitchPulse(x, y, false, null);
+                newComponent = new SwitchPulse(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.flipFlopD)){
-                newComponent = new FlipFlopD(x, y, false, null);
+                newComponent = new FlipFlopD(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.flipFlopT)){
-                newComponent = new FlipFlopT(x, y, false, null);
+                newComponent = new FlipFlopT(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.flipFlopJK)){
-                newComponent = new FlipFlopJK(x, y, false, null);
+                newComponent = new FlipFlopJK(x, y, false, null, null);
             }
 
             if(newComponent != null){
@@ -290,6 +290,9 @@ public class MouseActions {
                 }
                 else if(c.getName().equals(Names.switchBistableName) && c.inside(x, y)){
                     ((Switch)c).invertState();
+                }
+                else if(c.getName().equals(Names.switchPulseName) && event.getButton() == MouseButton.SECONDARY){
+                    ((SwitchPulse)c).setTurnedOn(!((SwitchPulse)c).isTurnedOn());
                 }
             }
 

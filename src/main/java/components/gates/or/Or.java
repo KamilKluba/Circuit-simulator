@@ -5,9 +5,11 @@ import components.gates.Gate;
 import data.Sizes;
 import javafx.scene.chart.XYChart;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public abstract class Or extends Gate {
-    public Or(double x, double y, boolean startLife, XYChart.Series<Integer, String> series) {
-        super(x, y, startLife, series);
+    public Or(double x, double y, boolean startLife, XYChart.Series<Integer, String> series, AtomicInteger chartMillisCounter){
+        super(x, y, startLife, series, chartMillisCounter);
     }
 
     public void lifeCycle(){
@@ -39,8 +41,8 @@ public abstract class Or extends Gate {
                     }
                 }
                 if(nextState == nextState2) {
-                    stateChanged.set(true);
                     output.set(nextState);
+                    addDataToSeries();
                 }
             }
             try {

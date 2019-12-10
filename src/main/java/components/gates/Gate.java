@@ -13,12 +13,12 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Gate extends Component {
     protected double inputsNumber;
     protected ArrayList<Line>[] arrayArrayListLines;
     protected ArrayList<Line> arrayListLinesOutput = new ArrayList<>();
-    protected AtomicBoolean output = new AtomicBoolean(false);
     protected boolean[] arraySignalsInputs;
     protected Color color = Color.BLACK;
     protected Point pointOutput;
@@ -30,8 +30,8 @@ public abstract class Gate extends Component {
     public Gate(){
     }
 
-    public Gate(double x, double y, boolean startLife, XYChart.Series<Integer, String> series){
-        super(x, y, startLife, series);
+    public Gate(double x, double y, boolean startLife, XYChart.Series<Integer, String> series, AtomicInteger chartMillisCounter){
+        super(x, y, startLife, series, chartMillisCounter);
         pointCenter = new Point(Names.pointCenterName, x, y);
         pointOutput = new Point(Names.pointOutputName, x + 93, y);
     }
@@ -210,10 +210,6 @@ public abstract class Gate extends Component {
 
     public void setOutput(boolean output){
         this.output.set(output);
-    }
-
-    public boolean getOutput(){
-        return output.get();
     }
 
     public boolean isSignalOutput() {return output.get();}

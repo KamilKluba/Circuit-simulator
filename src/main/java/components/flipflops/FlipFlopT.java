@@ -6,9 +6,11 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class FlipFlopT extends FlipFlop {
-    public FlipFlopT(double x, double y, boolean startLife, XYChart.Series<Integer, String> series){
-        super(x, y, startLife, series);
+    public FlipFlopT(double x, double y, boolean startLife, XYChart.Series<Integer, String> series, AtomicInteger chartMillisCounter){
+        super(x, y, startLife, series, chartMillisCounter);
 
         name = Names.flipFlopT;
 
@@ -21,13 +23,13 @@ public class FlipFlopT extends FlipFlop {
         while(alive) {
             signalReset = !(arrayListLinesReset.size() > 0 && arrayListLinesReset.get(0).isSignalOutput());
             if (signalReset) {
-                signalOutput.set(false);
+                output.set(false);
                 signalReversedOutput.set(true);
             }
             else {
                 signalAsynchronousInput = arrayListLinesAsynchronousInput.size() > 0 && arrayListLinesAsynchronousInput.get(0).isSignalOutput();
                 if(signalAsynchronousInput){
-                    signalOutput.set(true);
+                    output.set(true);
                     signalReversedOutput.set(false);
                 }
                 else {
@@ -35,7 +37,7 @@ public class FlipFlopT extends FlipFlop {
                     if (signalClock && risingEdge) {
                         boolean nextState = arrayListLinesInput.size() > 0 && arrayListLinesInput.get(0).isSignalOutput();
                         risingEdge = false;
-                        if (signalOutput.get() != nextState) {
+                        if (output.get() != nextState) {
                             try {
                                 Thread.sleep(Sizes.flipFlopPropagationTime);
                             } catch (InterruptedException e) {
@@ -45,8 +47,9 @@ public class FlipFlopT extends FlipFlop {
                             boolean nextState2 = arrayListLinesInput.size() > 0 && arrayListLinesInput.get(0).isSignalOutput();
 
                             if (nextState == nextState2 && signalClock == signalClock2) {
-                                signalOutput.set(true);
+                                output.set(true);
                                 signalReversedOutput.set(false);
+                                addDataToSeries();
                             }
                         }
                         else{
@@ -59,8 +62,9 @@ public class FlipFlopT extends FlipFlop {
                             boolean nextState2 = arrayListLinesInput.size() > 0 && arrayListLinesInput.get(0).isSignalOutput();
 
                             if (nextState == nextState2 && signalClock == signalClock2) {
-                                signalOutput.set(false);
+                                output.set(false);
                                 signalReversedOutput.set(true);
+                                addDataToSeries();
                             }
                         }
                     }

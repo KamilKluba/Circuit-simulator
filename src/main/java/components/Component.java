@@ -1,5 +1,6 @@
 package components;
 
+import javafx.application.Platform;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.XYChart;
 import javafx.scene.image.ImageView;
@@ -8,12 +9,14 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Component {
     protected int id;
     protected boolean selected = false;
     protected boolean selectedForDrag = false;
     protected boolean alive = true;
+    protected AtomicBoolean output = new AtomicBoolean(false);
     protected String name;
     protected int rotation = 0;
     protected Point pointCenter;
@@ -25,23 +28,39 @@ public abstract class Component {
     protected ExecutorService executorService = Executors.newFixedThreadPool(1);
     protected AtomicBoolean stateChanged = new AtomicBoolean(false);
     protected XYChart.Series<Integer, String> series;
+    protected AtomicInteger chartMillisCounter;
 
     public Component(){}
 
-    public Component(double x, double y, boolean startLife, XYChart.Series<Integer, String> series){
+    public Component(double x, double y, boolean startLife, XYChart.Series<Integer, String> series, AtomicInteger chartMillisCounter){
         this.pointCenter = new Point("Center", x, y);
         this.series = series;
+        this.chartMillisCounter = chartMillisCounter;
 
         if (startLife) {
             executorService.execute(() -> lifeCycle());
         }
     }
 
+    protected void addDataToSeries() {
+        Platform.runLater(() -> {
+            if (output.get()) {
+                series.getData().add(new XYChart.Data<Integer, String>(chartMillisCounter.get(), name + " " + id + ": 0"));
+                if(series.getData().size() > 3) {
+                    series.getData().add(new XYChart.Data<Integer, String>(chartMillisCounter.get(), name + " " + id + ": 1"));
+                }
+            } else {
+                series.getData().add(new XYChart.Data<Integer, String>(chartMillisCounter.get(), name + " " + id + ": 1"));
+                if(series.getData().size() > 3){
+                    series.getData().add(new XYChart.Data<Integer, String>(chartMillisCounter.get(), name + " " + id + ": 0"));
+                }
+            }
+        });
+    }
     public void kill(){
         alive = false;
     }
-
-    public void lifeCycle(){};
+    protected void lifeCycle(){};
     public void searchForSignals(Line line, ArrayList<Line> arrayListDependentComponents,
                                  ArrayList<String> arrayListDependentComponentsPin, ArrayList<Line> arayListVisitedComponents){}
     public void select(double x, double y){}
@@ -85,7 +104,7 @@ public abstract class Component {
         this.selectedForDrag = selectedForDrag;
     }
 
-    public boolean isSignalOutput(){return false;}
+    public boolean isSignalOutput() {return output.get();}
 
     public boolean isStateChanged() {
         return stateChanged.get();

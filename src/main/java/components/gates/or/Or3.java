@@ -10,11 +10,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Or3 extends Or {
 
-    public Or3(double x, double y, boolean startLife, XYChart.Series<Integer, String> series) {
-        super(x, y, startLife, series);
+    public Or3(double x, double y, boolean startLife, XYChart.Series<Integer, String> series, AtomicInteger chartMillisCounter){
+        super(x, y, startLife, series, chartMillisCounter);
 
         inputsNumber = 3;
         arrayArrayListLines = new ArrayList[3];

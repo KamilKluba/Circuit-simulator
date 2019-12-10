@@ -10,12 +10,12 @@ import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class FlipFlop extends Component {
     protected boolean risingEdge = true;
     protected boolean lastState = false;
     protected boolean signalInput = false;
-    protected AtomicBoolean signalOutput = new AtomicBoolean(false);
     protected AtomicBoolean signalReversedOutput = new AtomicBoolean(true);
     protected boolean signalAsynchronousInput = false;
     protected boolean signalClock = false;
@@ -36,8 +36,8 @@ public abstract class FlipFlop extends Component {
     protected ImageView imageViewOn;
     protected ImageView imageViewSelected;
 
-    public FlipFlop(double x, double y, boolean startLife, XYChart.Series<Integer, String> series){
-        super(x, y, startLife, series);
+    public FlipFlop(double x, double y, boolean startLife, XYChart.Series<Integer, String> series, AtomicInteger chartMillisCounter){
+        super(x, y, startLife, series, chartMillisCounter);
 
         pointInput = new Point("Input", x - 145, y - 75);
         pointOutput = new Point("Output", x + 145, y - 75);
@@ -50,7 +50,7 @@ public abstract class FlipFlop extends Component {
     public void draw(GraphicsContext graphicsContext) {
         if (selected) {
             graphicsContext.drawImage(imageViewSelected.getImage(), pointCenter.getX() - Sizes.baseFlipFlopXShift, pointCenter.getY() - Sizes.baseFlipFlopYShift);
-        } else if (signalOutput.get()) {
+        } else if (output.get()) {
             graphicsContext.drawImage(imageViewOn.getImage(), pointCenter.getX() - Sizes.baseFlipFlopXShift, pointCenter.getY() - Sizes.baseFlipFlopYShift);
         } else {
             graphicsContext.drawImage(imageViewOff.getImage(), pointCenter.getX() - Sizes.baseFlipFlopXShift, pointCenter.getY() - Sizes.baseFlipFlopYShift);
@@ -176,11 +176,11 @@ public abstract class FlipFlop extends Component {
     }
 
     public boolean isSignalOutput() {
-        return signalOutput.get();
+        return output.get();
     }
 
-    public void setSignalOutput(boolean signalOutput) {
-        this.signalOutput.set(signalOutput);
+    public void setOutput(boolean output) {
+        this.output.set(output);
     }
 
     public boolean isSignalReversedOutput() {

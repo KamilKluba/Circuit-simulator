@@ -5,9 +5,11 @@ import components.gates.Gate;
 import data.Sizes;
 import javafx.scene.chart.XYChart;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public abstract class Nor extends Gate {
-    public Nor(double x, double y, boolean startLife, XYChart.Series<Integer, String> series) {
-        super(x, y, startLife, series);
+    public Nor(double x, double y, boolean startLife, XYChart.Series<Integer, String> series, AtomicInteger chartMillisCounter){
+        super(x, y, startLife, series, chartMillisCounter);
     }
 
     public void lifeCycle(){
@@ -40,6 +42,7 @@ public abstract class Nor extends Gate {
                 }
                 if(nextState == nextState2) {
                     output.set(nextState);
+                    addDataToSeries();
                 }
             }
             try {

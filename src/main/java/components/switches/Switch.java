@@ -9,10 +9,9 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Switch extends Component {
-    protected AtomicBoolean state = new AtomicBoolean(false);
     protected ArrayList<Line> arrayListlines = new ArrayList<>();
     protected Point pointLineHook;
     protected ImageView imageViewOn;
@@ -21,8 +20,8 @@ public abstract class Switch extends Component {
     protected ImageView imageViewSelectedOff;
 
 
-    public Switch(double x, double y, boolean startLife, XYChart.Series<Integer, String> series){
-        super(x, y, startLife, series);
+    public Switch(double x, double y, boolean startLife, XYChart.Series<Integer, String> series, AtomicInteger chartMillisCounter){
+        super(x, y, startLife, series, chartMillisCounter);
         this.pointLineHook = new Point("Output", x, y - 35);
     }
 
@@ -104,11 +103,12 @@ public abstract class Switch extends Component {
     }
 
     public void invertState(){
-        boolean bufferValue = state.get();
-        state.set(!bufferValue);
+        boolean bufferValue = output.get();
+        output.set(!bufferValue);
         for(Line l : arrayListlines){
-            l.setState(state.get());
+            l.setState(output.get());
         }
+        addDataToSeries();
     }
 
     public String getName() {
@@ -131,15 +131,13 @@ public abstract class Switch extends Component {
         this.pointCenter = pointCenter;
     }
 
-    public boolean isSignalOutput() {return state.get();}
-
     public boolean isState() {
-        return state.get();
+        return output.get();
     }
 
     public void setState(boolean state) {
         this.stateChanged.set(true);
-        this.state.set(state);
+        this.output.set(state);
     }
 
     public boolean isSelected() {

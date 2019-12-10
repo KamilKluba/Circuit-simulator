@@ -9,14 +9,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class FlipFlopJK extends FlipFlop{
     private boolean signalInputK = false;
     private ArrayList<Line> arrayListLinesInputK = new ArrayList<>();
     private Point pointInputK;
 
-    public FlipFlopJK(double x, double y, boolean startLife, XYChart.Series<Integer, String> series){
-        super(x, y, startLife, series);
+    public FlipFlopJK(double x, double y, boolean startLife, XYChart.Series<Integer, String> series, AtomicInteger chartMillisCounter){
+        super(x, y, startLife, series, chartMillisCounter);
 
         name = Names.flipFlopJK;
 
@@ -51,13 +52,13 @@ public class FlipFlopJK extends FlipFlop{
         while(alive) {
             signalReset = !(arrayListLinesReset.size() > 0 && arrayListLinesReset.get(0).isSignalOutput());
             if (signalReset) {
-                signalOutput.set(false);
+                output.set(false);
                 signalReversedOutput.set(true);
             }
             else {
                 signalAsynchronousInput = arrayListLinesAsynchronousInput.size() > 0 && arrayListLinesAsynchronousInput.get(0).isSignalOutput();
                 if(signalAsynchronousInput){
-                    signalOutput.set(true);
+                    output.set(true);
                     signalReversedOutput.set(false);
                 }
                 else {
@@ -77,9 +78,10 @@ public class FlipFlopJK extends FlipFlop{
                             boolean nextStateK2 = arrayListLinesInputK.size() > 0 && arrayListLinesInputK.get(0).isSignalOutput();
 
                             if (nextStateJ == nextStateJ2 && nextStateK == nextStateK2 && signalClock == signalClock2) {
-                                boolean signalBuffer = signalOutput.get();
-                                signalOutput.set(signalBuffer);
+                                boolean signalBuffer = output.get();
+                                output.set(signalBuffer);
                                 signalReversedOutput.set(!signalBuffer);
+                                addDataToSeries();
                             }
                         }
                         else if(!nextStateJ && nextStateK){
@@ -93,8 +95,9 @@ public class FlipFlopJK extends FlipFlop{
                             boolean nextStateK2 = arrayListLinesInputK.size() > 0 && arrayListLinesInputK.get(0).isSignalOutput();
 
                             if (nextStateJ == nextStateJ2 && nextStateK == nextStateK2 && signalClock == signalClock2) {
-                                signalOutput.set(false);
+                                output.set(false);
                                 signalReversedOutput.set(true);
+                                addDataToSeries();
                             }
                         }
                         else if(nextStateJ && !nextStateK){
@@ -108,8 +111,9 @@ public class FlipFlopJK extends FlipFlop{
                             boolean nextStateK2 = arrayListLinesInputK.size() > 0 && arrayListLinesInputK.get(0).isSignalOutput();
 
                             if (nextStateJ == nextStateJ2 && nextStateK == nextStateK2 && signalClock == signalClock2) {
-                                signalOutput.set(true);
+                                output.set(true);
                                 signalReversedOutput.set(false);
+                                addDataToSeries();
                             }
                         }
                         else {
@@ -123,9 +127,10 @@ public class FlipFlopJK extends FlipFlop{
                             boolean nextStateK2 = arrayListLinesInputK.size() > 0 && arrayListLinesInputK.get(0).isSignalOutput();
 
                             if (nextStateJ == nextStateJ2 && nextStateK == nextStateK2 && signalClock == signalClock2) {
-                                boolean signalBuffer = signalOutput.get();
-                                signalOutput.set(!signalBuffer);
+                                boolean signalBuffer = output.get();
+                                output.set(!signalBuffer);
                                 signalReversedOutput.set(signalBuffer);
+                                addDataToSeries();
                             }
                         }
                     }
