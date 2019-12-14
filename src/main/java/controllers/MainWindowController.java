@@ -211,31 +211,31 @@ public class MainWindowController {
     }
 
     private void setChart(){
-        //Defining X axis
-        NumberAxis xAxis = new NumberAxis(1960, 2020, 10);
-        xAxis.setLabel("Years");
-        //Defining y axis
-        NumberAxis yAxis = new NumberAxis(0, 350, 50);
-        yAxis.setLabel("No.of schools");
-        arrayListSeries.add(new XYChart.Series<>());
-        arrayListSeries.add(new XYChart.Series<>());
-        arrayListSeries.add(new XYChart.Series<>());
-        arrayListSeries.add(new XYChart.Series<>());
-        arrayListSeries.add(new XYChart.Series<>());
-        arrayListSeries.add(new XYChart.Series<>());
-        arrayListSeries.add(new XYChart.Series<>());
-        arrayListSeries.add(new XYChart.Series<>());
-        arrayListSeries.add(new XYChart.Series<>());
-        arrayListSeries.add(new XYChart.Series<>());
-        arrayListSeries.add(new XYChart.Series<>());
-        arrayListSeries.add(new XYChart.Series<>());
-        arrayListSeries.add(new XYChart.Series<>());
-        arrayListSeries.add(new XYChart.Series<>());
-        arrayListSeries.add(new XYChart.Series<>());
-
-        //Setting the data to Line chart
-        lineChartStates.getData().addAll(arrayListSeries);
-        zoomableScrollPaneChart.setPrefHeight(150);
+//        //Defining X axis
+//        NumberAxis xAxis = new NumberAxis(1960, 2020, 10);
+//        xAxis.setLabel("Years");
+//        //Defining y axis
+//        NumberAxis yAxis = new NumberAxis(0, 350, 50);
+//        yAxis.setLabel("No.of schools");
+//        arrayListSeries.add(new XYChart.Series<>());
+//        arrayListSeries.add(new XYChart.Series<>());
+//        arrayListSeries.add(new XYChart.Series<>());
+//        arrayListSeries.add(new XYChart.Series<>());
+//        arrayListSeries.add(new XYChart.Series<>());
+//        arrayListSeries.add(new XYChart.Series<>());
+//        arrayListSeries.add(new XYChart.Series<>());
+//        arrayListSeries.add(new XYChart.Series<>());
+//        arrayListSeries.add(new XYChart.Series<>());
+//        arrayListSeries.add(new XYChart.Series<>());
+//        arrayListSeries.add(new XYChart.Series<>());
+//        arrayListSeries.add(new XYChart.Series<>());
+//        arrayListSeries.add(new XYChart.Series<>());
+//        arrayListSeries.add(new XYChart.Series<>());
+//        arrayListSeries.add(new XYChart.Series<>());
+//
+//        //Setting the data to Line chart
+//        lineChartStates.getData().addAll(arrayListSeries);
+        zoomableScrollPaneChart.setPrefWidth(924);
 
         new Thread(() -> {
             long timeStart = System.currentTimeMillis();

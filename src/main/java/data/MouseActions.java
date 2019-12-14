@@ -291,7 +291,7 @@ public class MouseActions {
                 else if(c.getName().equals(Names.switchBistableName) && c.inside(x, y)){
                     ((Switch)c).invertState();
                 }
-                else if(c.getName().equals(Names.switchPulseName) && event.getButton() == MouseButton.SECONDARY){
+                else if(c.getName().equals(Names.switchPulseName) && event.getButton() == MouseButton.SECONDARY && c.inside(x, y)){
                     ((SwitchPulse)c).setTurnedOn(!((SwitchPulse)c).isTurnedOn());
                 }
             }
