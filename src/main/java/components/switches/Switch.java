@@ -8,10 +8,11 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.XYChart;
 import javafx.scene.image.ImageView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class Switch extends Component {
+public abstract class Switch extends Component{
     protected ArrayList<Line> arrayListlines = new ArrayList<>();
     protected Point pointLineHook;
     protected ImageView imageViewOn;
@@ -20,7 +21,7 @@ public abstract class Switch extends Component {
     protected ImageView imageViewSelectedOff;
 
 
-    public Switch(double x, double y, boolean startLife, XYChart.Series<Integer, String> series, AtomicInteger chartMillisCounter){
+    public Switch(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);
         this.pointLineHook = new Point("Output", x, y - 35);
     }

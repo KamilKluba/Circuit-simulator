@@ -8,7 +8,7 @@ import javafx.scene.chart.XYChart;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class And extends Gate {
-    public And(double x, double y, boolean startLife, XYChart.Series<Integer, String> series, AtomicInteger chartMillisCounter){
+    public And(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);
     }
 

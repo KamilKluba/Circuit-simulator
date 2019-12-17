@@ -5,13 +5,17 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.XYChart;
 import javafx.scene.image.ImageView;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class Component {
+public abstract class Component implements Serializable {
+    private static final long serialVersionUID = 1L;
     protected int id;
     protected boolean selected = false;
     protected boolean selectedForDrag = false;
@@ -27,12 +31,12 @@ public abstract class Component {
     protected ImageView imageViewSelectgedOn;
     protected ExecutorService executorService = Executors.newFixedThreadPool(1);
     protected AtomicBoolean stateChanged = new AtomicBoolean(false);
-    protected XYChart.Series<Integer, String> series;
-    protected AtomicInteger chartMillisCounter;
+    protected XYChart.Series<Long, String> series;
+    protected Long chartMillisCounter;
 
     public Component(){}
 
-    public Component(double x, double y, boolean startLife, XYChart.Series<Integer, String> series, AtomicInteger chartMillisCounter){
+    public Component(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         this.pointCenter = new Point("Center", x, y);
         this.series = series;
         this.chartMillisCounter = chartMillisCounter;
@@ -43,16 +47,17 @@ public abstract class Component {
     }
 
     protected void addDataToSeries() {
+        System.out.println(System.currentTimeMillis() + " " + chartMillisCounter);
         Platform.runLater(() -> {
             if (output.get()) {
-                series.getData().add(new XYChart.Data<Integer, String>(chartMillisCounter.get(), name + " " + id + ": 0"));
+                series.getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - chartMillisCounter, name + " " + id + ": 0"));
                 if(series.getData().size() > 3) {
-                    series.getData().add(new XYChart.Data<Integer, String>(chartMillisCounter.get(), name + " " + id + ": 1"));
+                    series.getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - chartMillisCounter, name + " " + id + ": 1"));
                 }
             } else {
-                series.getData().add(new XYChart.Data<Integer, String>(chartMillisCounter.get(), name + " " + id + ": 1"));
+                series.getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - chartMillisCounter, name + " " + id + ": 1"));
                 if(series.getData().size() > 3){
-                    series.getData().add(new XYChart.Data<Integer, String>(chartMillisCounter.get(), name + " " + id + ": 0"));
+                    series.getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - chartMillisCounter, name + " " + id + ": 0"));
                 }
             }
         });
@@ -114,7 +119,7 @@ public abstract class Component {
         this.stateChanged.set(stateChanged);
     }
 
-    public XYChart.Series<Integer, String> getSeries() {
+    public XYChart.Series<Long, String> getSeries() {
         return series;
     }
 }

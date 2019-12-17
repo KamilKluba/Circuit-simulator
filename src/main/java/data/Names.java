@@ -33,4 +33,10 @@ public class Names {
     public static String pointOutputName = "Output";
     public static String pointCenterName = "Center";
     public static String pointInputName = "Input";
+    public static String aboutAuthorTitle = "O autorze";
+    public static String aboutAuthorHeader = "Praca inżynierska o wdzięcznej nazwie: Symulator układów cyfrowych";
+    public static String aboutAuthorContent = "Kamil Kluba 226016";
+    public static String manualTitle = "Tytuł";
+    public static String manualHeader = "Z tego okienka dowiesz się wszystkiego o tym programie.";
+    public static String manualContent = "Aby wyjść wciśnij X";
 }

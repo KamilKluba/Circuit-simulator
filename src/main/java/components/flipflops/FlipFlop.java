@@ -36,7 +36,7 @@ public abstract class FlipFlop extends Component {
     protected ImageView imageViewOn;
     protected ImageView imageViewSelected;
 
-    public FlipFlop(double x, double y, boolean startLife, XYChart.Series<Integer, String> series, AtomicInteger chartMillisCounter){
+    public FlipFlop(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);
 
         pointInput = new Point("Input", x - 145, y - 75);

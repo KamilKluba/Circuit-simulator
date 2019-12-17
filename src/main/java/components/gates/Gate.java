@@ -30,7 +30,7 @@ public abstract class Gate extends Component {
     public Gate(){
     }
 
-    public Gate(double x, double y, boolean startLife, XYChart.Series<Integer, String> series, AtomicInteger chartMillisCounter){
+    public Gate(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);
         pointCenter = new Point(Names.pointCenterName, x, y);
         pointOutput = new Point(Names.pointOutputName, x + 93, y);

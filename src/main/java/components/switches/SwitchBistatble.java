@@ -9,10 +9,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
+import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class SwitchBistatble extends Switch{
-    public SwitchBistatble(double x, double y, boolean startLife, XYChart.Series<Integer, String> series, AtomicInteger chartMillisCounter){
+public class SwitchBistatble extends Switch {
+    public SwitchBistatble(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);
         name = Names.switchBistableName;
         SnapshotParameters snapshotParameters = new SnapshotParameters();

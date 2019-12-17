@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SwitchPulse extends Switch {
     boolean turnedOn = false;
 
-    public SwitchPulse(double x, double y, boolean startLife, XYChart.Series<Integer, String> series, AtomicInteger chartMillisCounter){
+    public SwitchPulse(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);
         name = Names.switchPulseName;
 

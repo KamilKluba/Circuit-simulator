@@ -11,7 +11,7 @@ import javafx.scene.image.ImageView;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SwitchMonostable extends Switch{
-    public SwitchMonostable(double x, double y, boolean startLife, XYChart.Series<Integer, String> series, AtomicInteger chartMillisCounter){
+    public SwitchMonostable(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);
         name = Names.switchMonostableName;
         pointLineHook.setY(pointCenter.getY() + 35);

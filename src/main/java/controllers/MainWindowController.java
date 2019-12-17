@@ -34,6 +34,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import main.Main;
 import data.Names;
 import data.Sizes;
@@ -53,8 +54,12 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
-import java.io.File;
+import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
@@ -76,7 +81,6 @@ public class MainWindowController {
     @FXML private HBox hBoxChartArea;
     @FXML private AnchorPane anchorPaneChartOptions;
 
-
     private Main main;
     private ArrayList<Line> arrayListCreatedLines = new ArrayList<>();
     private ArrayList<Gate> arrayListCreatedGates = new ArrayList<>();
@@ -86,7 +90,7 @@ public class MainWindowController {
     private GraphicsContext graphicsContext;
     private ArrayList<TableComponent> arrayListPossibleComponents = new ArrayList<>();
     private boolean coveredError = false;
-    private ArrayList<XYChart.Series<Integer, String>> arrayListSeries = new ArrayList<>();
+    private ArrayList<XYChart.Series<Long, String>> arrayListSeries = new ArrayList<>();
 
     private Line lineBuffer;
     private boolean waitForComponent2 = false;
@@ -97,10 +101,13 @@ public class MainWindowController {
     private int gateCounter = 0;
     private int switchCounter = 0;
     private int flipFlopCounter = 0;
-    private AtomicInteger chartMillis = new AtomicInteger(0);
+
+    private long timeStart;
 
     private ZoomableScrollPaneWorkspace zoomableScrollPaneWorkspace;
     private ZoomableScrollPaneChart zoomableScrollPaneChart;
+
+    private File saveFile = null;
 
     @FXML
     public void initialize(){
@@ -208,46 +215,12 @@ public class MainWindowController {
 
         tableViewComponents.setOnKeyPressed(e -> actionCanvasKeyPressed(e.getCode()));
 
+        timeStart = System.currentTimeMillis();
     }
 
     private void setChart(){
-//        //Defining X axis
-//        NumberAxis xAxis = new NumberAxis(1960, 2020, 10);
-//        xAxis.setLabel("Years");
-//        //Defining y axis
-//        NumberAxis yAxis = new NumberAxis(0, 350, 50);
-//        yAxis.setLabel("No.of schools");
-//        arrayListSeries.add(new XYChart.Series<>());
-//        arrayListSeries.add(new XYChart.Series<>());
-//        arrayListSeries.add(new XYChart.Series<>());
-//        arrayListSeries.add(new XYChart.Series<>());
-//        arrayListSeries.add(new XYChart.Series<>());
-//        arrayListSeries.add(new XYChart.Series<>());
-//        arrayListSeries.add(new XYChart.Series<>());
-//        arrayListSeries.add(new XYChart.Series<>());
-//        arrayListSeries.add(new XYChart.Series<>());
-//        arrayListSeries.add(new XYChart.Series<>());
-//        arrayListSeries.add(new XYChart.Series<>());
-//        arrayListSeries.add(new XYChart.Series<>());
-//        arrayListSeries.add(new XYChart.Series<>());
-//        arrayListSeries.add(new XYChart.Series<>());
-//        arrayListSeries.add(new XYChart.Series<>());
-//
-//        //Setting the data to Line chart
-//        lineChartStates.getData().addAll(arrayListSeries);
-        zoomableScrollPaneChart.setPrefWidth(924);
-
-        new Thread(() -> {
-            long timeStart = System.currentTimeMillis();
-            while(true){
-                chartMillis.set((int)(System.currentTimeMillis() - timeStart));
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        zoomableScrollPaneChart.setPrefHeight(200);
+        zoomableScrollPaneChart.setPrefWidth(3000);
         new Thread(() -> {
             while(true){
                 int maxLength = 0;
@@ -266,39 +239,6 @@ public class MainWindowController {
                 }
             }
         }).start();
-
-//        new Thread(() -> {
-//            int chartMillis = 0;
-//            while(true) {
-//                chartMillis += 10;
-//                final int finalChartMillis = chartMillis;
-//                Platform.runLater(() -> {
-//                    for (Component c : arrayListCreatedComponents) {
-//                        if (c.isStateChanged()) {
-//                            System.out.println("Halo " + finalChartMillis);
-//                            lineChartStates.setPrefWidth(1024 + finalChartMillis / 5);
-//                            for(int i = 0; i < arrayListCreatedComponents.size(); i++) {
-//                                Component drawnComponent = arrayListCreatedComponents.get(i);
-//                                if (drawnComponent.isSignalOutput()) {
-//                                    arrayListSeries.get(i).getData().add(new XYChart.Data<Integer, String>(finalChartMillis, drawnComponent.getName() + " " + drawnComponent.getId() + ": 0"));
-//                                    arrayListSeries.get(i).getData().add(new XYChart.Data<Integer, String>(finalChartMillis, drawnComponent.getName() + " " + drawnComponent.getId() + ": 1"));
-//                                } else {
-//                                    arrayListSeries.get(i).getData().add(new XYChart.Data<Integer, String>(finalChartMillis, drawnComponent.getName() + " " + drawnComponent.getId() + ": 1"));
-//                                    arrayListSeries.get(i).getData().add(new XYChart.Data<Integer, String>(finalChartMillis, drawnComponent.getName() + " " + drawnComponent.getId() + ": 0"));
-//                                }
-//                                drawnComponent.setStateChanged(false);
-//                            }
-//                            break;
-//                        }
-//                    }
-//                });
-//                try {
-//                    Thread.sleep(10);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
     }
 
     public void myInitialize(main.Main main){
@@ -310,42 +250,7 @@ public class MainWindowController {
         setChart();
     }
 
-    public void loadCircuit(File file){
-
-    }
-
     public void actionDebug(){
-//        lineChartStates.setPrefWidth(((XYChart.Series)lineChartStates.getData().get(0)).getData().size() * 50);
-//        arrayListSeries.get(0).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(0).getData().size(), "Testseries11"));
-//        arrayListSeries.get(0).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(0).getData().size() + 1, "Testseries12"));
-//        arrayListSeries.get(1).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(1).getData().size(), "Testseries21"));
-//        arrayListSeries.get(1).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(1).getData().size() + 1, "Testseries22"));
-//        arrayListSeries.get(2).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(2).getData().size(), "Testseries31"));
-//        arrayListSeries.get(2).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(2).getData().size() + 1, "Testseries32"));
-//        arrayListSeries.get(3).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(3).getData().size(), "Testseries41"));
-//        arrayListSeries.get(3).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(3).getData().size() + 1, "Testseries42"));
-//        arrayListSeries.get(4).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(4).getData().size(), "Testseries51"));
-//        arrayListSeries.get(4).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(4).getData().size() + 1, "Testseries52"));
-//        arrayListSeries.get(5).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(5).getData().size(), "Testseries61"));
-//        arrayListSeries.get(5).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(5).getData().size() + 1, "Testseries62"));
-//        arrayListSeries.get(6).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(6).getData().size(), "Testseries71"));
-//        arrayListSeries.get(6).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(6).getData().size() + 1, "Testseries72"));
-//        arrayListSeries.get(7).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(7).getData().size(), "Testseries81"));
-//        arrayListSeries.get(7).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(7).getData().size() + 1, "Testseries82"));
-//        arrayListSeries.get(8).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(8).getData().size(), "Testseries91"));
-//        arrayListSeries.get(8).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(8).getData().size() + 1, "Testseries92"));
-//        arrayListSeries.get(9).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(9).getData().size(), "Testseries101"));
-//        arrayListSeries.get(9).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(9).getData().size() + 1, "Testseries102"));
-//        arrayListSeries.get(10).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(10).getData().size(), "Testseries111"));
-//        arrayListSeries.get(10).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(10).getData().size() + 1, "Testseries112"));
-//        arrayListSeries.get(11).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(11).getData().size(), "Testseries121"));
-//        arrayListSeries.get(11).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(11).getData().size() + 1, "Testseries122"));
-//        arrayListSeries.get(12).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(12).getData().size(), "Testseries131"));
-//        arrayListSeries.get(12).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(12).getData().size() + 1, "Testseries132"));
-//        arrayListSeries.get(13).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(13).getData().size(), "Testseries141"));
-//        arrayListSeries.get(13).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(13).getData().size() + 1, "Testseries142"));
-//        arrayListSeries.get(14).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(14).getData().size(), "Testseries151"));
-//        arrayListSeries.get(14).getData().add(new XYChart.Data<Integer, String>(arrayListSeries.get(14).getData().size() + 1, "Testseries152"));
     }
 
     public void actionDelete(){
@@ -690,81 +595,81 @@ public class MainWindowController {
         tableViewComponents.getSelectionModel().clearSelection();
         try {
             Component newComponent = null;
-            XYChart.Series<Integer, String> newSeries= new XYChart.Series<>();
+            XYChart.Series<Long, String> newSeries= new XYChart.Series<>();
             if (newComponentName.equals(Names.gateNotName)) {
-                newComponent = new Not(x, y, true, newSeries, chartMillis);
+                newComponent = new Not(x, y, true, newSeries, timeStart);
             }
             else if (newComponentName.equals(Names.gateAnd2Name)) {
-                newComponent = new And2(x, y, true, newSeries, chartMillis);
+                newComponent = new And2(x, y, true, newSeries, timeStart);
             }
             else if (newComponentName.equals(Names.gateAnd3Name)) {
-                newComponent = new And3(x, y, true, newSeries, chartMillis);
+                newComponent = new And3(x, y, true, newSeries, timeStart);
             }
             else if (newComponentName.equals(Names.gateAnd4Name)) {
-                newComponent = new And4(x, y, true, newSeries, chartMillis);
+                newComponent = new And4(x, y, true, newSeries, timeStart);
             }
             else if (newComponentName.equals(Names.gateOr2Name)) {
-                newComponent = new Or2(x, y, true, newSeries, chartMillis);
+                newComponent = new Or2(x, y, true, newSeries, timeStart);
             }
             else if (newComponentName.equals(Names.gateOr3Name)) {
-                newComponent = new Or3(x, y, true, newSeries, chartMillis);
+                newComponent = new Or3(x, y, true, newSeries, timeStart);
             }
             else if (newComponentName.equals(Names.gateOr4Name)) {
-                newComponent = new Or4(x, y, true, newSeries, chartMillis);
+                newComponent = new Or4(x, y, true, newSeries, timeStart);
             }
             else if (newComponentName.equals(Names.gateXor2Name)) {
-                newComponent = new Xor2(x, y, true, newSeries, chartMillis);
+                newComponent = new Xor2(x, y, true, newSeries, timeStart);
             }
             else if (newComponentName.equals(Names.gateXor3Name)) {
-                newComponent = new Xor3(x, y, true, newSeries, chartMillis);
+                newComponent = new Xor3(x, y, true, newSeries, timeStart);
             }
             else if (newComponentName.equals(Names.gateXor4Name)) {
-                newComponent = new Xor4(x, y, true, newSeries, chartMillis);
+                newComponent = new Xor4(x, y, true, newSeries, timeStart);
             }
             else if (newComponentName.equals(Names.gateNand2Name)) {
-                newComponent = new Nand2(x, y, true, newSeries, chartMillis);
+                newComponent = new Nand2(x, y, true, newSeries, timeStart);
             }
             else if (newComponentName.equals(Names.gateNand3Name)) {
-                newComponent = new Nand3(x, y, true, newSeries, chartMillis);
+                newComponent = new Nand3(x, y, true, newSeries, timeStart);
             }
             else if (newComponentName.equals(Names.gateNand4Name)) {
-                newComponent = new Nand4(x, y, true, newSeries, chartMillis);
+                newComponent = new Nand4(x, y, true, newSeries, timeStart);
             }
             else if (newComponentName.equals(Names.gateNor2Name)) {
-                newComponent = new Nor2(x, y, true, newSeries, chartMillis);
+                newComponent = new Nor2(x, y, true, newSeries, timeStart);
             }
             else if (newComponentName.equals(Names.gateNor3Name)) {
-                newComponent = new Nor3(x, y, true, newSeries, chartMillis);
+                newComponent = new Nor3(x, y, true, newSeries, timeStart);
             }
             else if (newComponentName.equals(Names.gateNor4Name)) {
-                newComponent = new Nor4(x, y, true, newSeries, chartMillis);
+                newComponent = new Nor4(x, y, true, newSeries, timeStart);
             }
             else if (newComponentName.equals(Names.gateXnor2Name)) {
-                newComponent = new Xnor2(x, y, true, newSeries, chartMillis);
+                newComponent = new Xnor2(x, y, true, newSeries, timeStart);
             }
             else if (newComponentName.equals(Names.gateXnor3Name)) {
-                newComponent = new Xnor3(x, y, true, newSeries, chartMillis);
+                newComponent = new Xnor3(x, y, true, newSeries, timeStart);
             }
             else if (newComponentName.equals(Names.gateXnor4Name)) {
-                newComponent = new Xnor4(x, y, true, newSeries, chartMillis);
+                newComponent = new Xnor4(x, y, true, newSeries, timeStart);
             }
             else if(newComponentName.equals(Names.switchMonostableName)){
-                newComponent = new SwitchMonostable(x, y, true, newSeries, chartMillis);
+                newComponent = new SwitchMonostable(x, y, true, newSeries, timeStart);
             }
             else if(newComponentName.equals(Names.switchBistableName)){
-                newComponent = new SwitchBistatble(x, y, true, newSeries, chartMillis);
+                newComponent = new SwitchBistatble(x, y, true, newSeries, timeStart);
             }
             else if(newComponentName.equals(Names.switchPulseName)){
-                newComponent = new SwitchPulse(x, y, true, newSeries, chartMillis);
+                newComponent = new SwitchPulse(x, y, true, newSeries, timeStart);
             }
             else if(newComponentName.equals(Names.flipFlopD)){
-                newComponent = new FlipFlopD(x, y, true, newSeries, chartMillis);
+                newComponent = new FlipFlopD(x, y, true, newSeries, timeStart);
             }
             else if(newComponentName.equals(Names.flipFlopT)){
-                newComponent = new FlipFlopT(x, y, true, newSeries, chartMillis);
+                newComponent = new FlipFlopT(x, y, true, newSeries, timeStart);
             }
             else if(newComponentName.equals(Names.flipFlopJK)){
-                newComponent = new FlipFlopJK(x, y, true, newSeries, chartMillis);
+                newComponent = new FlipFlopJK(x, y, true, newSeries, timeStart);
             }
 
             if(newComponent != null){
@@ -785,12 +690,12 @@ public class MainWindowController {
                 }
                 arrayListCreatedComponents.add(newComponent);
 
-                newSeries.getData().add(new XYChart.Data<Integer, String>(0, newComponent.getName() + " " + newComponent.getId() + ": 0"));
-                newSeries.getData().add(new XYChart.Data<Integer, String>(0, newComponent.getName() + " " + newComponent.getId() + ": 1"));
-                newSeries.getData().add(new XYChart.Data<Integer, String>(0, newComponent.getName() + " " + newComponent.getId() + ": 0"));
+                newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 0"));
+                newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 1"));
+                newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 0"));
 
-                arrayListSeries.add(newSeries);
-                lineChartStates.getData().add(newSeries);
+//                arrayListSeries.add(newSeries);
+//                lineChartStates.getData().add(newSeries);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1025,6 +930,93 @@ public class MainWindowController {
                 }
             }
         }
+    }
+
+    public void loadCircuit(File file){
+
+    }
+
+    public void saveCircuit(File file){
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+//            for(Component c : arrayListCreatedComponents){
+//
+//            }
+//            for(Line l : arrayListCreatedLines){
+//                oos.writeObject(l);
+//            }
+
+            oos.close();
+            fos.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void actionMenuItemLoad(){
+        try{
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Wybierz plik do załadowania");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Pliki symulatora układów cyfrowych", "*.kksuc"));
+            File file = fileChooser.showOpenDialog(main.getPrimaryStage());
+            loadCircuit(file);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void actionMenuItemSave(){
+        if(saveFile != null){
+            saveCircuit(saveFile);
+        }
+        else{
+            actionMenuItemSaveAs();
+        }
+    }
+
+    public void actionMenuItemSaveAs(){
+        try{
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Wybierz miejsce do zapisu");
+            fileChooser.setInitialFileName("Schemat1 " + new SimpleDateFormat("hh.mm dd-MM-yyyy").format(new Date()));
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Pliki symulatora układów cyfrowych", "*.kksuc"));
+
+            saveFile = fileChooser.showSaveDialog(main.getPrimaryStage());
+            if(saveFile != null) {
+                if (!saveFile.exists()) {
+                    saveFile.createNewFile();
+                }
+                saveCircuit(saveFile);
+            }
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void actionMenuItemExit(){
+        for(Component c : arrayListCreatedComponents){
+            c.kill();
+        }
+        System.exit(0);
+    }
+
+    public void actionMenuItemManual(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Names.manualTitle);
+        alert.setHeaderText(Names.manualHeader);
+        alert.setContentText(Names.manualContent);
+        alert.showAndWait();
+    }
+
+    public void actionMenuItemAuthor(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Names.aboutAuthorTitle);
+        alert.setHeaderText(Names.aboutAuthorHeader);
+        alert.setContentText(Names.aboutAuthorContent);
+        alert.showAndWait();
     }
 
     public boolean isCoveredError() {
