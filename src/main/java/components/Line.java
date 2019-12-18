@@ -5,14 +5,18 @@ import components.flipflops.FlipFlopJK;
 import components.gates.Gate;
 import components.switches.Switch;
 import data.Names;
+import data.SerializableColor;
 import data.Sizes;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.beans.Transient;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class Line extends Component{
+public class Line extends Component implements Serializable {
+    public static final long serialVersionUID = 1L;
     private int id;
     private double x1;
     private double y1;
@@ -24,8 +28,8 @@ public class Line extends Component{
     private boolean lastState = false;
     private Component component1;
     private Component component2;
-    private Color color;
-    private Color selectionColor = new Color(0.459, 0, 0, 1);
+    private SerializableColor color;
+    private SerializableColor selectionColor = new SerializableColor(0.459, 0, 0, 1);
     private ArrayList<Component> arrayListDependentComponents = new ArrayList<>();
     private ArrayList<String> arrayListDependentComponentPin = new ArrayList<>();
     private ArrayList<Line> arrayListVisitedLines = new ArrayList<>();
@@ -37,7 +41,7 @@ public class Line extends Component{
         this.y2 = y2;
         this.component1 = component1;
         this.component2 = component2;
-        this.color = color;
+        this.color = new SerializableColor(color);
         this.name = Names.lineName;
     }
 
@@ -153,9 +157,9 @@ public class Line extends Component{
                 if(state.get() != lastState) {
                     lastState = state.get();
                     if (state.get()) {
-                        color = new Color(0, 0.8, 0.8, 1);
+                        color = new SerializableColor(0, 0.8, 0.8, 1);
                     } else {
-                        color = Color.BLACK;
+                        color = new SerializableColor(Color.BLACK);
                     }
                 }
 
@@ -173,40 +177,11 @@ public class Line extends Component{
         if(state != lastState) {
             lastState = state;
             if (state) {
-                color = new Color(0, 0.8, 0.8, 1);
+                color = new SerializableColor(0, 0.8, 0.8, 1);
             } else {
-                color = Color.BLACK;
+                color = new SerializableColor(Color.BLACK);
             }
-
-
-//            if (gate1 != null && !input1IsOutput) {
-//                setSignalOnGateInput(gate1);
-//            }
-//            if (gate2 != null && !input2IsOutput) {
-//                setSignalOnGateInput(gate2);
-//            }
         }
-    }
-
-    private void setSignalOnGateInput(Gate gate){
-//        ArrayList<Line>[] arrayArrayListLines = gate.getArrayArrayListLines();
-//        boolean endLoop = false;
-//        for (int i = 0; i < arrayArrayListLines.length; i++) {
-//            for(Line l : arrayArrayListLines[i]) {
-//                if (l.equals(this)) {
-//                    endLoop = true;
-//                    gate.getArraySignalsInputs()[i] = state;
-//                    for(Line line : arrayArrayListLines[i]){
-//                        line.setState(state);
-//                    }
-//                    break;
-//                }
-//            }
-//            if(endLoop){
-//                break;
-//            }
-//        }
-//        gate.computeSignal();
     }
 
     public void select(double x, double y){
@@ -324,10 +299,10 @@ public class Line extends Component{
 
     public void draw(GraphicsContext graphicsContext){
         if(selected) {
-            graphicsContext.setStroke(selectionColor);
+            graphicsContext.setStroke(selectionColor.getFXColor());
         }
         else{
-            graphicsContext.setStroke(color);
+            graphicsContext.setStroke(color.getFXColor());
         }
         graphicsContext.strokeLine(x1, y1, x2, y2);
     }
@@ -448,14 +423,6 @@ public class Line extends Component{
 
     public void setComponent2(Component component2) {
         this.component2 = component2;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
     }
 
     public ArrayList<Component> getArrayListDependentComponents() {

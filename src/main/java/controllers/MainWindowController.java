@@ -941,12 +941,12 @@ public class MainWindowController {
             FileOutputStream fos = new FileOutputStream(file);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
 
-//            for(Component c : arrayListCreatedComponents){
-//
-//            }
-//            for(Line l : arrayListCreatedLines){
-//                oos.writeObject(l);
-//            }
+            for(Component c : arrayListCreatedComponents){
+                oos.writeObject(c);
+            }
+            for(Line l : arrayListCreatedLines){
+                oos.writeObject(l);
+            }
 
             oos.close();
             fos.close();

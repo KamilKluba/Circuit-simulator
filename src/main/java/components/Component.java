@@ -14,8 +14,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class Component implements Serializable {
-    private static final long serialVersionUID = 1L;
+public abstract class Component{
     protected int id;
     protected boolean selected = false;
     protected boolean selectedForDrag = false;
