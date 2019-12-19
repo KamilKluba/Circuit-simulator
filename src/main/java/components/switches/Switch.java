@@ -15,10 +15,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public abstract class Switch extends Component{
     protected ArrayList<Line> arrayListlines = new ArrayList<>();
     protected Point pointLineHook;
-    protected ImageView imageViewOn;
-    protected ImageView imageViewOff;
-    protected ImageView imageViewSelectedOn;
-    protected ImageView imageViewSelectedOff;
 
 
     public Switch(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){

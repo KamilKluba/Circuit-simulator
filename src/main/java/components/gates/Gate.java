@@ -4,6 +4,7 @@ import components.Component;
 import components.Line;
 import components.Point;
 import data.Names;
+import data.SerializableColor;
 import data.Sizes;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
@@ -20,12 +21,8 @@ public abstract class Gate extends Component {
     protected ArrayList<Line>[] arrayArrayListLines;
     protected ArrayList<Line> arrayListLinesOutput = new ArrayList<>();
     protected boolean[] arraySignalsInputs;
-    protected Color color = Color.BLACK;
     protected Point pointOutput;
     protected Point[] arrayPointsInputs;
-    protected ImageView imageViewOff;
-    protected ImageView imageViewOn;
-    protected ImageView imageViewSelected;
 
     public Gate(){
     }
@@ -66,8 +63,8 @@ public abstract class Gate extends Component {
         imageViewOff.setImage(imageViewOff.snapshot(snapshotParameters, null));
         imageViewOn.setRotate(90);
         imageViewOn.setImage(imageViewOn.snapshot(snapshotParameters, null));
-        imageViewSelected.setRotate(90);
-        imageViewSelected.setImage(imageViewSelected.snapshot(snapshotParameters, null));
+        imageViewSelectedOn.setRotate(90);
+        imageViewSelectedOn.setImage(imageViewSelectedOn.snapshot(snapshotParameters, null));
 
         rotation++;
         if(rotation == 4){
@@ -161,7 +158,7 @@ public abstract class Gate extends Component {
 
     public void draw(GraphicsContext graphicsContext){
         if(selected){
-            graphicsContext.drawImage(imageViewSelected.getImage(), pointCenter.getX() - Sizes.baseGateXShift, pointCenter.getY() - Sizes.baseGateYShift);
+            graphicsContext.drawImage(imageViewSelectedOn.getImage(), pointCenter.getX() - Sizes.baseGateXShift, pointCenter.getY() - Sizes.baseGateYShift);
         }
         //THERE IS A BUG HERE PROBABLY, CHECK IT LATER///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         else if(output.get()){
@@ -239,7 +236,7 @@ public abstract class Gate extends Component {
     }
 
     public ImageView getImageViewSelected() {
-        return imageViewSelected;
+        return imageViewSelectedOn;
     }
 
     public String getName(){

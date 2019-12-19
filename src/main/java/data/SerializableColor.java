@@ -4,6 +4,7 @@ import java.io.Serializable;
 import javafx.scene.paint.Color;
 
 public class SerializableColor implements Serializable {
+    private static final long serialVersionUID = 2000000L;
     private double red;
     private double green;
     private double blue;

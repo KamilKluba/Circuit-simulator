@@ -35,7 +35,7 @@ public class And4 extends And implements Serializable {
 
         imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/and/and4_gate_off.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
         imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/and/and4_gate_on.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
-        imageViewSelected = new ImageView(new Image(getClass().getResource("/graphics/and/and4_gate_selected.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
+        imageViewSelectedOn = new ImageView(new Image(getClass().getResource("/graphics/and/and4_gate_selected.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
     }
 
     public ArrayList[] getArrayArrayListLines() {

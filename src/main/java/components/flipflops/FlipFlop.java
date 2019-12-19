@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class FlipFlop extends Component{
+public abstract class FlipFlop extends Component implements Serializable {
+    private static final long serialVersionUID = 600000000000L;
     protected boolean risingEdge = true;
     protected boolean lastState = false;
     protected boolean signalInput = false;
@@ -33,9 +34,6 @@ public abstract class FlipFlop extends Component{
     protected Point pointAsynchronousInput;
     protected Point pointReset;
     protected Point pointClock;
-    protected ImageView imageViewOff;
-    protected ImageView imageViewOn;
-    protected ImageView imageViewSelected;
 
     public FlipFlop(){
         super();
@@ -54,7 +52,7 @@ public abstract class FlipFlop extends Component{
 
     public void draw(GraphicsContext graphicsContext) {
         if (selected) {
-            graphicsContext.drawImage(imageViewSelected.getImage(), pointCenter.getX() - Sizes.baseFlipFlopXShift, pointCenter.getY() - Sizes.baseFlipFlopYShift);
+            graphicsContext.drawImage(imageViewSelectedOn.getImage(), pointCenter.getX() - Sizes.baseFlipFlopXShift, pointCenter.getY() - Sizes.baseFlipFlopYShift);
         } else if (output.get()) {
             graphicsContext.drawImage(imageViewOn.getImage(), pointCenter.getX() - Sizes.baseFlipFlopXShift, pointCenter.getY() - Sizes.baseFlipFlopYShift);
         } else {

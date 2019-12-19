@@ -33,7 +33,7 @@ public class Or3 extends Or implements Serializable {
 
         imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/or/or3_gate_off.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
         imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/or/or3_gate_on.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
-        imageViewSelected = new ImageView(new Image(getClass().getResource("/graphics/or/or3_gate_selected.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
+        imageViewSelectedOn = new ImageView(new Image(getClass().getResource("/graphics/or/or3_gate_selected.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
     }
 
     public ArrayList[] getArrayArrayListLines() {

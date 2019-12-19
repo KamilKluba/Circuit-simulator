@@ -937,11 +937,26 @@ public class MainWindowController {
             FileInputStream fis = new FileInputStream(file);
             ObjectInputStream ois = new ObjectInputStream(fis);
 
-            FlipFlopD d = (FlipFlopD)ois.readObject();
-            System.out.println(d + ", " + d.getName() + ", " + d.getAbc());
-//            while((c = != null){
-//                System.out.println(c.getName());
-//            }
+            while(true){
+                Component c = (Component)ois.readObject();
+                if(c == null){
+                    break;
+                }
+                else if(c.getName().equals(Names.lineName)){
+                    arrayListCreatedLines.add((Line)c);
+                }
+                else if(c.getName().contains(Names.gateSearchName)){
+                    arrayListCreatedGates.add((Gate)c);
+                }
+                else if(c.getName().contains(Names.switchSearchName)){
+                    arrayListCreatedSwitches.add((Switch)c);
+                }
+                else if(c.getName().contains(Names.flipFlopSearchName)){
+                    arrayListCreatedFlipFlops.add((FlipFlop)c);
+                }
+                c.setPictures();
+                arrayListCreatedComponents.add(c);
+            }
 
             ois.close();
             fis.close();
@@ -956,14 +971,9 @@ public class MainWindowController {
             FileOutputStream fos = new FileOutputStream(file);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
 
-            FlipFlopD d = new FlipFlopD(100, 100, true, null, 10000L);
-            d.setAbc(69696969);
-            System.out.println(d + ", " + d.getName() + ", " + d.getAbc());
-            oos.writeObject(d);
-
-//            for(Component c : arrayListCreatedComponents){
-//                oos.writeObject(c);
-//            }
+            for(Component c : arrayListCreatedComponents){
+                oos.writeObject(c);
+            }
             for(Line l : arrayListCreatedLines){
                 oos.writeObject(l);
             }
