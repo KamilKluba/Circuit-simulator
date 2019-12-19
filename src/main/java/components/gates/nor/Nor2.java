@@ -9,10 +9,12 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Nor2 extends Nor {
+public class Nor2 extends Nor implements Serializable {
+    private static final long serialVersionUID = 70000000000L;
 
     public Nor2(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);

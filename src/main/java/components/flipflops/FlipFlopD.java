@@ -6,10 +6,18 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class FlipFlopD extends FlipFlop{
+public class FlipFlopD extends FlipFlop implements Serializable {
+    private static final long serialVersionUID = 600000000000L;
+    private int abc;
+
+    public FlipFlopD(){
+        super();
+    }
+
     public FlipFlopD(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);
 
@@ -19,6 +27,8 @@ public class FlipFlopD extends FlipFlop{
         imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/flipflops/d_on.png").toExternalForm(), Sizes.baseFlipFlopXSize, Sizes.baseFlipFlopYSize, false, false));
         imageViewSelected = new ImageView(new Image(getClass().getResource("/graphics/flipflops/d_selected.png").toExternalForm(), Sizes.baseFlipFlopXSize, Sizes.baseFlipFlopYSize, false, false));
     }
+
+
 
     public void lifeCycle(){
         while(alive) {
@@ -65,5 +75,13 @@ public class FlipFlopD extends FlipFlop{
                 e.printStackTrace();
             }
         }
+    }
+
+    public int getAbc() {
+        return abc;
+    }
+
+    public void setAbc(int abc) {
+        this.abc = abc;
     }
 }

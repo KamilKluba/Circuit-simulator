@@ -46,7 +46,6 @@ public abstract class Component{
     }
 
     protected void addDataToSeries() {
-        System.out.println(System.currentTimeMillis() + " " + chartMillisCounter);
         Platform.runLater(() -> {
             if (output.get()) {
                 series.getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - chartMillisCounter, name + " " + id + ": 0"));

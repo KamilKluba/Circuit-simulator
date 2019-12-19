@@ -9,10 +9,13 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Nand3 extends Nand {
+public class Nand3 extends Nand implements Serializable {
+    private static final long serialVersionUID = 50000000000L;
+
     public Nand3(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);
 

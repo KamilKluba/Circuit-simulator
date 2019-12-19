@@ -8,10 +8,12 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class SwitchPulse extends Switch {
-    boolean turnedOn = false;
+public class SwitchPulse extends Switch implements Serializable {
+    private static final long serialVersionUID = 420000000000L;
+    private boolean turnedOn = false;
 
     public SwitchPulse(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);

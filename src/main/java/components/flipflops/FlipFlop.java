@@ -8,11 +8,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.XYChart;
 import javafx.scene.image.ImageView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class FlipFlop extends Component {
+public abstract class FlipFlop extends Component{
     protected boolean risingEdge = true;
     protected boolean lastState = false;
     protected boolean signalInput = false;
@@ -35,6 +36,10 @@ public abstract class FlipFlop extends Component {
     protected ImageView imageViewOff;
     protected ImageView imageViewOn;
     protected ImageView imageViewSelected;
+
+    public FlipFlop(){
+        super();
+    }
 
     public FlipFlop(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);

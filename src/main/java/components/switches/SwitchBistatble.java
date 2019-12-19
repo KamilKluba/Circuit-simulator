@@ -12,8 +12,9 @@ import javafx.scene.paint.Color;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class SwitchBistatble extends Switch implements Serializable{
-    public static final long serialVersionUID = 1L;
+public class SwitchBistatble extends Switch implements Serializable {
+    private static final long serialVersionUID = 400000000000L;
+
     public SwitchBistatble(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);
         name = Names.switchBistableName;

@@ -933,7 +933,22 @@ public class MainWindowController {
     }
 
     public void loadCircuit(File file){
+        try{
+            FileInputStream fis = new FileInputStream(file);
+            ObjectInputStream ois = new ObjectInputStream(fis);
 
+            FlipFlopD d = (FlipFlopD)ois.readObject();
+            System.out.println(d + ", " + d.getName() + ", " + d.getAbc());
+//            while((c = != null){
+//                System.out.println(c.getName());
+//            }
+
+            ois.close();
+            fis.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void saveCircuit(File file){
@@ -941,9 +956,14 @@ public class MainWindowController {
             FileOutputStream fos = new FileOutputStream(file);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
 
-            for(Component c : arrayListCreatedComponents){
-                oos.writeObject(c);
-            }
+            FlipFlopD d = new FlipFlopD(100, 100, true, null, 10000L);
+            d.setAbc(69696969);
+            System.out.println(d + ", " + d.getName() + ", " + d.getAbc());
+            oos.writeObject(d);
+
+//            for(Component c : arrayListCreatedComponents){
+//                oos.writeObject(c);
+//            }
             for(Line l : arrayListCreatedLines){
                 oos.writeObject(l);
             }

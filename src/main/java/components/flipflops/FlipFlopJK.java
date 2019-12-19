@@ -8,10 +8,12 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class FlipFlopJK extends FlipFlop{
+public class FlipFlopJK extends FlipFlop implements Serializable {
+    private static final long serialVersionUID = 610000000000L;
     private boolean signalInputK = false;
     private ArrayList<Line> arrayListLinesInputK = new ArrayList<>();
     private Point pointInputK;
