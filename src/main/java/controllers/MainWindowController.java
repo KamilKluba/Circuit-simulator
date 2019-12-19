@@ -694,8 +694,8 @@ public class MainWindowController {
                 newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 1"));
                 newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 0"));
 
-//                arrayListSeries.add(newSeries);
-//                lineChartStates.getData().add(newSeries);
+                arrayListSeries.add(newSeries);
+                lineChartStates.getData().add(newSeries);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -933,6 +933,7 @@ public class MainWindowController {
     }
 
     public void loadCircuit(File file){
+        int i = 0;
         try{
             FileInputStream fis = new FileInputStream(file);
             ObjectInputStream ois = new ObjectInputStream(fis);
@@ -954,15 +955,28 @@ public class MainWindowController {
                 else if(c.getName().contains(Names.flipFlopSearchName)){
                     arrayListCreatedFlipFlops.add((FlipFlop)c);
                 }
-                c.setPictures();
-                arrayListCreatedComponents.add(c);
+                c.setLife();
+                if(!c.getName().equals(Names.lineName)) {
+                    c.setPictures();
+                    XYChart.Series<Long, String> newSeries = new XYChart.Series<>();
+                    newSeries.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 0"));
+                    newSeries.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 1"));
+                    newSeries.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 0"));
+                    c.setSeries(newSeries);
+                    arrayListSeries.add(newSeries);
+                    lineChartStates.getData().add(newSeries);
+                    arrayListCreatedComponents.add(c);
+                }
+
+                i++;
             }
 
             ois.close();
             fis.close();
         }
         catch (Exception e){
-            e.printStackTrace();
+            System.out.println("Koniec pliku, zaladowano " + i + " obiektow");
+            //e.printStackTrace();
         }
     }
 
