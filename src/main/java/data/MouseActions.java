@@ -57,6 +57,7 @@ public class MouseActions {
     private ZoomableScrollPaneChart zoomableScrollPaneChart;
     private HBox hBoxChartArea;
     private Component componentMoveBuffer = null;
+    private String newComponentName = null;
 
 
     public MouseActions(MainWindowController mwc){
@@ -76,151 +77,71 @@ public class MouseActions {
         pointMouseMoved.setX(x);
         pointMouseMoved.setY(y);
 
-        String newComponentName = tableViewComponents.getSelectionModel().getSelectedItem() != null ?
+        newComponentName = tableViewComponents.getSelectionModel().getSelectedItem() != null ?
                 tableViewComponents.getSelectionModel().getSelectedItem().getName() : null;
 
-        if(mwc.isCoveredError()) {
-            graphicsContext.setStroke(Color.RED);
-            graphicsContext.setLineWidth(Sizes.baseLineContourWidth);
-            double shiftGateX = Sizes.baseGateXShift;
-            double shiftGateY = Sizes.baseGateYShift;
-            double shiftSwitchX = Sizes.baseSwitchXShift;
-            double shiftSwitchY = Sizes.baseSwitchYShift;
-            double shiftFlipFlopX = Sizes.baseFlipFlopXShift;
-            double shiftFlipFlopY = Sizes.baseFlipFlopYShift;
-
-            for (Gate g : arrayListCreatedGates) {
-                Point pointCenter = g.getPointCenter();
-                graphicsContext.strokeLine(pointCenter.getX() - shiftGateX, pointCenter.getY() - shiftGateY, pointCenter.getX() - shiftGateX, pointCenter.getY() + shiftGateY);
-                graphicsContext.strokeLine(pointCenter.getX() - shiftGateX, pointCenter.getY() + shiftGateY, pointCenter.getX() + shiftGateX, pointCenter.getY() + shiftGateY);
-                graphicsContext.strokeLine(pointCenter.getX() + shiftGateX, pointCenter.getY() + shiftGateY, pointCenter.getX() + shiftGateX, pointCenter.getY() - shiftGateY);
-                graphicsContext.strokeLine(pointCenter.getX() + shiftGateX, pointCenter.getY() - shiftGateY, pointCenter.getX() - shiftGateX, pointCenter.getY() - shiftGateY);
-            }
-            for (Switch s : arrayListCreatedSwitches) {
-                Point pointCenter = s.getPointCenter();
-                graphicsContext.strokeLine(pointCenter.getX() - shiftSwitchX, pointCenter.getY() - shiftSwitchY, pointCenter.getX() - shiftSwitchX, pointCenter.getY() + shiftSwitchY);
-                graphicsContext.strokeLine(pointCenter.getX() - shiftSwitchX, pointCenter.getY() + shiftSwitchY, pointCenter.getX() + shiftSwitchX, pointCenter.getY() + shiftSwitchY);
-                graphicsContext.strokeLine(pointCenter.getX() + shiftSwitchX, pointCenter.getY() + shiftSwitchY, pointCenter.getX() + shiftSwitchX, pointCenter.getY() - shiftSwitchY);
-                graphicsContext.strokeLine(pointCenter.getX() + shiftSwitchX, pointCenter.getY() - shiftSwitchY, pointCenter.getX() - shiftSwitchX, pointCenter.getY() - shiftSwitchY);
-            }
-            for (FlipFlop ff : arrayListCreatedFlipFlops){
-                Point pointCenter = ff.getPointCenter();
-                graphicsContext.strokeLine(pointCenter.getX() - shiftFlipFlopX, pointCenter.getY() - shiftFlipFlopY, pointCenter.getX() - shiftFlipFlopX, pointCenter.getY() + shiftFlipFlopY);
-                graphicsContext.strokeLine(pointCenter.getX() - shiftFlipFlopX, pointCenter.getY() + shiftFlipFlopY, pointCenter.getX() + shiftFlipFlopX, pointCenter.getY() + shiftFlipFlopY);
-                graphicsContext.strokeLine(pointCenter.getX() + shiftFlipFlopX, pointCenter.getY() + shiftFlipFlopY, pointCenter.getX() + shiftFlipFlopX, pointCenter.getY() - shiftFlipFlopY);
-                graphicsContext.strokeLine(pointCenter.getX() + shiftFlipFlopX, pointCenter.getY() - shiftFlipFlopY, pointCenter.getX() - shiftFlipFlopX, pointCenter.getY() - shiftFlipFlopY);
-            }
-
-            if(mwc.checkIfCoverTotal(newComponentName, x, y)){
-                graphicsContext.setStroke(Color.RED);
-            }
-            else{
-                graphicsContext.setStroke(Color.GREEN);
-            }
-
-            if(newComponentName.contains(Names.gateSearchName)) {
-                graphicsContext.strokeLine(x - shiftGateX, y - shiftGateY, x - shiftGateX, y + shiftGateY);
-                graphicsContext.strokeLine(x - shiftGateX, y + shiftGateY, x + shiftGateX, y + shiftGateY);
-                graphicsContext.strokeLine(x + shiftGateX, y + shiftGateY, x + shiftGateX, y - shiftGateY);
-                graphicsContext.strokeLine(x + shiftGateX, y - shiftGateY, x - shiftGateX, y - shiftGateY);
-            }
-            else if(newComponentName.contains(Names.switchSearchName)){
-                graphicsContext.strokeLine(x - shiftSwitchX, y - shiftSwitchY, x - shiftSwitchX, y + shiftSwitchY);
-                graphicsContext.strokeLine(x - shiftSwitchX, y + shiftSwitchY, x + shiftSwitchX, y + shiftSwitchY);
-                graphicsContext.strokeLine(x + shiftSwitchX, y + shiftSwitchY, x + shiftSwitchX, y - shiftSwitchY);
-                graphicsContext.strokeLine(x + shiftSwitchX, y - shiftSwitchY, x - shiftSwitchX, y - shiftSwitchY);
-            }
-            else if(newComponentName.contains(Names.flipFlopSearchName)){
-                graphicsContext.strokeLine(x - shiftFlipFlopX, y - shiftFlipFlopY, x - shiftFlipFlopX, y + shiftFlipFlopY);
-                graphicsContext.strokeLine(x - shiftFlipFlopX, y + shiftFlipFlopY, x + shiftFlipFlopX, y + shiftFlipFlopY);
-                graphicsContext.strokeLine(x + shiftFlipFlopX, y + shiftFlipFlopY, x + shiftFlipFlopX, y - shiftFlipFlopY);
-                graphicsContext.strokeLine(x + shiftFlipFlopX, y - shiftFlipFlopY, x - shiftFlipFlopX, y - shiftFlipFlopY);
-            }
-        }
-        else if(mwc.isWaitForComponent2()){
-            graphicsContext.strokeLine(mwc.getLineBuffer().getX1(), mwc.getLineBuffer().getY1(), x, y);
+        if(mwc.isWaitForComponent2()){
+            mwc.getLineBuffer().setX2(x);
+            mwc.getLineBuffer().setY2(y);
         }
 
-        if(mwc.isWaitForPlaceComponent()){
+        if(mwc.isWaitForPlaceComponent()) {
             graphicsContext.setStroke(Color.BLACK);
-            if(newComponentName.equals(Names.gateNotName)){
+            if (newComponentName.equals(Names.gateNotName)) {
                 componentMoveBuffer = new Not(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.gateAnd2Name)){
+            } else if (newComponentName.equals(Names.gateAnd2Name)) {
                 componentMoveBuffer = new And2(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.gateAnd3Name)){
+            } else if (newComponentName.equals(Names.gateAnd3Name)) {
                 componentMoveBuffer = new And3(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.gateAnd4Name)){
+            } else if (newComponentName.equals(Names.gateAnd4Name)) {
                 componentMoveBuffer = new And4(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.gateOr2Name)){
+            } else if (newComponentName.equals(Names.gateOr2Name)) {
                 componentMoveBuffer = new Or2(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.gateOr3Name)){
+            } else if (newComponentName.equals(Names.gateOr3Name)) {
                 componentMoveBuffer = new Or3(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.gateOr4Name)){
+            } else if (newComponentName.equals(Names.gateOr4Name)) {
                 componentMoveBuffer = new Or4(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.gateXor2Name)){
+            } else if (newComponentName.equals(Names.gateXor2Name)) {
                 componentMoveBuffer = new Xor2(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.gateXor3Name)){
+            } else if (newComponentName.equals(Names.gateXor3Name)) {
                 componentMoveBuffer = new Xor3(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.gateXor4Name)){
+            } else if (newComponentName.equals(Names.gateXor4Name)) {
                 componentMoveBuffer = new Xor4(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.gateNand2Name)){
+            } else if (newComponentName.equals(Names.gateNand2Name)) {
                 componentMoveBuffer = new Nand2(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.gateNand3Name)){
+            } else if (newComponentName.equals(Names.gateNand3Name)) {
                 componentMoveBuffer = new Nand3(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.gateNand4Name)){
+            } else if (newComponentName.equals(Names.gateNand4Name)) {
                 componentMoveBuffer = new Nand4(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.gateNor2Name)){
+            } else if (newComponentName.equals(Names.gateNor2Name)) {
                 componentMoveBuffer = new Nor2(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.gateNor3Name)){
+            } else if (newComponentName.equals(Names.gateNor3Name)) {
                 componentMoveBuffer = new Nor3(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.gateNor4Name)){
+            } else if (newComponentName.equals(Names.gateNor4Name)) {
                 componentMoveBuffer = new Nor4(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.gateXnor2Name)){
+            } else if (newComponentName.equals(Names.gateXnor2Name)) {
                 componentMoveBuffer = new Xnor2(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.gateXnor3Name)){
+            } else if (newComponentName.equals(Names.gateXnor3Name)) {
                 componentMoveBuffer = new Xnor3(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.gateXnor4Name)){
+            } else if (newComponentName.equals(Names.gateXnor4Name)) {
                 componentMoveBuffer = new Xnor4(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.switchMonostableName)){
+            } else if (newComponentName.equals(Names.switchMonostableName)) {
                 componentMoveBuffer = new SwitchMonostable(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.switchBistableName)){
+            } else if (newComponentName.equals(Names.switchBistableName)) {
                 componentMoveBuffer = new SwitchBistatble(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.switchPulseName)){
+            } else if (newComponentName.equals(Names.switchPulseName)) {
                 componentMoveBuffer = new SwitchPulse(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.flipFlopD)){
+            } else if (newComponentName.equals(Names.flipFlopD)) {
                 componentMoveBuffer = new FlipFlopD(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.flipFlopT)){
+            } else if (newComponentName.equals(Names.flipFlopT)) {
                 componentMoveBuffer = new FlipFlopT(x, y, false, null, null);
-            }
-            else if(newComponentName.equals(Names.flipFlopJK)){
+            } else if (newComponentName.equals(Names.flipFlopJK)) {
                 componentMoveBuffer = new FlipFlopJK(x, y, false, null, null);
             }
 
             mwc.setComponentBuffer(componentMoveBuffer);
         }
+        mwc.repaintScreen();
     }
 
     public void actionCanvasMouseClicked(MouseEvent event){
@@ -318,6 +239,7 @@ public class MouseActions {
             mwc.setWaitForPlaceComponent(false);
             tableViewComponents.getSelectionModel().clearSelection();
         }
+        mwc.repaintScreen();
     }
 
     public void actionCanvasMouseDragged(MouseEvent e){
@@ -363,6 +285,7 @@ public class MouseActions {
                 c.select(x1, y1, x2, y2);
             }
         }
+        mwc.repaintScreen();
     }
 
     public void actionCanvasMousePressed(MouseEvent e){
@@ -403,6 +326,7 @@ public class MouseActions {
                 }
             }
         }
+        mwc.repaintScreen();
     }
 
     public void actionCanvasMouseReleased(double x, double y){
@@ -420,6 +344,7 @@ public class MouseActions {
                 ((Switch)c).setState(false);
             }
         }
+        mwc.repaintScreen();
     }
 
     public void actionZoomableScrollPaneClicked() {
@@ -450,6 +375,67 @@ public class MouseActions {
         }).start();
 
         mwc.getCanvas().setOnMouseClicked(e -> actionCanvasMouseClicked(e));
+    }
+
+    public void drawCoverErrorSquares(){
+        graphicsContext.setStroke(Color.RED);
+        graphicsContext.setLineWidth(Sizes.baseLineContourWidth);
+        double shiftGateX = Sizes.baseGateXShift;
+        double shiftGateY = Sizes.baseGateYShift;
+        double shiftSwitchX = Sizes.baseSwitchXShift;
+        double shiftSwitchY = Sizes.baseSwitchYShift;
+        double shiftFlipFlopX = Sizes.baseFlipFlopXShift;
+        double shiftFlipFlopY = Sizes.baseFlipFlopYShift;
+        double x = pointMouseMoved.getX();
+        double y = pointMouseMoved.getY();
+
+        for (Gate g : arrayListCreatedGates) {
+            Point pointCenter = g.getPointCenter();
+            graphicsContext.strokeLine(pointCenter.getX() - shiftGateX, pointCenter.getY() - shiftGateY, pointCenter.getX() - shiftGateX, pointCenter.getY() + shiftGateY);
+            graphicsContext.strokeLine(pointCenter.getX() - shiftGateX, pointCenter.getY() + shiftGateY, pointCenter.getX() + shiftGateX, pointCenter.getY() + shiftGateY);
+            graphicsContext.strokeLine(pointCenter.getX() + shiftGateX, pointCenter.getY() + shiftGateY, pointCenter.getX() + shiftGateX, pointCenter.getY() - shiftGateY);
+            graphicsContext.strokeLine(pointCenter.getX() + shiftGateX, pointCenter.getY() - shiftGateY, pointCenter.getX() - shiftGateX, pointCenter.getY() - shiftGateY);
+        }
+        for (Switch s : arrayListCreatedSwitches) {
+            Point pointCenter = s.getPointCenter();
+            graphicsContext.strokeLine(pointCenter.getX() - shiftSwitchX, pointCenter.getY() - shiftSwitchY, pointCenter.getX() - shiftSwitchX, pointCenter.getY() + shiftSwitchY);
+            graphicsContext.strokeLine(pointCenter.getX() - shiftSwitchX, pointCenter.getY() + shiftSwitchY, pointCenter.getX() + shiftSwitchX, pointCenter.getY() + shiftSwitchY);
+            graphicsContext.strokeLine(pointCenter.getX() + shiftSwitchX, pointCenter.getY() + shiftSwitchY, pointCenter.getX() + shiftSwitchX, pointCenter.getY() - shiftSwitchY);
+            graphicsContext.strokeLine(pointCenter.getX() + shiftSwitchX, pointCenter.getY() - shiftSwitchY, pointCenter.getX() - shiftSwitchX, pointCenter.getY() - shiftSwitchY);
+        }
+        for (FlipFlop ff : arrayListCreatedFlipFlops){
+            Point pointCenter = ff.getPointCenter();
+            graphicsContext.strokeLine(pointCenter.getX() - shiftFlipFlopX, pointCenter.getY() - shiftFlipFlopY, pointCenter.getX() - shiftFlipFlopX, pointCenter.getY() + shiftFlipFlopY);
+            graphicsContext.strokeLine(pointCenter.getX() - shiftFlipFlopX, pointCenter.getY() + shiftFlipFlopY, pointCenter.getX() + shiftFlipFlopX, pointCenter.getY() + shiftFlipFlopY);
+            graphicsContext.strokeLine(pointCenter.getX() + shiftFlipFlopX, pointCenter.getY() + shiftFlipFlopY, pointCenter.getX() + shiftFlipFlopX, pointCenter.getY() - shiftFlipFlopY);
+            graphicsContext.strokeLine(pointCenter.getX() + shiftFlipFlopX, pointCenter.getY() - shiftFlipFlopY, pointCenter.getX() - shiftFlipFlopX, pointCenter.getY() - shiftFlipFlopY);
+        }
+
+        if(mwc.checkIfCoverTotal(newComponentName, x, y)){
+            graphicsContext.setStroke(Color.RED);
+        }
+        else{
+            graphicsContext.setStroke(Color.GREEN);
+        }
+
+        if(newComponentName.contains(Names.gateSearchName)) {
+            graphicsContext.strokeLine(x - shiftGateX, y - shiftGateY, x - shiftGateX, y + shiftGateY);
+            graphicsContext.strokeLine(x - shiftGateX, y + shiftGateY, x + shiftGateX, y + shiftGateY);
+            graphicsContext.strokeLine(x + shiftGateX, y + shiftGateY, x + shiftGateX, y - shiftGateY);
+            graphicsContext.strokeLine(x + shiftGateX, y - shiftGateY, x - shiftGateX, y - shiftGateY);
+        }
+        else if(newComponentName.contains(Names.switchSearchName)){
+            graphicsContext.strokeLine(x - shiftSwitchX, y - shiftSwitchY, x - shiftSwitchX, y + shiftSwitchY);
+            graphicsContext.strokeLine(x - shiftSwitchX, y + shiftSwitchY, x + shiftSwitchX, y + shiftSwitchY);
+            graphicsContext.strokeLine(x + shiftSwitchX, y + shiftSwitchY, x + shiftSwitchX, y - shiftSwitchY);
+            graphicsContext.strokeLine(x + shiftSwitchX, y - shiftSwitchY, x - shiftSwitchX, y - shiftSwitchY);
+        }
+        else if(newComponentName.contains(Names.flipFlopSearchName)){
+            graphicsContext.strokeLine(x - shiftFlipFlopX, y - shiftFlipFlopY, x - shiftFlipFlopX, y + shiftFlipFlopY);
+            graphicsContext.strokeLine(x - shiftFlipFlopX, y + shiftFlipFlopY, x + shiftFlipFlopX, y + shiftFlipFlopY);
+            graphicsContext.strokeLine(x + shiftFlipFlopX, y + shiftFlipFlopY, x + shiftFlipFlopX, y - shiftFlipFlopY);
+            graphicsContext.strokeLine(x + shiftFlipFlopX, y - shiftFlipFlopY, x - shiftFlipFlopX, y - shiftFlipFlopY);
+        }
     }
 
     public Point getPointMousePressed() {

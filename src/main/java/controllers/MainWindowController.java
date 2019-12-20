@@ -221,7 +221,7 @@ public class MainWindowController {
 
         timeStart = System.currentTimeMillis();
 
-        Executors.newFixedThreadPool(1).execute(() -> repaintScreen());
+        Executors.newFixedThreadPool(1).execute(() -> repaintThread());
     }
 
     private void setChart(){
@@ -528,51 +528,61 @@ public class MainWindowController {
         return null;
     }
 
-    public void repaintScreen(){
-        while(true) {
-            boolean stateChanged;
-            try {
-                stateChanged = false;
+    public void repaintThread(){
+        boolean stateChanged = false;
 
-                for(Component c : arrayListCreatedComponents){
-                    if(c.isStateChanged()){
+        while(true) {
+            try {
+                for (Component c : arrayListCreatedComponents) {
+                    if (c.isStateChanged()) {
                         stateChanged = true;
                         break;
                     }
                 }
-                if(!stateChanged){
-                    for(Line l : arrayListCreatedLines){
-                        if (l.isStateChanged()){
+                if (!stateChanged) {
+                    for (Line l : arrayListCreatedLines) {
+                        if (l.isStateChanged()) {
                             stateChanged = true;
                             break;
                         }
                     }
                 }
-
-                graphicsContext.clearRect(0, 0, canvas.getWidth() + 1, canvas.getHeight() + 1);
-                graphicsContext.setLineWidth(Sizes.baseLineWidth);
-                for (Line l : arrayListCreatedLines) {
-                    l.draw(graphicsContext);
+                if (stateChanged) {
+                    repaintScreen();
                 }
-                for (Component c : arrayListCreatedComponents) {
-                    c.draw(graphicsContext);
-                }
-                if(componentBuffer != null){
-                    componentBuffer.draw(graphicsContext);
-                }
-                graphicsContext.setStroke(Color.BLACK);
 
-
-                if(stateChanged){
+                if (stateChanged) {
                     Thread.sleep(1);
-                }
-                else{
+                } else {
                     Thread.sleep(10);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void repaintScreen(){
+        Platform.runLater(() -> {
+            graphicsContext.clearRect(0, 0, canvas.getWidth() + 1, canvas.getHeight() + 1);
+            graphicsContext.setLineWidth(Sizes.baseLineWidth);
+            for (Line l : arrayListCreatedLines) {
+                l.draw(graphicsContext);
+            }
+            for (Component c : arrayListCreatedComponents) {
+                c.draw(graphicsContext);
+            }
+            if (componentBuffer != null) {
+                componentBuffer.draw(graphicsContext);
+            }
+            graphicsContext.setStroke(Color.BLACK);
+            if (lineBuffer != null) {
+                lineBuffer.draw(graphicsContext);
+            }
+            if (coveredError) {
+                mouseActions.drawCoverErrorSquares();
+            }
+        });
     }
 
     private void actionCanvasKeyPressed(KeyCode code){
@@ -969,6 +979,7 @@ public class MainWindowController {
                     ((FlipFlopJK) flipFlop).getArrayListLinesInputK().remove(lineBuffer);
                 }
             }
+            lineBuffer = null;
         }
     }
 
