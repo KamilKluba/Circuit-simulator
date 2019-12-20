@@ -56,6 +56,7 @@ public class MouseActions {
     private Point pointMousePressedToDrag = new Point();
     private ZoomableScrollPaneChart zoomableScrollPaneChart;
     private HBox hBoxChartArea;
+    private Component componentMoveBuffer = null;
 
 
     public MouseActions(MainWindowController mwc){
@@ -74,7 +75,6 @@ public class MouseActions {
     public void actionCanvasMouseMoved(double x, double y){
         pointMouseMoved.setX(x);
         pointMouseMoved.setY(y);
-        mwc.repaint();
 
         String newComponentName = tableViewComponents.getSelectionModel().getSelectedItem() != null ?
                 tableViewComponents.getSelectionModel().getSelectedItem().getName() : null;
@@ -142,87 +142,84 @@ public class MouseActions {
         }
 
         if(mwc.isWaitForPlaceComponent()){
-            Component newComponent = null;
             graphicsContext.setStroke(Color.BLACK);
             if(newComponentName.equals(Names.gateNotName)){
-                newComponent = new Not(x, y, false, null, null);
+                componentMoveBuffer = new Not(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateAnd2Name)){
-                newComponent = new And2(x, y, false, null, null);
+                componentMoveBuffer = new And2(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateAnd3Name)){
-                newComponent = new And3(x, y, false, null, null);
+                componentMoveBuffer = new And3(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateAnd4Name)){
-                newComponent = new And4(x, y, false, null, null);
+                componentMoveBuffer = new And4(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateOr2Name)){
-                newComponent = new Or2(x, y, false, null, null);
+                componentMoveBuffer = new Or2(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateOr3Name)){
-                newComponent = new Or3(x, y, false, null, null);
+                componentMoveBuffer = new Or3(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateOr4Name)){
-                newComponent = new Or4(x, y, false, null, null);
+                componentMoveBuffer = new Or4(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateXor2Name)){
-                newComponent = new Xor2(x, y, false, null, null);
+                componentMoveBuffer = new Xor2(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateXor3Name)){
-                newComponent = new Xor3(x, y, false, null, null);
+                componentMoveBuffer = new Xor3(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateXor4Name)){
-                newComponent = new Xor4(x, y, false, null, null);
+                componentMoveBuffer = new Xor4(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateNand2Name)){
-                newComponent = new Nand2(x, y, false, null, null);
+                componentMoveBuffer = new Nand2(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateNand3Name)){
-                newComponent = new Nand3(x, y, false, null, null);
+                componentMoveBuffer = new Nand3(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateNand4Name)){
-                newComponent = new Nand4(x, y, false, null, null);
+                componentMoveBuffer = new Nand4(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateNor2Name)){
-                newComponent = new Nor2(x, y, false, null, null);
+                componentMoveBuffer = new Nor2(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateNor3Name)){
-                newComponent = new Nor3(x, y, false, null, null);
+                componentMoveBuffer = new Nor3(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateNor4Name)){
-                newComponent = new Nor4(x, y, false, null, null);
+                componentMoveBuffer = new Nor4(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateXnor2Name)){
-                newComponent = new Xnor2(x, y, false, null, null);
+                componentMoveBuffer = new Xnor2(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateXnor3Name)){
-                newComponent = new Xnor3(x, y, false, null, null);
+                componentMoveBuffer = new Xnor3(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.gateXnor4Name)){
-                newComponent = new Xnor4(x, y, false, null, null);
+                componentMoveBuffer = new Xnor4(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.switchMonostableName)){
-                newComponent = new SwitchMonostable(x, y, false, null, null);
+                componentMoveBuffer = new SwitchMonostable(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.switchBistableName)){
-                newComponent = new SwitchBistatble(x, y, false, null, null);
+                componentMoveBuffer = new SwitchBistatble(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.switchPulseName)){
-                newComponent = new SwitchPulse(x, y, false, null, null);
+                componentMoveBuffer = new SwitchPulse(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.flipFlopD)){
-                newComponent = new FlipFlopD(x, y, false, null, null);
+                componentMoveBuffer = new FlipFlopD(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.flipFlopT)){
-                newComponent = new FlipFlopT(x, y, false, null, null);
+                componentMoveBuffer = new FlipFlopT(x, y, false, null, null);
             }
             else if(newComponentName.equals(Names.flipFlopJK)){
-                newComponent = new FlipFlopJK(x, y, false, null, null);
+                componentMoveBuffer = new FlipFlopJK(x, y, false, null, null);
             }
 
-            if(newComponent != null){
-                newComponent.draw(graphicsContext);
-            }
+            mwc.setComponentBuffer(componentMoveBuffer);
         }
     }
 
@@ -244,7 +241,7 @@ public class MouseActions {
                     " selItemName:" + selectedItemName + ", waitForGate2:" + mwc.isWaitForComponent2() + ",  mouseButton:" + button);
         }
 
-        //Clicked on a existing gate (1 or 2), and creating a line
+        //Clicked on a existing component (1 or 2), and creating a line
         if(mwc.checkIfCoverHalf(selectedItemName, x, y) && (mwc.isWaitForComponent2() || selectedItemName.equals(Names.lineName))){
             if(Accesses.logMouseActions) {
                 System.out.println("Creating line");
@@ -262,15 +259,18 @@ public class MouseActions {
             mwc.setCoveredError(false);
         }
         //Clicked on a free space while creating component (not line)
-        else if(!mwc.checkIfCoverTotal(selectedItemName, x, y) && tableViewComponents.getSelectionModel().getSelectedItem() != null && !selectedItemName.contains(Names.lineName)) {
+        else if(!mwc.checkIfCoverTotal(selectedItemName, x, y) && tableViewComponents.getSelectionModel().getSelectedItem() != null
+                && !selectedItemName.contains(Names.lineName) && button != MouseButton.SECONDARY) {
             if(Accesses.logMouseActions) {
                 System.out.println("Create new component " + selectedItemName);
             }
+            componentMoveBuffer = null;
+            mwc.setComponentBuffer(null);
             mwc.createNewComponent(x, y, selectedItemName);
             mwc.setWaitForPlaceComponent(false);
         }
         //Clicked on a occupied space while creating gate
-        else if(selectedItemName != ""){
+        else if(selectedItemName != "" && button != MouseButton.SECONDARY){
             if(Accesses.logMouseActions) {
                 System.out.println("Covered gate while trying to create new one");
             }
@@ -279,7 +279,7 @@ public class MouseActions {
             actionCanvasMouseMoved(x, y);
         }
         //Just clicked on a free space
-        else if(!mouseDragged){
+        else if(!mouseDragged && button != MouseButton.SECONDARY){
             if(Accesses.logMouseActions) {
                 System.out.println("No special action, trying to select a gate");
             }
@@ -291,26 +291,33 @@ public class MouseActions {
                 else if(c.getName().equals(Names.switchBistableName) && c.inside(x, y)){
                     ((Switch)c).invertState();
                 }
-                else if(c.getName().equals(Names.switchPulseName) && event.getButton() == MouseButton.SECONDARY && c.inside(x, y)){
-                    ((SwitchPulse)c).setTurnedOn(!((SwitchPulse)c).isTurnedOn());
+            }
+            mwc.setCoveredError(false);
+        }
+        //Turning on switch monostable
+        else if(mwc.checkIfCoverHalf(selectedItemName, x, y) && button == MouseButton.SECONDARY){
+            if(Accesses.logMouseActions) {
+                System.out.println("Turning on switch monostable");
+            }
+            for(Component c : arrayListCreatedComponents) {
+                if (c.getName().equals(Names.switchPulseName) && event.getButton() == MouseButton.SECONDARY && c.inside(x, y)) {
+                    ((SwitchPulse) c).setTurnedOn(!((SwitchPulse) c).isTurnedOn());
                 }
             }
-
-            mwc.setCoveredError(false);
         }
         //Revert creating component
         else if(button == MouseButton.SECONDARY){
             if(Accesses.logMouseActions) {
                 System.out.println("Reverted creating component");
             }
+            componentMoveBuffer = null;
+            mwc.setComponentBuffer(null);
             mwc.setCoveredError(false);
             mwc.setLineBuffer(null);
             mwc.setWaitForComponent2(false);
             mwc.setWaitForPlaceComponent(false);
             tableViewComponents.getSelectionModel().clearSelection();
         }
-
-        mwc.repaint();
     }
 
     public void actionCanvasMouseDragged(MouseEvent e){
@@ -322,8 +329,6 @@ public class MouseActions {
                 c.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY());
             }
         }
-
-        mwc.repaint();
 
         pointMousePressedToDrag.setX(x);
         pointMousePressedToDrag.setY(y);
@@ -398,8 +403,6 @@ public class MouseActions {
                 }
             }
         }
-
-        mwc.repaint();
     }
 
     public void actionCanvasMouseReleased(double x, double y){
@@ -417,8 +420,6 @@ public class MouseActions {
                 ((Switch)c).setState(false);
             }
         }
-
-        mwc.repaint();
     }
 
     public void actionZoomableScrollPaneClicked() {

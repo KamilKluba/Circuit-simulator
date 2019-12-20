@@ -84,6 +84,7 @@ public class FlipFlopJK extends FlipFlop implements Serializable {
                                 output.set(signalBuffer);
                                 signalReversedOutput.set(!signalBuffer);
                                 addDataToSeries();
+                                stateChanged.set(true);
                             }
                         }
                         else if(!nextStateJ && nextStateK){
@@ -100,6 +101,7 @@ public class FlipFlopJK extends FlipFlop implements Serializable {
                                 output.set(false);
                                 signalReversedOutput.set(true);
                                 addDataToSeries();
+                                stateChanged.set(true);
                             }
                         }
                         else if(nextStateJ && !nextStateK){
@@ -116,6 +118,7 @@ public class FlipFlopJK extends FlipFlop implements Serializable {
                                 output.set(true);
                                 signalReversedOutput.set(false);
                                 addDataToSeries();
+                                stateChanged.set(true);
                             }
                         }
                         else {
@@ -133,6 +136,7 @@ public class FlipFlopJK extends FlipFlop implements Serializable {
                                 output.set(!signalBuffer);
                                 signalReversedOutput.set(signalBuffer);
                                 addDataToSeries();
+                                stateChanged.set(true);
                             }
                         }
                     }

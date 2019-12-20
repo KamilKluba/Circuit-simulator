@@ -77,5 +77,6 @@ public class SwitchMonostable extends Switch implements Serializable {
     public void setState(boolean state){
         this.output.set(state);
         addDataToSeries();
+        stateChanged.set(true);
     }
 }

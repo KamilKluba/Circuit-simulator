@@ -133,7 +133,6 @@ public abstract class Switch extends Component{
     }
 
     public void setState(boolean state) {
-        this.stateChanged.set(true);
         this.output.set(state);
     }
 

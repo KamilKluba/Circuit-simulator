@@ -43,6 +43,7 @@ public abstract class And extends Gate {
                 if(nextState == nextState2) {
                     output.set(nextState);
                     addDataToSeries();
+                    stateChanged.set(true);
                 }
             }
             try {

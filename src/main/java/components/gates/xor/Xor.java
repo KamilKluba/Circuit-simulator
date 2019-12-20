@@ -55,6 +55,7 @@ public abstract class Xor extends Gate {
                 if(nextState2 == nextState) {
                     output.set(nextState);
                     addDataToSeries();
+                    stateChanged.set(true);
                 }
             }
 

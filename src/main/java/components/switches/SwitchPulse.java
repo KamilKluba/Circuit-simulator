@@ -52,6 +52,7 @@ public class SwitchPulse extends Switch implements Serializable {
                 currentValue = output.get();
                 output.set(!currentValue);
                 addDataToSeries();
+                stateChanged.set(true);
                 try {
                     Thread.sleep(Sizes.switchPulseInterval);
                 } catch (InterruptedException e) {

@@ -61,6 +61,7 @@ public class FlipFlopD extends FlipFlop implements Serializable {
                                 output.set(nextState);
                                 signalReversedOutput.set(!nextState);
                                 addDataToSeries();
+                                stateChanged.set(true);
                             }
                         }
                     }

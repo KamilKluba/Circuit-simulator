@@ -53,6 +53,7 @@ public class FlipFlopT extends FlipFlop implements Serializable {
                                 output.set(true);
                                 signalReversedOutput.set(false);
                                 addDataToSeries();
+                                stateChanged.set(true);
                             }
                         }
                         else{
@@ -68,6 +69,7 @@ public class FlipFlopT extends FlipFlop implements Serializable {
                                 output.set(false);
                                 signalReversedOutput.set(true);
                                 addDataToSeries();
+                                stateChanged.set(true);
                             }
                         }
                     }

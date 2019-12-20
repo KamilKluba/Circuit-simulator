@@ -28,6 +28,7 @@ import components.switches.SwitchMonostable;
 import components.switches.SwitchPulse;
 import data.Accesses;
 import data.MouseActions;
+import javafx.application.Platform;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -80,6 +81,7 @@ public class MainWindowController {
     @FXML private LineChart lineChartStates;
     @FXML private HBox hBoxChartArea;
     @FXML private AnchorPane anchorPaneChartOptions;
+    @FXML private CheckBox checkBoxScrollToRight;
 
     private Main main;
     private ArrayList<Line> arrayListCreatedLines = new ArrayList<>();
@@ -101,6 +103,7 @@ public class MainWindowController {
     private int gateCounter = 0;
     private int switchCounter = 0;
     private int flipFlopCounter = 0;
+    private Component componentBuffer = null;
 
     private long timeStart;
 
@@ -204,6 +207,7 @@ public class MainWindowController {
 //        zoomableScrollPaneChart.setPrefWidth(1820);
         hBoxChartArea.getChildren().remove(scrollPaneChart);
         hBoxChartArea.getChildren().add(zoomableScrollPaneChart);
+        checkBoxScrollToRight.setText("Przesuń do \n prawej");
         mouseActions = new MouseActions(this);
 
         canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));
@@ -216,10 +220,12 @@ public class MainWindowController {
         tableViewComponents.setOnKeyPressed(e -> actionCanvasKeyPressed(e.getCode()));
 
         timeStart = System.currentTimeMillis();
+
+        Executors.newFixedThreadPool(1).execute(() -> repaintScreen());
     }
 
     private void setChart(){
-        zoomableScrollPaneChart.setPrefHeight(200);
+        zoomableScrollPaneChart.setPrefHeight(150);
         zoomableScrollPaneChart.setPrefWidth(3000);
         new Thread(() -> {
             while(true){
@@ -233,7 +239,15 @@ public class MainWindowController {
                     lineChartStates.setPrefWidth(924 + maxLength * 20);
                 }
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if(checkBoxScrollToRight.isSelected()){
+                    zoomableScrollPaneChart.setHvalue(1);
+                }
+                try {
+                    Thread.sleep(4900);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -251,6 +265,7 @@ public class MainWindowController {
     }
 
     public void actionDebug(){
+        zoomableScrollPaneChart.setHvalue(1.0);
     }
 
     public void actionDelete(){
@@ -343,8 +358,6 @@ public class MainWindowController {
         for(Line l : arrayListCreatedLines){
             l.lifeCycle();
         }
-
-        repaint();
     }
 
     public void actionSelectionChanged() {
@@ -365,8 +378,6 @@ public class MainWindowController {
         paneWorkspace.getChildren().remove(comboBoxNewLineHook);
         comboBoxNewLineHook = null;
         canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));
-
-        repaint();
     }
 
     public void actionFilterComponents(){
@@ -394,7 +405,6 @@ public class MainWindowController {
                 c.rotate();
             }
         }
-        repaint();
     }
 
     public boolean checkIfCoverTotal(String componentName, double x, double y){
@@ -518,25 +528,57 @@ public class MainWindowController {
         return null;
     }
 
-    public void repaint(){
-        graphicsContext.clearRect(0, 0, canvas.getWidth() + 1, canvas.getHeight() + 1);
+    public void repaintScreen(){
+        while(true) {
+            boolean stateChanged;
+            try {
+                stateChanged = false;
 
-        graphicsContext.setLineWidth(Sizes.baseLineWidth);
-        for(Line l : arrayListCreatedLines){
-            l.draw(graphicsContext);
+                for(Component c : arrayListCreatedComponents){
+                    if(c.isStateChanged()){
+                        stateChanged = true;
+                        break;
+                    }
+                }
+                if(!stateChanged){
+                    for(Line l : arrayListCreatedLines){
+                        if (l.isStateChanged()){
+                            stateChanged = true;
+                            break;
+                        }
+                    }
+                }
+
+                graphicsContext.clearRect(0, 0, canvas.getWidth() + 1, canvas.getHeight() + 1);
+                graphicsContext.setLineWidth(Sizes.baseLineWidth);
+                for (Line l : arrayListCreatedLines) {
+                    l.draw(graphicsContext);
+                }
+                for (Component c : arrayListCreatedComponents) {
+                    c.draw(graphicsContext);
+                }
+                if(componentBuffer != null){
+                    componentBuffer.draw(graphicsContext);
+                }
+                graphicsContext.setStroke(Color.BLACK);
+
+
+                if(stateChanged){
+                    Thread.sleep(1);
+                }
+                else{
+                    Thread.sleep(10);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-
-        for(Component c : arrayListCreatedComponents){
-            c.draw(graphicsContext);
-        }
-
-        graphicsContext.setStroke(Color.BLACK);
     }
 
     private void actionCanvasKeyPressed(KeyCode code){
         if(code == KeyCode.ESCAPE){
+            componentBuffer = null;
             coveredError = false;
-            repaint();
             tableViewComponents.getSelectionModel().clearSelection();
             waitForComponent2 = false;
             deleteLineBuffer();
@@ -815,7 +857,6 @@ public class MainWindowController {
         paneWorkspace.getChildren().remove(comboBoxNewLineHook);
 
         canvas.requestFocus();
-        repaint();
     }
 
     private void chooseNewLineHook2(double x, double y, Gate g, Switch s, FlipFlop ff, ComboBox<Point> comboBoxNewLineHook) {
@@ -895,7 +936,6 @@ public class MainWindowController {
         }
 
         canvas.requestFocus();
-        repaint();
     }
 
     public void deleteLineBuffer(){
@@ -1153,6 +1193,14 @@ public class MainWindowController {
 
     public HBox gethBoxChartArea() {
         return hBoxChartArea;
+    }
+
+    public Component getComponentBuffer() {
+        return componentBuffer;
+    }
+
+    public void setComponentBuffer(Component componentBuffer) {
+        this.componentBuffer = componentBuffer;
     }
 }
 
