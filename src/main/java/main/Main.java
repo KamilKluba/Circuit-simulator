@@ -43,8 +43,8 @@ public class Main extends Application {
         Pane pane = mainWindowController.getPaneWorkspace();
         Canvas canvas = mainWindowController.getCanvas();
 
-//        scene = new Scene(flowPane);
-        scene = new Scene(borderPane);
+        scene = new Scene(flowPane);
+//        scene = new Scene(borderPane);
 
         startWindowController.myInitialize(this);
         mainWindowController.myInitialize(this);

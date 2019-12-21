@@ -154,6 +154,7 @@ public abstract class Gate extends Component {
                 l.setY2(pointCenter.getY() + rotatedOutputY);
             }
         }
+        stateChanged.set(true);
     }
 
     public void draw(GraphicsContext graphicsContext){

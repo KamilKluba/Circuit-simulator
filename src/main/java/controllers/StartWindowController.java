@@ -49,10 +49,8 @@ public class StartWindowController {
 
     public void actionLoadCircuit(){
         try{
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Wybierz plik do załadowania");
-            File file = fileChooser.showOpenDialog(main.getPrimaryStage());
-            main.getMainWindowController().loadCircuit(file);
+            main.getMainWindowController().getFileOperator().actionMenuItemLoad();
+            main.changeScene();
         } catch(Exception e){
             e.printStackTrace();
             labelError.setText("Błąd podczas ładowania obwodu z pliku!");

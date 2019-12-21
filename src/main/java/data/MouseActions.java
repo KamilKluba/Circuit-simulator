@@ -40,6 +40,7 @@ import javafx.scene.paint.Color;
 import java.util.ArrayList;
 
 public class MouseActions {
+    private ComponentCreator componentCreator;
     private boolean mouseDragged = false;
     private boolean couldBeSelected = false;
     private MainWindowController mwc;
@@ -158,36 +159,36 @@ public class MouseActions {
         } catch (Exception e){}
 
         if(Accesses.logMouseActions) {
-            System.out.println("Click parameters: coverTotal:" + mwc.checkIfCoverTotal(selectedItemName, x, y) + ", coverHalf:" + mwc.checkIfCoverHalf(selectedItemName, x, y) +
+            System.out.println("Click parameters: coverTotal:" + checkIfCoverTotal(selectedItemName, x, y) + ", coverHalf:" + checkIfCoverHalf(selectedItemName, x, y) +
                     " selItemName:" + selectedItemName + ", waitForGate2:" + mwc.isWaitForComponent2() + ",  mouseButton:" + button);
         }
 
         //Clicked on a existing component (1 or 2), and creating a line
-        if(mwc.checkIfCoverHalf(selectedItemName, x, y) && (mwc.isWaitForComponent2() || selectedItemName.equals(Names.lineName))){
+        if(checkIfCoverHalf(selectedItemName, x, y) && (mwc.isWaitForComponent2() || selectedItemName.equals(Names.lineName))){
             if(Accesses.logMouseActions) {
                 System.out.println("Creating line");
             }
-            mwc.createNewLine(x, y);
+            componentCreator.createNewLine(x, y);
             mwc.setCoveredError(false);
         }
         //Clicked on a free space while creating line
-        else if(!mwc.checkIfCoverHalf(selectedItemName, x, y) && (mwc.isWaitForComponent2() || selectedItemName.equals(Names.lineName))){
+        else if(!checkIfCoverHalf(selectedItemName, x, y) && (mwc.isWaitForComponent2() || selectedItemName.equals(Names.lineName))){
             if(Accesses.logMouseActions) {
                 System.out.println("Stopped creating line");
             }
-            mwc.deleteLineBuffer();
+            componentCreator.deleteLineBuffer();
             mwc.setWaitForComponent2(false);
             mwc.setCoveredError(false);
         }
         //Clicked on a free space while creating component (not line)
-        else if(!mwc.checkIfCoverTotal(selectedItemName, x, y) && tableViewComponents.getSelectionModel().getSelectedItem() != null
+        else if(!checkIfCoverTotal(selectedItemName, x, y) && tableViewComponents.getSelectionModel().getSelectedItem() != null
                 && !selectedItemName.contains(Names.lineName) && button != MouseButton.SECONDARY) {
             if(Accesses.logMouseActions) {
                 System.out.println("Create new component " + selectedItemName);
             }
             componentMoveBuffer = null;
             mwc.setComponentBuffer(null);
-            mwc.createNewComponent(x, y, selectedItemName);
+            componentCreator.createNewComponent(x, y, selectedItemName);
             mwc.setWaitForPlaceComponent(false);
         }
         //Clicked on a occupied space while creating gate
@@ -213,7 +214,7 @@ public class MouseActions {
             mwc.setCoveredError(false);
         }
         //Turning on switch
-        else if(mwc.checkIfCoverHalf(selectedItemName, x, y) && button == MouseButton.SECONDARY){
+        else if(checkIfCoverHalf(selectedItemName, x, y) && button == MouseButton.SECONDARY){
             if(Accesses.logMouseActions) {
                 System.out.println("Turning on switch monostable");
             }
@@ -255,13 +256,6 @@ public class MouseActions {
         pointMousePressedToDrag.setX(x);
         pointMousePressedToDrag.setY(y);
         if(e.getButton() == MouseButton.PRIMARY && !couldBeSelected) {
-            graphicsContext.setStroke(Color.BLUE);
-            graphicsContext.setLineWidth(Sizes.baseLineContourWidth / (mwc.getPaneWorkspace().getScaleX() * 10 / 9) + 0.5);
-            graphicsContext.strokeLine(pointMousePressed.getX(), pointMousePressed.getY(), x, pointMousePressed.getY());
-            graphicsContext.strokeLine(pointMousePressed.getX(), pointMousePressed.getY(), pointMousePressed.getX(), y);
-            graphicsContext.strokeLine(x, pointMousePressed.getY(), x, y);
-            graphicsContext.strokeLine(pointMousePressed.getX(), y, x, y);
-
             double x1, x2, y1, y2;
             if (pointMousePressed.getX() < x) {
                 x1 = pointMousePressed.getX();
@@ -326,6 +320,8 @@ public class MouseActions {
                 }
             }
         }
+        mwc.setMouseButton(e.getButton());
+        mwc.setDraggedSelectionRectngle(!couldBeSelected);
         mwc.repaintScreen();
     }
 
@@ -344,6 +340,8 @@ public class MouseActions {
                 ((Switch)c).setState(false);
             }
         }
+        mwc.setMouseButton(null);
+        mwc.setDraggedSelectionRectngle(false);
         mwc.repaintScreen();
     }
 
@@ -375,6 +373,88 @@ public class MouseActions {
         }).start();
 
         mwc.getCanvas().setOnMouseClicked(e -> actionCanvasMouseClicked(e));
+    }
+
+    public boolean checkIfCoverTotal(String componentName, double x, double y){
+        double xSizeCompare = 0;
+        double ySizeCompare = 0;
+
+        if(componentName.contains(Names.gateSearchName)){
+            xSizeCompare = Sizes.baseGateXSize;
+            ySizeCompare = Sizes.baseGateYSize;
+        }
+        else if(componentName.contains(Names.switchSearchName)){
+            xSizeCompare = Sizes.baseSwitchXSize;
+            ySizeCompare = Sizes.baseSwitchYSize;
+        }
+        else if(componentName.contains(Names.flipFlopSearchName)){
+            xSizeCompare = Sizes.baseFlipFlopXSize;
+            ySizeCompare = Sizes.baseFlipFlopYSize;
+        }
+
+        for(Gate g : arrayListCreatedGates) {
+            if (Math.abs(x - g.getPointCenter().getX()) <= (Sizes.baseGateXSize + xSizeCompare) / 2 &&
+                    Math.abs(y - g.getPointCenter().getY()) <= (Sizes.baseGateYSize + ySizeCompare) / 2) {
+                return true;
+            }
+        }
+
+        for(Switch s : arrayListCreatedSwitches) {
+            if (Math.abs(x - s.getPointCenter().getX()) <= (Sizes.baseSwitchXSize + xSizeCompare) / 2 &&
+                    Math.abs(y - s.getPointCenter().getY()) <= (Sizes.baseSwitchYSize + ySizeCompare) / 2){
+                return true;
+            }
+        }
+
+        for(FlipFlop ff : arrayListCreatedFlipFlops) {
+            if (Math.abs(x - ff.getPointCenter().getX()) <= (Sizes.baseFlipFlopXSize + xSizeCompare) / 2 &&
+                    Math.abs(y - ff.getPointCenter().getY()) <= (Sizes.baseFlipFlopYSize + ySizeCompare) / 2){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean checkIfCoverHalf(String componentName, double x, double y){
+        double xShiftCompare = 0;
+        double yShiftCompare = 0;
+
+        if(componentName.contains(Names.gateSearchName)){
+            xShiftCompare = Sizes.baseGateXShift;
+            yShiftCompare = Sizes.baseGateYShift;
+        }
+        else if(componentName.contains(Names.switchSearchName)){
+            xShiftCompare = Sizes.baseSwitchXShift;
+            yShiftCompare = Sizes.baseSwitchYShift;
+        }
+        else if(componentName.contains(Names.flipFlopSearchName)){
+            xShiftCompare = Sizes.baseFlipFlopXShift;
+            yShiftCompare = Sizes.baseFlipFlopYShift;
+        }
+
+        for(Gate g : arrayListCreatedGates) {
+            if (Math.abs(x - g.getPointCenter().getX()) <= (Sizes.baseGateXShift + xShiftCompare) / 2 &&
+                    Math.abs(y - g.getPointCenter().getY()) <= (Sizes.baseGateYShift + yShiftCompare) / 2) {
+                return true;
+            }
+        }
+
+        for(Switch s : arrayListCreatedSwitches) {
+            if (Math.abs(x - s.getPointCenter().getX()) <= (Sizes.baseSwitchXShift + xShiftCompare) / 2 &&
+                    Math.abs(y - s.getPointCenter().getY()) <= (Sizes.baseSwitchYShift + yShiftCompare) / 2){
+                return true;
+            }
+        }
+
+        for(FlipFlop ff : arrayListCreatedFlipFlops){
+            if (Math.abs(x - ff.getPointCenter().getX()) <= (Sizes.baseFlipFlopXShift + xShiftCompare) / 2 &&
+                    Math.abs(y - ff.getPointCenter().getY()) <= (Sizes.baseFlipFlopYShift + yShiftCompare) / 2) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void drawCoverErrorSquares(){
@@ -411,7 +491,7 @@ public class MouseActions {
             graphicsContext.strokeLine(pointCenter.getX() + shiftFlipFlopX, pointCenter.getY() - shiftFlipFlopY, pointCenter.getX() - shiftFlipFlopX, pointCenter.getY() - shiftFlipFlopY);
         }
 
-        if(mwc.checkIfCoverTotal(newComponentName, x, y)){
+        if(checkIfCoverTotal(newComponentName, x, y)){
             graphicsContext.setStroke(Color.RED);
         }
         else{
@@ -438,11 +518,25 @@ public class MouseActions {
         }
     }
 
+    public void drawSelectionRectangle(){
+        graphicsContext.setStroke(Color.BLUE);
+        graphicsContext.setLineWidth(Sizes.baseLineContourWidth / (mwc.getPaneWorkspace().getScaleX() * 10 / 9) + 0.5);
+        graphicsContext.strokeLine(pointMousePressed.getX(), pointMousePressed.getY(), pointMousePressedToDrag.getX(), pointMousePressed.getY());
+        graphicsContext.strokeLine(pointMousePressed.getX(), pointMousePressed.getY(), pointMousePressed.getX(), pointMousePressedToDrag.getY());
+        graphicsContext.strokeLine(pointMousePressedToDrag.getX(), pointMousePressed.getY(), pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY());
+        graphicsContext.strokeLine(pointMousePressed.getX(), pointMousePressedToDrag.getY(), pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY());
+
+    }
+
     public Point getPointMousePressed() {
         return pointMousePressed;
     }
 
     public Point getPointMouseMoved() {
         return pointMouseMoved;
+    }
+
+    public void setComponentCreator(ComponentCreator componentCreator) {
+        this.componentCreator = componentCreator;
     }
 }

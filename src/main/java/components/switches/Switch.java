@@ -78,6 +78,7 @@ public abstract class Switch extends Component{
                 l.setY2(pointLineHook.getY());
             }
         }
+        stateChanged.set(true);
     }
 
     public void move(double x, double y, double mousePressX, double mousePressY) {
