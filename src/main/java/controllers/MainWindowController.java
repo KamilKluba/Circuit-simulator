@@ -529,32 +529,30 @@ public class MainWindowController {
     }
 
     public void repaintThread(){
-        boolean stateChanged = false;
+        boolean stateChanged;
 
         while(true) {
             try {
+                stateChanged = false;
                 for (Component c : arrayListCreatedComponents) {
                     if (c.isStateChanged()) {
                         stateChanged = true;
-                        break;
                     }
+                    c.setStateChanged(false);
                 }
-                if (!stateChanged) {
-                    for (Line l : arrayListCreatedLines) {
-                        if (l.isStateChanged()) {
-                            stateChanged = true;
-                            break;
-                        }
+                for (Line l : arrayListCreatedLines) {
+                    if (l.isStateChanged()) {
+                        stateChanged = true;
                     }
+                    l.setStateChanged(false);
                 }
                 if (stateChanged) {
                     repaintScreen();
                 }
-
                 if (stateChanged) {
                     Thread.sleep(1);
                 } else {
-                    Thread.sleep(10);
+                    Thread.sleep(20);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -746,8 +744,8 @@ public class MainWindowController {
                 newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 1"));
                 newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 0"));
 
-                arrayListSeries.add(newSeries);
-                lineChartStates.getData().add(newSeries);
+         //       arrayListSeries.add(newSeries);
+        //        lineChartStates.getData().add(newSeries);
             }
         } catch (Exception e) {
             e.printStackTrace();

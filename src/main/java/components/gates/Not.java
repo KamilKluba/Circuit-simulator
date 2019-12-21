@@ -25,9 +25,36 @@ public class Not extends Gate implements Serializable {
         arrayPointsInputs[0] = new Point(Names.pointInputName + "1", x - 93, y);
         arraySignalsInputs = new boolean[1];
         name = Names.gateNotName;
+        output.set(true);
 
         imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/not/not_off.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
         imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/not/not_on.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
         imageViewSelectedOn = new ImageView(new Image(getClass().getResource("/graphics/not/not_selected.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
+    }
+
+    public void lifeCycle() {
+        while (alive) {
+            boolean nextState = arrayArrayListLines[0].size() > 0 && arrayArrayListLines[0].get(0).isSignalOutput();
+
+            if (output.get() == nextState) {
+                try {
+                    Thread.sleep(Sizes.gatePropagationTime);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                boolean nextState2 = arrayArrayListLines[0].size() > 0 && arrayArrayListLines[0].get(0).isSignalOutput();
+
+                if(nextState == nextState2){
+                    output.set(!nextState);
+                    addDataToSeries();
+                    stateChanged.set(true);
+                }
+            }
+            try {
+                Thread.sleep(Sizes.gateSleepTime);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

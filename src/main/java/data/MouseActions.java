@@ -209,13 +209,10 @@ public class MouseActions {
                 if(button == MouseButton.PRIMARY){
                     c.select(x, y);
                 }
-                else if(c.getName().equals(Names.switchBistableName) && c.inside(x, y)){
-                    ((Switch)c).invertState();
-                }
             }
             mwc.setCoveredError(false);
         }
-        //Turning on switch monostable
+        //Turning on switch
         else if(mwc.checkIfCoverHalf(selectedItemName, x, y) && button == MouseButton.SECONDARY){
             if(Accesses.logMouseActions) {
                 System.out.println("Turning on switch monostable");
@@ -223,6 +220,9 @@ public class MouseActions {
             for(Component c : arrayListCreatedComponents) {
                 if (c.getName().equals(Names.switchPulseName) && event.getButton() == MouseButton.SECONDARY && c.inside(x, y)) {
                     ((SwitchPulse) c).setTurnedOn(!((SwitchPulse) c).isTurnedOn());
+                }
+                else if(c.getName().equals(Names.switchBistableName) && c.inside(x, y)){
+                    ((Switch)c).invertState();
                 }
             }
         }
