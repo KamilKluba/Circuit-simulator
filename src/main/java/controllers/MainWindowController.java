@@ -28,6 +28,8 @@ import components.switches.SwitchMonostable;
 import components.switches.SwitchPulse;
 import data.*;
 import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -36,6 +38,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
 import main.Main;
 import components.gates.and.And2;
 import components.gates.or.Or2;
@@ -364,6 +368,8 @@ public class MainWindowController {
             String selectedName = tableViewComponents.getSelectionModel().getSelectedItem().getName();
             waitForPlaceComponent = selectedName.contains(Names.gateSearchName) || selectedName.contains(Names.switchSearchName) ||
                     selectedName.contains(Names.flipFlopSearchName);
+            createComponentBuffer(selectedName);
+            mouseActions.setNewComponentName(selectedName);
         } catch(Exception e){
             waitForPlaceComponent = false;
         }
@@ -374,6 +380,8 @@ public class MainWindowController {
         comboBoxNewLineHook = null;
         canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));
     }
+    
+
 
     public void actionFilterComponents(){
         String insertedText = textFieldFilterComponents.getText();
@@ -537,6 +545,27 @@ public class MainWindowController {
         System.exit(0);
     }
 
+    public void actionChangeCanvasSize(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ChangeCanvasSizeWindow.fxml"));
+            Pane pane = loader.load();
+            Scene scene = new Scene(pane);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            ChangeCanvasSizeController changeCanvasSizeController= loader.getController();
+            changeCanvasSizeController.setArrayListComponents(arrayListCreatedComponents);
+            changeCanvasSizeController.setCanvas(canvas);
+            changeCanvasSizeController.setPaneWorkspace(paneWorkspace);
+            changeCanvasSizeController.setStage(stage);
+            changeCanvasSizeController.myInitialize();
+
+            stage.show();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     public void actionMenuItemManual(){
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(Names.manualTitle);
@@ -551,6 +580,62 @@ public class MainWindowController {
         alert.setHeaderText(Names.aboutAuthorHeader);
         alert.setContentText(Names.aboutAuthorContent);
         alert.showAndWait();
+    }
+
+    public void createComponentBuffer(String newComponentName){
+        if (newComponentName.equals(Names.gateNotName)) {
+            componentBuffer = new Not(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.gateAnd2Name)) {
+            componentBuffer = new And2(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.gateAnd3Name)) {
+            componentBuffer = new And3(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.gateAnd4Name)) {
+            componentBuffer = new And4(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.gateOr2Name)) {
+            componentBuffer = new Or2(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.gateOr3Name)) {
+            componentBuffer = new Or3(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.gateOr4Name)) {
+            componentBuffer = new Or4(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.gateXor2Name)) {
+            componentBuffer = new Xor2(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.gateXor3Name)) {
+            componentBuffer = new Xor3(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.gateXor4Name)) {
+            componentBuffer = new Xor4(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.gateNand2Name)) {
+            componentBuffer = new Nand2(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.gateNand3Name)) {
+            componentBuffer = new Nand3(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.gateNand4Name)) {
+            componentBuffer = new Nand4(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.gateNor2Name)) {
+            componentBuffer = new Nor2(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.gateNor3Name)) {
+            componentBuffer = new Nor3(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.gateNor4Name)) {
+            componentBuffer = new Nor4(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.gateXnor2Name)) {
+            componentBuffer = new Xnor2(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.gateXnor3Name)) {
+            componentBuffer = new Xnor3(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.gateXnor4Name)) {
+            componentBuffer = new Xnor4(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.switchMonostableName)) {
+            componentBuffer = new SwitchMonostable(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.switchBistableName)) {
+            componentBuffer = new SwitchBistatble(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.switchPulseName)) {
+            componentBuffer = new SwitchPulse(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.flipFlopD)) {
+            componentBuffer = new FlipFlopD(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.flipFlopT)) {
+            componentBuffer = new FlipFlopT(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.flipFlopJK)) {
+            componentBuffer = new FlipFlopJK(-200, -200, false, null, null);
+        } else {
+            componentBuffer = null;
+        }
     }
 
     public boolean isCoveredError() {

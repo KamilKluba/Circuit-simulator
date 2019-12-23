@@ -78,7 +78,7 @@
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
-          <Menu mnemonicParsing="false" text="Opcje">
+          <Menu mnemonicParsing="false" text="Plik">
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#actionMenuItemLoad" text="Wczytaj" />
                   <MenuItem mnemonicParsing="false" onAction="#actionMenuItemSave" text="Zapisz" />
@@ -86,6 +86,11 @@
                   <MenuItem mnemonicParsing="false" onAction="#actionMenuItemExit" text="Wyjście" />
                </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Edycja">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#actionChangeCanvasSize" text="Zmień rozmiar pola roboczego" />
+               </items>
+            </Menu>
           <Menu mnemonicParsing="false" text="O programie">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#actionMenuItemManual" text="Instrukcja obsługi" />

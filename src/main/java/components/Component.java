@@ -266,5 +266,9 @@ public abstract class Component implements Serializable {
     public XYChart.Series<Long, String> getSeries() {
         return series;
     }
+
+    public Point getPointCenter() {
+        return pointCenter;
+    }
 }
 
