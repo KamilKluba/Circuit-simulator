@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Nor4 extends Nor implements Serializable {
-    private static final long serialVersionUID = 90000000000L;
+    private static final long serialVersionUID = 10303000000L;
 
     public Nor4(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);
@@ -31,7 +31,7 @@ public class Nor4 extends Nor implements Serializable {
         arrayPointsInputs[2] = new Point(Names.pointInputName + "3", x - 93, y + 10);
         arrayPointsInputs[3] = new Point(Names.pointInputName + "4", x - 93, y + 30);
         arraySignalsInputs = new boolean[4];
-        name = Names.gateOr4Name;
+        name = Names.gateNor4Name;
         output.set(true);
 
         imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/nor/nor4_gate_off.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Xor2 extends Xor implements Serializable {
-    private static final long serialVersionUID = 160000000000L;
+    private static final long serialVersionUID = 10601000000L;
 
     public Xor2(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);

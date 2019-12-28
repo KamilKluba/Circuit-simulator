@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Xnor2 extends Xnor implements Serializable {
-    private static final long serialVersionUID = 130000000000L;
+    private static final long serialVersionUID = 10501000000L;
 
     public Xnor2(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);
@@ -27,7 +27,7 @@ public class Xnor2 extends Xnor implements Serializable {
         arrayPointsInputs[0] = new Point(Names.pointInputName + "1", x - 93, y - 30);
         arrayPointsInputs[1] = new Point(Names.pointInputName + "2", x - 93, y + 30);
         arraySignalsInputs = new boolean[2];
-        name = Names.gateXor2Name;
+        name = Names.gateXnor2Name;
 
         imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/xnor/xnor2_gate_off.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));
         imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/xnor/xnor2_gate_on.png").toExternalForm(), Sizes.baseGateXSize , Sizes.baseGateYSize, false, false));

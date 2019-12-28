@@ -86,17 +86,19 @@ public class ChangeCanvasSizeController {
             }
         }
 
-        if(maxX - minX > horizontalValue - 400 || maxY - minY > verticalValue - 400){
-            labelError.setText("Za małe pole robocze!");
+        if(maxX - minX > horizontalValue - 200 || maxY - minY > verticalValue - 200){
             Executors.newFixedThreadPool(1).execute(() -> {
                 Platform.runLater(() -> {
-                    try {
-                        Thread.sleep(3000);
-                        labelError.setText("");
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    labelError.setText("Za male pole robocze!");
                 });
+                try {
+                    Thread.sleep(3000);
+                    Platform.runLater(() -> {
+                        labelError.setText("");
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             });
         }
         else {

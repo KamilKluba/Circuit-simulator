@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class And4 extends And implements Serializable {
-    private static final long serialVersionUID = 30000000000L;
+    private static final long serialVersionUID = 10103000000L;
 
     public And4(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);

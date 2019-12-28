@@ -7,6 +7,7 @@ import components.flipflops.FlipFlop;
 import components.gates.Gate;
 import components.switches.Switch;
 import controllers.MainWindowController;
+import javafx.collections.FXCollections;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.TableView;
@@ -21,6 +22,7 @@ import java.util.Date;
 public class FileOperator {
     private MainWindowController mwc;
     private Main main;
+    private ComponentCreator componentCreator;
     private ArrayList<Component> arrayListCreatedComponents;
     private ArrayList<Gate> arrayListCreatedGates;
     private ArrayList<Switch> arrayListCreatedSwitches;
@@ -33,6 +35,7 @@ public class FileOperator {
     public FileOperator(MainWindowController mwc) {
         this.mwc = mwc;
         this.main = mwc.getMain();
+        this.componentCreator = mwc.getComponentCreator();
         this.arrayListCreatedComponents = mwc.getArrayListCreatedComponents();
         this.arrayListCreatedGates = mwc.getArrayListCreatedGates();
         this.arrayListCreatedSwitches = mwc.getArrayListCreatedSwitches();
@@ -47,8 +50,8 @@ public class FileOperator {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Wybierz plik do załadowania");
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Pliki symulatora układów cyfrowych", "*.kksuc"));
-            File file = fileChooser.showOpenDialog(main.getPrimaryStage());
-            loadCircuit(file);
+            saveFile = fileChooser.showOpenDialog(main.getPrimaryStage());
+            loadCircuit(saveFile);
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -69,14 +72,9 @@ public class FileOperator {
             fileChooser.setTitle("Wybierz miejsce do zapisu");
             fileChooser.setInitialFileName("Schemat1 " + new SimpleDateFormat("hh.mm dd-MM-yyyy").format(new Date()));
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Pliki symulatora układów cyfrowych", "*.kksuc"));
-
             saveFile = fileChooser.showSaveDialog(main.getPrimaryStage());
-            if(saveFile != null) {
-                if (!saveFile.exists()) {
-                    saveFile.createNewFile();
-                }
-                saveCircuit(saveFile);
-            }
+            saveFile.createNewFile();
+            saveCircuit(saveFile);
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -95,29 +93,42 @@ public class FileOperator {
                 }
                 else if(c.getName().equals(Names.lineName)){
                     arrayListCreatedLines.add((Line)c);
+                    componentCreator.setLineCounter(componentCreator.getLineCounter() + 1);
+                    c.setId(componentCreator.getLineCounter());
                 }
                 else if(c.getName().contains(Names.gateSearchName)){
                     arrayListCreatedGates.add((Gate)c);
+                    componentCreator.setGateCounter(componentCreator.getGateCounter() + 1);
+                    c.setId(componentCreator.getGateCounter());
                 }
                 else if(c.getName().contains(Names.switchSearchName)){
                     arrayListCreatedSwitches.add((Switch)c);
+                    componentCreator.setSwitchCounter(componentCreator.getSwitchCounter() + 1);
+                    c.setId(componentCreator.getSwitchCounter());
                 }
                 else if(c.getName().contains(Names.flipFlopSearchName)){
                     arrayListCreatedFlipFlops.add((FlipFlop)c);
+                    componentCreator.setFlipFlopCounter(componentCreator.getFlipFlopCounter() + 1);
+                    c.setId(componentCreator.getFlipFlopCounter());
                 }
                 c.setLife();
+                c.setAddingDataToSeriesEnabled(true);
                 if(!c.getName().equals(Names.lineName)) {
                     c.setPictures();
+                    System.out.println(c.getName());
                     XYChart.Series<Long, String> newSeries = new XYChart.Series<>();
                     newSeries.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 0"));
                     newSeries.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 1"));
-                    newSeries.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 0"));
-                    c.setSeries(newSeries);
+                    if (c.isSignalOutput()) {
+                        newSeries.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 1"));
+                    } else {
+                        newSeries.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 0"));
+                    }
+                    c.setSeriesWithTime(newSeries, componentCreator.getTimeStart());
                     arrayListSeries.add(newSeries);
-                    lineChartStates.getData().add(newSeries);
                     arrayListCreatedComponents.add(c);
+                    lineChartStates.getData().add(newSeries);
                 }
-
                 i++;
             }
 
@@ -126,7 +137,7 @@ public class FileOperator {
         }
         catch (Exception e){
             System.out.println("Koniec pliku, zaladowano " + i + " obiektow");
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
 

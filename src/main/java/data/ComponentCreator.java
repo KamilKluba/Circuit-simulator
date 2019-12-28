@@ -34,6 +34,7 @@ import components.switches.SwitchMonostable;
 import components.switches.SwitchPulse;
 import controllers.MainWindowController;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
@@ -50,6 +51,8 @@ public class ComponentCreator {
     private ArrayList<Switch> arrayListCreatedSwitches;
     private ArrayList<FlipFlop> arrayListCreatedFlipFlops;
     private ArrayList<Line> arrayListCreatedLines;
+    private ArrayList<XYChart.Series<Long, String>> arrayListSeries;
+    private LineChart lineChartStates;
     private ComboBox<Point> comboBoxNewLineHook;
     private Canvas canvas;
     private Pane paneWorkspace;
@@ -69,6 +72,8 @@ public class ComponentCreator {
         this.arrayListCreatedSwitches = mwc.getArrayListCreatedSwitches();
         this.arrayListCreatedFlipFlops = mwc.getArrayListCreatedFlipFlops();
         this.arrayListCreatedLines = mwc.getArrayListCreatedLines();
+        this.arrayListSeries = mwc.getArrayListSeries();
+        this.lineChartStates = mwc.getLineChartStates();
         this.canvas = mwc.getCanvas();
         this.paneWorkspace = mwc.getPaneWorkspace();
         this.mouseActions = mwc.getMouseActions();
@@ -115,6 +120,99 @@ public class ComponentCreator {
         return null;
     }
 
+    public void deleteComponent(){
+        ArrayList<Component> arrayListComponentsToDelete = new ArrayList<>();
+        for (Line l : arrayListCreatedLines) {
+            if (l.isSelected()) {
+                arrayListComponentsToDelete.add(l);
+                l.delete();
+            }
+        }
+
+        for (Gate g : arrayListCreatedGates) {
+            if (g.isSelected()) {
+                while (g.getArrayListLinesOutput().size() > 0) {
+                    arrayListComponentsToDelete.add(g.getArrayListLinesOutput().get(0));
+                    g.getArrayListLinesOutput().get(0).delete();
+                }
+                for (ArrayList<Line> al : g.getArrayArrayListLines()) {
+                    while (al.size() > 0) {
+                        arrayListComponentsToDelete.add(al.get(0));
+                        al.get(0).delete();
+                    }
+                }
+                arrayListComponentsToDelete.add(g);
+            }
+        }
+
+        for (Switch s : arrayListCreatedSwitches) {
+            if (s.isSelected()) {
+                while (s.getArrayListlines().size() > 0) {
+                    arrayListComponentsToDelete.add(s.getArrayListlines().get(0));
+                    s.getArrayListlines().get(0).delete();
+                }
+                arrayListComponentsToDelete.add(s);
+            }
+        }
+
+        for (FlipFlop ff : arrayListCreatedFlipFlops) {
+            if (ff.isSelected()) {
+                while (ff.getArrayListLinesInput().size() > 0) {
+                    arrayListComponentsToDelete.add(ff.getArrayListLinesInput().get(0));
+                    ff.getArrayListLinesInput().get(0).delete();
+                }
+                if (ff.getName().equals(Names.flipFlopJK)) {
+                    while (((FlipFlopJK) ff).getArrayListLinesInputK().size() > 0) {
+                        arrayListComponentsToDelete.add(((FlipFlopJK) ff).getArrayListLinesInputK().get(0));
+                        ((FlipFlopJK) ff).getArrayListLinesInputK().get(0).delete();
+                    }
+                }
+                while (ff.getArrayListLinesOutput().size() > 0) {
+                    arrayListComponentsToDelete.add(ff.getArrayListLinesOutput().get(0));
+                    ff.getArrayListLinesOutput().get(0).delete();
+                }
+                while (ff.getArrayListLinesOutputReverted().size() > 0) {
+                    arrayListComponentsToDelete.add(ff.getArrayListLinesOutputReverted().get(0));
+                    ff.getArrayListLinesOutputReverted().get(0).delete();
+                }
+                while (ff.getArrayListLinesAsynchronousInput().size() > 0) {
+                    arrayListComponentsToDelete.add(ff.getArrayListLinesAsynchronousInput().get(0));
+                    ff.getArrayListLinesAsynchronousInput().get(0).delete();
+                }
+                while (ff.getArrayListLinesClock().size() > 0) {
+                    arrayListComponentsToDelete.add(ff.getArrayListLinesClock().get(0));
+                    ff.getArrayListLinesClock().get(0).delete();
+                }
+                while (ff.getArrayListLinesReset().size() > 0) {
+                    arrayListComponentsToDelete.add(ff.getArrayListLinesReset().get(0));
+                    ff.getArrayListLinesReset().get(0).delete();
+                }
+                arrayListComponentsToDelete.add(ff);
+            }
+        }
+
+        for(Component c : arrayListComponentsToDelete){
+            c.kill();
+            arrayListCreatedLines.remove(c);
+            arrayListCreatedGates.remove(c);
+            arrayListCreatedSwitches.remove(c);
+            arrayListCreatedFlipFlops.remove(c);
+            arrayListCreatedComponents.remove(c);
+            arrayListSeries.remove(c.getSeries());
+            lineChartStates.getData().remove(c.getSeries());
+        }
+
+        for(Line l : arrayListCreatedLines){
+            l.getArrayListVisitedLines().clear();
+            l.getArrayListDependentComponents().clear();
+        }
+        for(Line l : arrayListCreatedLines){
+            l.checkForSignals(l.getArrayListDependentComponents(), l.getArrayListVisitedLines());
+        }
+        for(Line l : arrayListCreatedLines){
+            l.lifeCycle();
+        }
+    }
 
     public void createNewComponent(double x, double y, String newComponentName){
         tableViewComponents.getSelectionModel().clearSelection();
@@ -217,10 +315,14 @@ public class ComponentCreator {
 
                 newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 0"));
                 newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 1"));
-                newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 0"));
-
-                //       arrayListSeries.add(newSeries);
-                //        lineChartStates.getData().add(newSeries);
+                if(newComponent.isSignalOutput()) {
+                    newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 1"));
+                }
+                else{
+                    newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 0"));
+                }
+                arrayListSeries.add(newSeries);
+                lineChartStates.getData().add(newSeries);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -235,173 +337,165 @@ public class ComponentCreator {
         FlipFlop ff = getCoveredFlipFlop(x, y);
 
         tableViewComponents.getSelectionModel().clearSelection();
-        comboBoxNewLineHook = new ComboBox<>();
-        comboBoxNewLineHook.setLayoutX(x - 75);
-        comboBoxNewLineHook.setLayoutY(y);
-        comboBoxNewLineHook.promptTextProperty().setValue("Wybierz pin");
-        if (g != null) {
-            comboBoxNewLineHook.getItems().add(g.getPointOutput());
-            for (Point p : g.getArrayPointsInputs()) {
-                comboBoxNewLineHook.getItems().add(p);
-            }
-            s = null;
-            ff = null;
-        }
-        else if(s != null){
-            comboBoxNewLineHook.getItems().add(s.getPointLineHook());
+        if(s != null){
             g = null;
             ff = null;
-        }
-        else if(ff != null){
-            comboBoxNewLineHook.getItems().add(ff.getPointInput());
-            if(ff.getName().equals(Names.flipFlopJK)){
-                comboBoxNewLineHook.getItems().add(((FlipFlopJK)ff).getPointInputK());
+            if (!mwc.isWaitForComponent2()) {
+                chooseNewLineHook1(x, y, g, s, ff, null);
+            } else {
+                chooseNewLineHook2(x, y, g, s, ff, null);
             }
-            comboBoxNewLineHook.getItems().add(ff.getPointOutput());
-            comboBoxNewLineHook.getItems().add(ff.getPointOutputReversed());
-            comboBoxNewLineHook.getItems().add(ff.getPointAsynchronousInput());
-            comboBoxNewLineHook.getItems().add(ff.getPointClock());
-            comboBoxNewLineHook.getItems().add(ff.getPointReset());
-            g = null;
-            s = null;
         }
-        paneWorkspace.getChildren().add(comboBoxNewLineHook);
+        else {
+            comboBoxNewLineHook = new ComboBox<>();
+            comboBoxNewLineHook.setLayoutX(x - 75);
+            comboBoxNewLineHook.setLayoutY(y);
+            comboBoxNewLineHook.promptTextProperty().setValue("Wybierz pin");
+            if (g != null) {
+                comboBoxNewLineHook.getItems().add(g.getPointOutput());
+                for (Point p : g.getArrayPointsInputs()) {
+                    comboBoxNewLineHook.getItems().add(p);
+                }
+                s = null;
+                ff = null;
+            } else if (ff != null) {
+                comboBoxNewLineHook.getItems().add(ff.getPointInput());
+                if (ff.getName().equals(Names.flipFlopJK)) {
+                    comboBoxNewLineHook.getItems().add(((FlipFlopJK) ff).getPointInputK());
+                }
+                comboBoxNewLineHook.getItems().add(ff.getPointOutput());
+                comboBoxNewLineHook.getItems().add(ff.getPointOutputReversed());
+                comboBoxNewLineHook.getItems().add(ff.getPointAsynchronousInput());
+                comboBoxNewLineHook.getItems().add(ff.getPointClock());
+                comboBoxNewLineHook.getItems().add(ff.getPointReset());
+                g = null;
+                s = null;
+            }
+            paneWorkspace.getChildren().add(comboBoxNewLineHook);
 
-        canvas.setOnMouseClicked(e -> {
-            paneWorkspace.getChildren().remove(comboBoxNewLineHook);
-            canvas.setOnMouseClicked(f -> mouseActions.actionCanvasMouseClicked(f));
-        });
+            canvas.setOnMouseClicked(e -> {
+                paneWorkspace.getChildren().remove(comboBoxNewLineHook);
+                canvas.setOnMouseClicked(f -> mouseActions.actionCanvasMouseClicked(f));
+            });
 
-        final Gate finalG = g;
-        final Switch finalS = s;
-        final FlipFlop finalFF = ff;
-        if(!mwc.isWaitForComponent2()) {
-            comboBoxNewLineHook.setOnAction(e -> chooseNewLineHook1(x, y, finalG, finalS, finalFF, comboBoxNewLineHook));
-        }
-        else{
-            comboBoxNewLineHook.setOnAction(e -> chooseNewLineHook2(x, y, finalG, finalS, finalFF, comboBoxNewLineHook));
+            final Gate finalG = g;
+            final Switch finalS = s;
+            final FlipFlop finalFF = ff;
+            if (!mwc.isWaitForComponent2()) {
+                comboBoxNewLineHook.setOnAction(e -> chooseNewLineHook1(x, y, finalG, finalS, finalFF, comboBoxNewLineHook));
+            } else {
+                comboBoxNewLineHook.setOnAction(e -> chooseNewLineHook2(x, y, finalG, finalS, finalFF, comboBoxNewLineHook));
+            }
         }
     }
 
     private void chooseNewLineHook1(double x, double y, Gate g, Switch s, FlipFlop ff, ComboBox<Point> comboBoxNewLineHook){
-        Point p = comboBoxNewLineHook.getSelectionModel().getSelectedItem();
-        String pointName = p.getName();
-
-        if(g != null) {
-            mwc.setLineBuffer(new Line(p.getX(), p.getY(), x, y, g, null, Color.BLACK));
-            if (pointName.contains("Output")) {
-                g.getArrayListLinesOutput().add(mwc.getLineBuffer());
-                mwc.getLineBuffer().setInput1IsOutput(true);
-            }
-            else if (pointName.contains("Input")) {
-                int inputNumber = Integer.parseInt(p.getName().split("Input")[1]);
-                g.getArrayArrayListLines()[inputNumber - 1].add(mwc.getLineBuffer());
-                mwc.getLineBuffer().setInput1IsOutput(false);
-            }
-        }
-        else if(s != null){
-            mwc.setLineBuffer(new Line(p.getX(), p.getY(), x, y, s, null, Color.BLACK));
+        System.out.println("dupa " + s);
+        if(s != null){
+            mwc.setLineBuffer(new Line(s.getPointLineHook().getX(), s.getPointLineHook().getY(), x, y, s, null, Color.BLACK));
             s.getArrayListlines().add(mwc.getLineBuffer());
             mwc.getLineBuffer().setInput1IsOutput(true);
         }
-        else if(ff != null){
-            mwc.setLineBuffer(new Line(p.getX(), p.getY(), x, y, ff, null, Color.BLACK));
-            if(pointName.equals("Input") || pointName.equals("Input J")){
-                ff.getArrayListLinesInput().add(mwc.getLineBuffer());
-                mwc.getLineBuffer().setInput1IsOutput(false);
-            }
-            else if(pointName.equals("Input K")){
-                ((FlipFlopJK)ff).getArrayListLinesInputK().add(mwc.getLineBuffer());
-                mwc.getLineBuffer().setInput1IsOutput(false);
-            }
-            else if(pointName.equals("Output")){
-                ff.getArrayListLinesOutput().add(mwc.getLineBuffer());
-                mwc.getLineBuffer().setInput1IsOutput(true);
-            }
-            else if(pointName.equals("Output reversed")){
-                ff.getArrayListLinesOutputReverted().add(mwc.getLineBuffer());
-                mwc.getLineBuffer().setInput1IsOutput(true);
-            }
-            else if(pointName.equals("Asynchronous input")){
-                ff.getArrayListLinesAsynchronousInput().add(mwc.getLineBuffer());
-                mwc.getLineBuffer().setInput1IsOutput(false);
-            }
-            else if(pointName.equals("Clock")){
-                ff.getArrayListLinesClock().add(mwc.getLineBuffer());
-                mwc.getLineBuffer().setInput1IsOutput(false);
-            }
-            else if(pointName.equals("Reset")){
-                ff.getArrayListLinesReset().add(mwc.getLineBuffer());
-                mwc.getLineBuffer().setInput1IsOutput(false);
-            }
-        }
-        canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));
-        mwc.setWaitForComponent2(true);
-        paneWorkspace.getChildren().remove(comboBoxNewLineHook);
+        else {
+            Point p = comboBoxNewLineHook.getSelectionModel().getSelectedItem();
+            String pointName = p.getName();
 
+            if (g != null) {
+                mwc.setLineBuffer(new Line(p.getX(), p.getY(), x, y, g, null, Color.BLACK));
+                if (pointName.contains("Output")) {
+                    g.getArrayListLinesOutput().add(mwc.getLineBuffer());
+                    mwc.getLineBuffer().setInput1IsOutput(true);
+                } else if (pointName.contains("Input")) {
+                    int inputNumber = Integer.parseInt(p.getName().split("Input")[1]);
+                    g.getArrayArrayListLines()[inputNumber - 1].add(mwc.getLineBuffer());
+                    mwc.getLineBuffer().setInput1IsOutput(false);
+                }
+            } else if (ff != null) {
+                mwc.setLineBuffer(new Line(p.getX(), p.getY(), x, y, ff, null, Color.BLACK));
+                if (pointName.equals("Input") || pointName.equals("Input J")) {
+                    ff.getArrayListLinesInput().add(mwc.getLineBuffer());
+                    mwc.getLineBuffer().setInput1IsOutput(false);
+                } else if (pointName.equals("Input K")) {
+                    ((FlipFlopJK) ff).getArrayListLinesInputK().add(mwc.getLineBuffer());
+                    mwc.getLineBuffer().setInput1IsOutput(false);
+                } else if (pointName.equals("Output")) {
+                    ff.getArrayListLinesOutput().add(mwc.getLineBuffer());
+                    mwc.getLineBuffer().setInput1IsOutput(true);
+                } else if (pointName.equals("Output reversed")) {
+                    ff.getArrayListLinesOutputReverted().add(mwc.getLineBuffer());
+                    mwc.getLineBuffer().setInput1IsOutput(true);
+                } else if (pointName.equals("Asynchronous input")) {
+                    ff.getArrayListLinesAsynchronousInput().add(mwc.getLineBuffer());
+                    mwc.getLineBuffer().setInput1IsOutput(false);
+                } else if (pointName.equals("Clock")) {
+                    ff.getArrayListLinesClock().add(mwc.getLineBuffer());
+                    mwc.getLineBuffer().setInput1IsOutput(false);
+                } else if (pointName.equals("Reset")) {
+                    ff.getArrayListLinesReset().add(mwc.getLineBuffer());
+                    mwc.getLineBuffer().setInput1IsOutput(false);
+                }
+            }
+            canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));
+            paneWorkspace.getChildren().remove(comboBoxNewLineHook);
+        }
+        mwc.setWaitForComponent2(true);
         canvas.requestFocus();
     }
 
     private void chooseNewLineHook2(double x, double y, Gate g, Switch s, FlipFlop ff, ComboBox<Point> comboBoxNewLineHook) {
-        Point p = comboBoxNewLineHook.getSelectionModel().getSelectedItem();
-        String pointName = p.getName();
-
-        mwc.getLineBuffer().setX2(comboBoxNewLineHook.getSelectionModel().getSelectedItem().getX());
-        mwc.getLineBuffer().setY2(comboBoxNewLineHook.getSelectionModel().getSelectedItem().getY());
-        lineCounter++;
-        mwc.getLineBuffer().setId(lineCounter);
-        mwc.getLineBuffer().setState(mwc.getLineBuffer().isState());
-        arrayListCreatedLines.add(mwc.getLineBuffer());
-
-        if(g != null) {
-            mwc.getLineBuffer().setComponent2(g);
-            if (pointName.contains("Output")) {
-                g.getArrayListLinesOutput().add(mwc.getLineBuffer());
-                mwc.getLineBuffer().setInput2IsOutput(true);
-            }
-            else if (pointName.contains("Input")) {
-                int inputNumber = Integer.parseInt(pointName.split("Input")[1]);
-                g.getArrayArrayListLines()[inputNumber - 1].add(mwc.getLineBuffer());
-                mwc.getLineBuffer().setInput2IsOutput(false);
-            }
-        }
-        else if(s != null){
+        if(s != null){
             mwc.getLineBuffer().setComponent2(s);
             s.getArrayListlines().add(mwc.getLineBuffer());
             mwc.getLineBuffer().setInput2IsOutput(true);
+            mwc.getLineBuffer().setX2(s.getPointLineHook().getX());
+            mwc.getLineBuffer().setY2(s.getPointLineHook().getY());
         }
-        else if(ff != null){
-            mwc.getLineBuffer().setComponent2(ff);
-            if(pointName.equals("Input") || pointName.equals("Input J")){
-                ff.getArrayListLinesInput().add(mwc.getLineBuffer());
-                mwc.getLineBuffer().setInput2IsOutput(false);
-            }
-            else if(pointName.equals("Input K")){
-                ((FlipFlopJK)ff).getArrayListLinesInputK().add(mwc.getLineBuffer());
-                mwc.getLineBuffer().setInput2IsOutput(false);
-            }
-            else if(pointName.equals("Output")){
-                ff.getArrayListLinesOutput().add(mwc.getLineBuffer());
-                mwc.getLineBuffer().setInput2IsOutput(true);
-            }
-            else if(pointName.equals("Output reversed")){
-                ff.getArrayListLinesOutputReverted().add(mwc.getLineBuffer());
-                mwc.getLineBuffer().setInput2IsOutput(true);
-            }
-            else if(pointName.equals("Asynchronous input")){
-                ff.getArrayListLinesAsynchronousInput().add(mwc.getLineBuffer());
-                mwc.getLineBuffer().setInput2IsOutput(true);
-            }
-            else if(pointName.equals("Clock")){
-                ff.getArrayListLinesClock().add(mwc.getLineBuffer());
-                mwc.getLineBuffer().setInput2IsOutput(false);
-            }
-            else if(pointName.equals("Reset")){
-                ff.getArrayListLinesReset().add(mwc.getLineBuffer());
-                mwc.getLineBuffer().setInput2IsOutput(false);
-            }
-        }
+        else {
+            Point p = comboBoxNewLineHook.getSelectionModel().getSelectedItem();
+            String pointName = p.getName();
 
+            mwc.getLineBuffer().setX2(comboBoxNewLineHook.getSelectionModel().getSelectedItem().getX());
+            mwc.getLineBuffer().setY2(comboBoxNewLineHook.getSelectionModel().getSelectedItem().getY());
+
+            if (g != null) {
+                mwc.getLineBuffer().setComponent2(g);
+                if (pointName.contains("Output")) {
+                    g.getArrayListLinesOutput().add(mwc.getLineBuffer());
+                    mwc.getLineBuffer().setInput2IsOutput(true);
+                } else if (pointName.contains("Input")) {
+                    int inputNumber = Integer.parseInt(pointName.split("Input")[1]);
+                    g.getArrayArrayListLines()[inputNumber - 1].add(mwc.getLineBuffer());
+                    mwc.getLineBuffer().setInput2IsOutput(false);
+                }
+            } else if (ff != null) {
+                mwc.getLineBuffer().setComponent2(ff);
+                if (pointName.equals("Input") || pointName.equals("Input J")) {
+                    ff.getArrayListLinesInput().add(mwc.getLineBuffer());
+                    mwc.getLineBuffer().setInput2IsOutput(false);
+                } else if (pointName.equals("Input K")) {
+                    ((FlipFlopJK) ff).getArrayListLinesInputK().add(mwc.getLineBuffer());
+                    mwc.getLineBuffer().setInput2IsOutput(false);
+                } else if (pointName.equals("Output")) {
+                    ff.getArrayListLinesOutput().add(mwc.getLineBuffer());
+                    mwc.getLineBuffer().setInput2IsOutput(true);
+                } else if (pointName.equals("Output reversed")) {
+                    ff.getArrayListLinesOutputReverted().add(mwc.getLineBuffer());
+                    mwc.getLineBuffer().setInput2IsOutput(true);
+                } else if (pointName.equals("Asynchronous input")) {
+                    ff.getArrayListLinesAsynchronousInput().add(mwc.getLineBuffer());
+                    mwc.getLineBuffer().setInput2IsOutput(true);
+                } else if (pointName.equals("Clock")) {
+                    ff.getArrayListLinesClock().add(mwc.getLineBuffer());
+                    mwc.getLineBuffer().setInput2IsOutput(false);
+                } else if (pointName.equals("Reset")) {
+                    ff.getArrayListLinesReset().add(mwc.getLineBuffer());
+                    mwc.getLineBuffer().setInput2IsOutput(false);
+                }
+            }
+        }
+        lineCounter++;
+        mwc.getLineBuffer().setId(lineCounter);
+        arrayListCreatedLines.add(mwc.getLineBuffer());
         mwc.setLineBuffer(null);
         canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));
         mwc.setWaitForComponent2(false);
@@ -458,5 +552,41 @@ public class ComponentCreator {
 
     public void setMouseActions(MouseActions mouseActions) {
         this.mouseActions = mouseActions;
+    }
+
+    public int getLineCounter() {
+        return lineCounter;
+    }
+
+    public void setLineCounter(int lineCounter) {
+        this.lineCounter = lineCounter;
+    }
+
+    public int getGateCounter() {
+        return gateCounter;
+    }
+
+    public void setGateCounter(int gateCounter) {
+        this.gateCounter = gateCounter;
+    }
+
+    public int getSwitchCounter() {
+        return switchCounter;
+    }
+
+    public void setSwitchCounter(int switchCounter) {
+        this.switchCounter = switchCounter;
+    }
+
+    public int getFlipFlopCounter() {
+        return flipFlopCounter;
+    }
+
+    public void setFlipFlopCounter(int flipFlopCounter) {
+        this.flipFlopCounter = flipFlopCounter;
+    }
+
+    public long getTimeStart() {
+        return timeStart;
     }
 }

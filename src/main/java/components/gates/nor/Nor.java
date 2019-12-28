@@ -8,6 +8,8 @@ import javafx.scene.chart.XYChart;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Nor extends Gate {
+    private static final long serialVersionUID = 10300000000L;
+
     public Nor(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);
     }

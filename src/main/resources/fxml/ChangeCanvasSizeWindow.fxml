@@ -19,6 +19,6 @@
       <Slider fx:id="sliderVerticalSize" layoutX="10.0" layoutY="170.0" majorTickUnit="1000.0" max="4500.0" min="500.0" prefWidth="280.0" showTickLabels="true" showTickMarks="true" value="2000.0" />
       <Button layoutX="45.0" layoutY="220.0" mnemonicParsing="false" onAction="#actionChangeSize" prefWidth="100.0" text="Zmień rozmiar" />
       <Button layoutX="155.0" layoutY="220.0" mnemonicParsing="false" onAction="#actionCancel" prefWidth="100.0" text="Anuluj" />
-      <Label fx:id="labelError" layoutX="97.0" layoutY="90.0" text="halo" />
+      <Label fx:id="labelError" layoutX="97.0" layoutY="90.0" />
    </children>
 </Pane>

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Or3 extends Or implements Serializable {
-    private static final long serialVersionUID = 110000000000L;
+    private static final long serialVersionUID = 10402000000L;
 
     public Or3(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);

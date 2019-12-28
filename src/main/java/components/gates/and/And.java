@@ -8,6 +8,8 @@ import javafx.scene.chart.XYChart;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class And extends Gate {
+    private static final long serialVersionUID = 10100000000L;
+
     public And(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);
     }

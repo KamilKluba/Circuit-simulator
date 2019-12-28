@@ -2,32 +2,8 @@ package data;
 
 import components.*;
 import components.flipflops.FlipFlop;
-import components.flipflops.FlipFlopD;
-import components.flipflops.FlipFlopJK;
-import components.flipflops.FlipFlopT;
 import components.gates.Gate;
-import components.gates.Not;
-import components.gates.and.And2;
-import components.gates.and.And3;
-import components.gates.and.And4;
-import components.gates.nand.Nand2;
-import components.gates.nand.Nand3;
-import components.gates.nand.Nand4;
-import components.gates.nor.Nor2;
-import components.gates.nor.Nor3;
-import components.gates.nor.Nor4;
-import components.gates.or.Or2;
-import components.gates.or.Or3;
-import components.gates.or.Or4;
-import components.gates.xnor.Xnor2;
-import components.gates.xnor.Xnor3;
-import components.gates.xnor.Xnor4;
-import components.gates.xor.Xor2;
-import components.gates.xor.Xor3;
-import components.gates.xor.Xor4;
 import components.switches.Switch;
-import components.switches.SwitchBistatble;
-import components.switches.SwitchMonostable;
 import components.switches.SwitchPulse;
 import controllers.MainWindowController;
 import javafx.scene.canvas.GraphicsContext;
@@ -59,7 +35,8 @@ public class MouseActions {
     private HBox hBoxChartArea;
     private Component componentMoveBuffer = null;
     private String newComponentName = null;
-
+    private boolean fitToCheck = false;
+    
 
     public MouseActions(MainWindowController mwc){
         this.mwc = mwc;
@@ -84,8 +61,16 @@ public class MouseActions {
         }
 
         if(mwc.getComponentBuffer() != null){
-            mwc.getComponentBuffer().getPointCenter().setX(x);
-            mwc.getComponentBuffer().getPointCenter().setY(y);
+            if(fitToCheck){
+                double x1 = x % Sizes.fitComponentPlace > Sizes.fitComponentPlace / 2 ? Sizes.fitComponentPlace : 0;
+                double y1 = y % Sizes.fitComponentPlace > Sizes.fitComponentPlace / 2 ? Sizes.fitComponentPlace : 0;
+                mwc.getComponentBuffer().getPointCenter().setX(x - x % Sizes.fitComponentPlace + x1);
+                mwc.getComponentBuffer().getPointCenter().setY(y - y % Sizes.fitComponentPlace + y1);
+            }
+            else{
+                mwc.getComponentBuffer().getPointCenter().setX(x);
+                mwc.getComponentBuffer().getPointCenter().setY(y);
+            }
         }
 
         mwc.repaintScreen();
@@ -132,7 +117,14 @@ public class MouseActions {
             }
             componentMoveBuffer = null;
             mwc.setComponentBuffer(null);
-            componentCreator.createNewComponent(x, y, selectedItemName);
+            if(fitToCheck){
+                double x1 = x % Sizes.fitComponentPlace > Sizes.fitComponentPlace / 2 ? Sizes.fitComponentPlace : 0;
+                double y1 = y % Sizes.fitComponentPlace > Sizes.fitComponentPlace / 2 ? Sizes.fitComponentPlace : 0;
+                componentCreator.createNewComponent(x - x % Sizes.fitComponentPlace + x1, y - y % Sizes.fitComponentPlace + y1, selectedItemName);
+            }
+            else {
+                componentCreator.createNewComponent(x, y, selectedItemName);
+            }
             mwc.setWaitForPlaceComponent(false);
         }
         //Clicked on a occupied space while creating gate
@@ -193,7 +185,12 @@ public class MouseActions {
 
         for(Component c : arrayListCreatedComponents) {
             if (c.isSelectedForDrag()) {
-                c.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY());
+                if(fitToCheck){
+                    c.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY(), true);
+                }
+                else {
+                    c.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY(), false);
+                }
             }
         }
 
@@ -490,5 +487,9 @@ public class MouseActions {
 
     public void setNewComponentName(String newComponentName) {
         this.newComponentName = newComponentName;
+    }
+
+    public void setFitToCheck(boolean setFitToCheck) {
+        this.fitToCheck = setFitToCheck;
     }
 }

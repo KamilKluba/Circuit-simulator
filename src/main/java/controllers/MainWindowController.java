@@ -37,6 +37,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
@@ -59,8 +60,7 @@ import javafx.scene.paint.Color;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -84,6 +84,7 @@ public class MainWindowController {
     @FXML private HBox hBoxChartArea;
     @FXML private AnchorPane anchorPaneChartOptions;
     @FXML private CheckBox checkBoxScrollToRight;
+    @FXML private Button buttonStartStopChart;
 
     private Main main;
     private ArrayList<Line> arrayListCreatedLines = new ArrayList<>();
@@ -106,6 +107,7 @@ public class MainWindowController {
     private FileOperator fileOperator;
     private Component componentBuffer = null;
     private MouseButton mouseButton = null;
+    private int chartExtension = 0;
 
     private ZoomableScrollPaneWorkspace zoomableScrollPaneWorkspace;
     private ZoomableScrollPaneChart zoomableScrollPaneChart;
@@ -218,34 +220,23 @@ public class MainWindowController {
         hBoxChartArea.setOnMouseClicked(e -> mouseActions.actionZoomableScrollPaneClicked());
 
         tableViewComponents.setOnKeyPressed(e -> actionCanvasKeyPressed(e.getCode()));
+        canvas.setOnKeyPressed(e -> actionCanvasKeyPressed(e.getCode()));
+        zoomableScrollPaneWorkspace.setOnKeyPressed(e -> actionCanvasKeyPressed(e.getCode()));
 
         Executors.newFixedThreadPool(1).execute(() -> repaintThread());
-    }
 
-    private void setChart(){
-        zoomableScrollPaneChart.setPrefHeight(150);
-        zoomableScrollPaneChart.setPrefWidth(3000);
+        graphicsContext.setFont(new Font("Arial", 24));
+
         new Thread(() -> {
-            while(true){
-                int maxLength = 0;
-                for(XYChart.Series s : arrayListSeries){
-                    if(s.getData().size() > maxLength){
-                        maxLength = s.getData().size();
-                    }
+            while (true){
+                if (lineBuffer != null) {
+                    System.out.println(lineBuffer.getX1() + " " + lineBuffer.getY1() + "\n" + lineBuffer.getX2() + " " + lineBuffer.getY2() + "\n" +
+                            lineBuffer.getComponent1() + lineBuffer.getComponent2());
                 }
-                if(maxLength > 0){
-                    lineChartStates.setPrefWidth(924 + maxLength * 20);
-                }
+                else
+                    System.out.println("jest nullem");
                 try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if(checkBoxScrollToRight.isSelected()){
-                    zoomableScrollPaneChart.setHvalue(1);
-                }
-                try {
-                    Thread.sleep(4900);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -264,99 +255,108 @@ public class MainWindowController {
     }
 
     public void actionDebug(){
-        zoomableScrollPaneChart.setHvalue(1.0);
+        for (XYChart.Series<Long, String> s : arrayListSeries){
+            System.out.println(s.getData().size());
+        }
+    }
+
+    private void setChart(){
+        lineChartStates.setCreateSymbols(false);
+        zoomableScrollPaneChart.setPrefHeight(150);
+        zoomableScrollPaneChart.setPrefWidth(3000);
+        new Thread(() -> {
+            while(true){
+                int maxLength = 0;
+                for(XYChart.Series s : arrayListSeries){
+                    if(s.getData().size() > maxLength){
+                        maxLength = s.getData().size();
+                    }
+                }
+                if(maxLength > 0 && lineChartStates.getPrefWidth() < 924 + maxLength * 21.5 + chartExtension){
+                    lineChartStates.setPrefWidth(924 + maxLength * 21.5 + chartExtension);
+                }
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if(checkBoxScrollToRight.isSelected()){
+                    zoomableScrollPaneChart.setHvalue(1);
+                }
+                try {
+                    Thread.sleep(4900);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    public void actionStartStopChart(){
+        boolean checked = false;
+        boolean chartAlive = false;
+        for(Component c : arrayListCreatedComponents){
+            c.setAddingDataToSeriesEnabled(!c.isAddingDataToSeriesEnabled());
+            if(!checked){
+                checked = true;
+                chartAlive = c.isAddingDataToSeriesEnabled();
+            }
+            XYChart.Data<Long, String> data = c.getSeries().getData().get(c.getSeries().getData().size() - 1);
+            c.getSeries().getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - c.getChartMillisCounter(), data.getYValue()));
+            if(c.isSignalOutput()) {
+                c.getSeries().getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - c.getChartMillisCounter(), c.getName() + " " + c.getId() + ": 1"));
+            }
+            else{
+                c.getSeries().getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - c.getChartMillisCounter(), c.getName() + " " + c.getId() + ": 0"));
+            }
+        }
+        if(chartAlive){
+            buttonStartStopChart.setText("Zatrzymaj");
+        }
+        else{
+            buttonStartStopChart.setText("Wznów");
+        }
+    }
+
+    public void actionResetChart(){
+        lineChartStates.getData().clear();
+        arrayListSeries.clear();
+        for(Component c : arrayListCreatedComponents){
+            XYChart.Series<Long, String> s = new XYChart.Series<>();
+            s.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 0"));
+            s.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 1"));
+            s.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 0"));
+            if(c.isSignalOutput()) {
+                c.getSeries().getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 1"));
+            }
+            else{
+                c.getSeries().getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 0"));
+            }
+            c.resetSeries(s);
+            arrayListSeries.add(s);
+            lineChartStates.getData().add(s);
+        }
+
+    }
+
+    public void actionExtendChart(){
+        chartExtension += 100;
+        lineChartStates.setPrefWidth(lineChartStates.getPrefWidth() + chartExtension);
+        if(checkBoxScrollToRight.isSelected()){
+            zoomableScrollPaneChart.setHvalue(1);
+        }
+    }
+
+    public void actionConstrictChart(){
+        chartExtension -= 100;
+        lineChartStates.setPrefWidth(lineChartStates.getPrefWidth() - chartExtension);
+        if(checkBoxScrollToRight.isSelected()){
+            zoomableScrollPaneChart.setHvalue(1);
+        }
     }
 
     public void actionDelete(){
-        ArrayList<Component> arrayListComponentsToDelete = new ArrayList<>();
-        for (Line l : arrayListCreatedLines) {
-            if (l.isSelected()) {
-                arrayListComponentsToDelete.add(l);
-                l.delete();
-            }
-        }
-
-        for (Gate g : arrayListCreatedGates) {
-            if (g.isSelected()) {
-                while (g.getArrayListLinesOutput().size() > 0) {
-                    arrayListComponentsToDelete.add(g.getArrayListLinesOutput().get(0));
-                    g.getArrayListLinesOutput().get(0).delete();
-                }
-                for (ArrayList<Line> al : g.getArrayArrayListLines()) {
-                    while (al.size() > 0) {
-                        arrayListComponentsToDelete.add(al.get(0));
-                        al.get(0).delete();
-                    }
-                }
-                arrayListComponentsToDelete.add(g);
-            }
-        }
-
-        for (Switch s : arrayListCreatedSwitches) {
-            if (s.isSelected()) {
-                while (s.getArrayListlines().size() > 0) {
-                    arrayListComponentsToDelete.add(s.getArrayListlines().get(0));
-                    s.getArrayListlines().get(0).delete();
-                }
-                arrayListComponentsToDelete.add(s);
-            }
-        }
-
-        for (FlipFlop ff : arrayListCreatedFlipFlops) {
-            if (ff.isSelected()) {
-                while (ff.getArrayListLinesInput().size() > 0) {
-                    arrayListComponentsToDelete.add(ff.getArrayListLinesInput().get(0));
-                    ff.getArrayListLinesInput().get(0).delete();
-                }
-                if (ff.getName().equals(Names.flipFlopJK)) {
-                    while (((FlipFlopJK) ff).getArrayListLinesInputK().size() > 0) {
-                        arrayListComponentsToDelete.add(((FlipFlopJK) ff).getArrayListLinesInputK().get(0));
-                        ((FlipFlopJK) ff).getArrayListLinesInputK().get(0).delete();
-                    }
-                }
-                while (ff.getArrayListLinesOutput().size() > 0) {
-                    arrayListComponentsToDelete.add(ff.getArrayListLinesOutput().get(0));
-                    ff.getArrayListLinesOutput().get(0).delete();
-                }
-                while (ff.getArrayListLinesOutputReverted().size() > 0) {
-                    arrayListComponentsToDelete.add(ff.getArrayListLinesOutputReverted().get(0));
-                    ff.getArrayListLinesOutputReverted().get(0).delete();
-                }
-                while (ff.getArrayListLinesAsynchronousInput().size() > 0) {
-                    arrayListComponentsToDelete.add(ff.getArrayListLinesAsynchronousInput().get(0));
-                    ff.getArrayListLinesAsynchronousInput().get(0).delete();
-                }
-                while (ff.getArrayListLinesClock().size() > 0) {
-                    arrayListComponentsToDelete.add(ff.getArrayListLinesClock().get(0));
-                    ff.getArrayListLinesClock().get(0).delete();
-                }
-                while (ff.getArrayListLinesReset().size() > 0) {
-                    arrayListComponentsToDelete.add(ff.getArrayListLinesReset().get(0));
-                    ff.getArrayListLinesReset().get(0).delete();
-                }
-                arrayListComponentsToDelete.add(ff);
-            }
-        }
-
-        for(Component c : arrayListComponentsToDelete){
-            c.kill();
-            arrayListCreatedLines.remove(c);
-            arrayListCreatedGates.remove(c);
-            arrayListCreatedSwitches.remove(c);
-            arrayListCreatedFlipFlops.remove(c);
-            arrayListCreatedComponents.remove(c);
-        }
-
-        for(Line l : arrayListCreatedLines){
-            l.getArrayListVisitedLines().clear();
-            l.getArrayListDependentComponents().clear();
-        }
-        for(Line l : arrayListCreatedLines){
-            l.checkForSignals(l.getArrayListDependentComponents(), l.getArrayListVisitedLines());
-        }
-        for(Line l : arrayListCreatedLines){
-            l.lifeCycle();
-        }
+        componentCreator.deleteComponent();
     }
 
     public void actionSelectionChanged() {
@@ -380,8 +380,6 @@ public class MainWindowController {
         comboBoxNewLineHook = null;
         canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));
     }
-    
-
 
     public void actionFilterComponents(){
         String insertedText = textFieldFilterComponents.getText();
@@ -477,30 +475,10 @@ public class MainWindowController {
             componentCreator.deleteLineBuffer();
         }
         else if(code == KeyCode.CONTROL){
-            scrollPaneWorkspace.setPannable(true);
+            mouseActions.setFitToCheck(true);
         }
         else if(code == KeyCode.DELETE) {
             actionDelete();
-        }
-        else if(code == KeyCode.UP){
-            System.out.println(code);
-            paneWorkspace.setTranslateY(paneWorkspace.getTranslateY() + 10);
-            canvas.setTranslateY(canvas.getTranslateY() + 10);
-        }
-        else if(code == KeyCode.DOWN){
-            System.out.println(code);
-            paneWorkspace.setTranslateY(paneWorkspace.getTranslateY() - 10);
-            canvas.setTranslateY(canvas.getTranslateY() - 10);
-        }
-        else if(code == KeyCode.LEFT){
-            System.out.println(code);
-            paneWorkspace.setTranslateX(paneWorkspace.getTranslateX() - 10);
-            canvas.setTranslateX(canvas.getTranslateX() - 10);
-        }
-        else if(code == KeyCode.RIGHT){
-            System.out.println(code);
-            paneWorkspace.setTranslateX(paneWorkspace.getTranslateX() + 10);
-            canvas.setTranslateX(canvas.getTranslateX() + 10);
         }
 
         mouseActions.actionCanvasMouseMoved(mouseActions.getPointMouseMoved().getX(), mouseActions.getPointMouseMoved().getY());
@@ -521,9 +499,7 @@ public class MainWindowController {
     }
 
     private void actionCanvasKeyReleased(KeyCode code){
-        if(code == KeyCode.CONTROL){
-            scrollPaneWorkspace.setPannable(false);
-        }
+        mouseActions.setFitToCheck(false);
     }
 
     public void actionMenuItemLoad(){
@@ -552,7 +528,7 @@ public class MainWindowController {
             Scene scene = new Scene(pane);
             Stage stage = new Stage();
             stage.setScene(scene);
-            ChangeCanvasSizeController changeCanvasSizeController= loader.getController();
+            ChangeCanvasSizeController changeCanvasSizeController = loader.getController();
             changeCanvasSizeController.setArrayListComponents(arrayListCreatedComponents);
             changeCanvasSizeController.setCanvas(canvas);
             changeCanvasSizeController.setPaneWorkspace(paneWorkspace);
@@ -768,6 +744,10 @@ public class MainWindowController {
 
     public void setMouseButton(MouseButton mouseButton) {
         this.mouseButton = mouseButton;
+    }
+
+    public ComponentCreator getComponentCreator() {
+        return componentCreator;
     }
 }
 

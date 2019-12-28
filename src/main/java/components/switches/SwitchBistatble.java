@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SwitchBistatble extends Switch implements Serializable {
-    private static final long serialVersionUID = 400000000000L;
+    private static final long serialVersionUID = 20100000000L;
 
     public SwitchBistatble(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);
@@ -29,24 +29,6 @@ public class SwitchBistatble extends Switch implements Serializable {
         imageViewSelectedOn = new ImageView(new Image(getClass().getResource("/graphics/switches/switch_selected.png").toExternalForm(), Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false));
         imageViewSelectedOn.setRotate(180);
         imageViewSelectedOn.setImage(imageViewSelectedOn.snapshot(snapshotParameters, null));
-    }
-
-    public void draw(GraphicsContext graphicsContext){
-        if(selected){
-            if(output.get()){
-                graphicsContext.drawImage(imageViewSelectedOn.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
-            }
-            else{
-                graphicsContext.drawImage(imageViewSelectedOff.getImage(),pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
-            }
-        }
-        else {
-            if (output.get()) {
-                graphicsContext.drawImage(imageViewOn.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
-            } else {
-                graphicsContext.drawImage(imageViewOff.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
-            }
-        }
     }
 
     public void setState(boolean state){

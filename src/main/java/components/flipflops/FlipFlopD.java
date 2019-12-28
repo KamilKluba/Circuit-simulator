@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class FlipFlopD extends FlipFlop implements Serializable {
-    private static final long serialVersionUID = 600000000000L;
+    private static final long serialVersionUID = 30100000000L;
     private int abc;
 
     public FlipFlopD(){

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Nand3 extends Nand implements Serializable {
-    private static final long serialVersionUID = 50000000000L;
+    private static final long serialVersionUID = 10202000000L;
 
     public Nand3(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);
@@ -29,7 +29,7 @@ public class Nand3 extends Nand implements Serializable {
         arrayPointsInputs[1] = new Point(Names.pointInputName + "2", x - 93, y);
         arrayPointsInputs[2] = new Point(Names.pointInputName + "3", x - 93, y + 30);
         arraySignalsInputs = new boolean[3];
-        name = Names.gateAnd3Name;
+        name = Names.gateNand3Name;
 
         imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/nand/nand3_gate_off.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
         imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/nand/nand3_gate_on.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));

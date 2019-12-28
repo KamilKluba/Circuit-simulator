@@ -136,36 +136,36 @@ public class Line extends Component implements Serializable {
     public void lifeCycle(){
         executorService.execute(() -> {
             while(true){
-                boolean dependentComponentsState = false;
-                for(Component c : arrayListDependentComponents){
-                    if(!c.getName().contains(Names.flipFlopSearchName) && c.isSignalOutput()){
-                        dependentComponentsState = true;
-                        break;
+                try{
+                    boolean dependentComponentsState = false;
+                    for(Component c : arrayListDependentComponents){
+                        if(!c.getName().contains(Names.flipFlopSearchName) && c.isSignalOutput()){
+                            dependentComponentsState = true;
+                            break;
+                        }
+                        else if(c.getName().contains(Names.flipFlopSearchName) && (((FlipFlop)c).getArrayListLinesOutputReverted().contains(this) &&
+                                ((FlipFlop)c).isSignalReversedOutput() || ((FlipFlop)c).getArrayListLinesOutput().contains(this) &&
+                                ((FlipFlop)c).isSignalOutput())){
+                            dependentComponentsState = true;
+                            break;
+                        }
                     }
-                    else if(c.getName().contains(Names.flipFlopSearchName) && (((FlipFlop)c).getArrayListLinesOutputReverted().contains(this) &&
-                            ((FlipFlop)c).isSignalReversedOutput() || ((FlipFlop)c).getArrayListLinesOutput().contains(this) &&
-                            ((FlipFlop)c).isSignalOutput())){
-                        dependentComponentsState = true;
-                        break;
+
+                    if(state.get() != dependentComponentsState){
+                        state.set(dependentComponentsState);
                     }
-                }
 
-                if(state.get() != dependentComponentsState){
-                    state.set(dependentComponentsState);
-                }
-
-                if(state.get() != lastState) {
-                    lastState = state.get();
-                    if (state.get()) {
-                        color = new SerializableColor(0, 0.8, 0.8, 1);
-                    } else {
-                        color = new SerializableColor(Color.BLACK);
+                    if(state.get() != lastState) {
+                        lastState = state.get();
+                        if (state.get()) {
+                            color = new SerializableColor(0, 0.8, 0.8, 1);
+                        } else {
+                            color = new SerializableColor(Color.BLACK);
+                        }
                     }
-                }
 
-                try {
                     Thread.sleep(Sizes.lineSleepTime);
-                } catch (InterruptedException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

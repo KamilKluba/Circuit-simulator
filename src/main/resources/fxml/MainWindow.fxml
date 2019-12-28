@@ -24,7 +24,7 @@
          <content>
             <Pane fx:id="paneWorkspace" prefHeight="2000.0" prefWidth="4000.0" styleClass="background" stylesheets="@../css/styles.css">
                <children>
-                  <Canvas fx:id="canvas" height="2000.0" layoutX="6.0" layoutY="14.0" width="4000.0" />
+                  <Canvas fx:id="canvas" height="2000.0" layoutX="14.0" layoutY="14.0" width="4000.0" />
                </children>
             </Pane>
          </content>
@@ -55,10 +55,11 @@
          <children>
             <AnchorPane fx:id="anchorPaneChartOptions" minWidth="100.0" prefWidth="100.0">
                <children>
-                  <Button layoutX="21.0" layoutY="111.0" mnemonicParsing="false" prefWidth="70.0" text="Button" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                  <Button layoutX="21.0" layoutY="63.0" mnemonicParsing="false" prefWidth="70.0" text="Button" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                  <Button layoutX="27.0" layoutY="23.0" mnemonicParsing="false" prefWidth="70.0" text="Button" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                  <CheckBox fx:id="checkBoxScrollToRight" layoutX="14.0" layoutY="31.0" mnemonicParsing="false" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="10.0" />
+                  <Button layoutX="10.0" layoutY="90.0" mnemonicParsing="false" onAction="#actionExtendChart" prefWidth="70.0" text="Poszerz" AnchorPane.bottomAnchor="40.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                  <Button layoutX="21.0" layoutY="63.0" mnemonicParsing="false" onAction="#actionResetChart" prefWidth="70.0" text="Resetuj" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                  <Button fx:id="buttonStartStopChart" layoutX="27.0" layoutY="23.0" mnemonicParsing="false" onAction="#actionStartStopChart" prefWidth="70.0" text="Zatrzymaj" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+                  <CheckBox fx:id="checkBoxScrollToRight" layoutX="14.0" layoutY="31.0" mnemonicParsing="false" AnchorPane.bottomAnchor="130.0" AnchorPane.leftAnchor="10.0" />
+                  <Button layoutX="5.0" layoutY="110.0" mnemonicParsing="false" onAction="#actionConstrictChart" prefWidth="70.0" text="Zwęż" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" />
                </children></AnchorPane>
             <ScrollPane fx:id="scrollPaneChart" prefHeight="150.0" vbarPolicy="ALWAYS">
                <content>

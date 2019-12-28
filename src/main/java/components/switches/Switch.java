@@ -13,9 +13,11 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Switch extends Component{
+    private static final long serialVersionUID = 20000000000L;
     protected ArrayList<Line> arrayListlines = new ArrayList<>();
     protected Point pointLineHook;
-
+    private double pointOutputXShift = 0;
+    private double pointOutputYShift = -35;
 
     public Switch(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);
@@ -35,6 +37,22 @@ public abstract class Switch extends Component{
     }
 
     public void draw(GraphicsContext graphicsContext){
+        if(selected){
+            if(output.get()){
+                graphicsContext.drawImage(imageViewSelectedOn.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
+            }
+            else{
+                graphicsContext.drawImage(imageViewSelectedOff.getImage(),pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
+            }
+        }
+        else {
+            if (output.get()) {
+                graphicsContext.drawImage(imageViewOn.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
+            } else {
+                graphicsContext.drawImage(imageViewOff.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
+            }
+        }
+        graphicsContext.fillText("" + id, pointCenter.getX() - 50, pointCenter.getY() + 50);
     }
 
     public void selectForDrag(double x, double y){
@@ -54,18 +72,26 @@ public abstract class Switch extends Component{
         if(rotation == 0){
             pointLineHook.setX(pointCenter.getX());
             pointLineHook.setY(pointCenter.getY() - 35);
+            pointOutputXShift = 0;
+            pointOutputYShift = -35;
         }
         else if(rotation == 1){
             pointLineHook.setX(pointCenter.getX() + 20);
             pointLineHook.setY(pointCenter.getY());
+            pointOutputXShift = 20;
+            pointOutputYShift = 0;
         }
         else if(rotation == 2){
             pointLineHook.setX(pointCenter.getX());
             pointLineHook.setY(pointCenter.getY() + 35);
+            pointOutputXShift = 0;
+            pointOutputYShift = +35;
         }
         else{
             pointLineHook.setX(pointCenter.getX() - 20);
             pointLineHook.setY(pointCenter.getY());
+            pointOutputXShift = -20;
+            pointOutputYShift = 0;
         }
 
         for(Line l : arrayListlines){
@@ -81,23 +107,46 @@ public abstract class Switch extends Component{
         stateChanged.set(true);
     }
 
-    public void move(double x, double y, double mousePressX, double mousePressY) {
-        pointCenter.setX(pointCenter.getX() + x - mousePressX);
-        pointCenter.setY(pointCenter.getY() + y - mousePressY);
+    public void move(double x, double y, double mousePressX, double mousePressY, boolean fitToCheck) {
+        if(fitToCheck){
+            double x1 = x % Sizes.fitComponentPlace > Sizes.fitComponentPlace / 2 ? Sizes.fitComponentPlace : 0;
+            double y1 = y % Sizes.fitComponentPlace > Sizes.fitComponentPlace / 2 ? Sizes.fitComponentPlace : 0;
+            double fitXValue = x - x % Sizes.fitComponentPlace + x1;
+            double fitYValue = y - y % Sizes.fitComponentPlace + y1;
 
-        for(Line l : arrayListlines){
-            if(l.getComponent1() != null && l.getComponent1().equals(this)){
-                l.setX1(pointLineHook.getX() + x - mousePressX);
-                l.setY1(pointLineHook.getY() + y - mousePressY);
-            }
-            else if(l.getComponent2() != null && l.getComponent2().equals(this)){
-                l.setX2(pointLineHook.getX() + x - mousePressX);
-                l.setY2(pointLineHook.getY() + y - mousePressY);
+            pointCenter.setX(fitXValue);
+            pointCenter.setY(fitYValue);
+
+            pointLineHook.setX(fitXValue + pointOutputXShift);
+            pointLineHook.setY(fitYValue + pointOutputYShift);
+
+            for (Line l : arrayListlines) {
+                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                    l.setX1(fitXValue + pointOutputXShift);
+                    l.setY1(fitYValue + pointOutputYShift);
+                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                    l.setX2(fitXValue + pointOutputXShift);
+                    l.setY2(fitYValue + pointOutputYShift);
+                }
             }
         }
+        else {
+            pointCenter.setX(pointCenter.getX() + x - mousePressX);
+            pointCenter.setY(pointCenter.getY() + y - mousePressY);
 
-        pointLineHook.setX(pointLineHook.getX() + x - mousePressX);
-        pointLineHook.setY(pointLineHook.getY() + y - mousePressY);
+            pointLineHook.setX(pointLineHook.getX() + x - mousePressX);
+            pointLineHook.setY(pointLineHook.getY() + y - mousePressY);
+
+            for (Line l : arrayListlines) {
+                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                    l.setX1(pointLineHook.getX() + x - mousePressX);
+                    l.setY1(pointLineHook.getY() + y - mousePressY);
+                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                    l.setX2(pointLineHook.getX() + x - mousePressX);
+                    l.setY2(pointLineHook.getY() + y - mousePressY);
+                }
+            }
+        }
     }
 
     public void invertState(){

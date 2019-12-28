@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class FlipFlop extends Component implements Serializable {
-    private static final long serialVersionUID = 600000000000L;
+    private static final long serialVersionUID = 30000000000L;
     protected boolean risingEdge = true;
     protected boolean lastState = false;
     protected boolean signalInput = false;
@@ -58,6 +58,7 @@ public abstract class FlipFlop extends Component implements Serializable {
         } else {
             graphicsContext.drawImage(imageViewOff.getImage(), pointCenter.getX() - Sizes.baseFlipFlopXShift, pointCenter.getY() - Sizes.baseFlipFlopYShift);
         }
+        graphicsContext.fillText("" + id, pointCenter.getX() - 8, pointCenter.getY() + 8);
     }
 
     public void select(double x, double y){
@@ -80,91 +81,174 @@ public abstract class FlipFlop extends Component implements Serializable {
         return Math.abs(x - this.pointCenter.getX()) <= Sizes.baseFlipFlopXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseFlipFlopYShift;
     }
 
-    public void move(double x, double y, double mousePressX, double mousePressY) {
-        pointCenter.setX(pointCenter.getX() + x - mousePressX);
-        pointCenter.setY(pointCenter.getY() + y - mousePressY);
+    public void move(double x, double y, double mousePressX, double mousePressY, boolean fitToCheck) {
+        if(fitToCheck) {
+            double x1 = x % Sizes.fitComponentPlace > Sizes.fitComponentPlace / 2 ? Sizes.fitComponentPlace : 0;
+            double y1 = y % Sizes.fitComponentPlace > Sizes.fitComponentPlace / 2 ? Sizes.fitComponentPlace : 0;
+            double fitXValue = x - x % Sizes.fitComponentPlace + x1;
+            double fitYValue = y - y % Sizes.fitComponentPlace + y1;
 
-        pointInput.setX(pointInput.getX() + x - mousePressX);
-        pointInput.setY(pointInput.getY() + y - mousePressY);
+            pointCenter.setX(fitXValue);
+            pointCenter.setY(fitYValue);
 
-        pointOutput.setX(pointOutput.getX() + x - mousePressX);
-        pointOutput.setY(pointOutput.getY() + y - mousePressY);
+            pointInput.setX(fitXValue - 145);
+            pointInput.setY(fitYValue - 75);
 
-        pointOutputReversed.setX(pointOutputReversed.getX() + x - mousePressX);
-        pointOutputReversed.setY(pointOutputReversed.getY() + y - mousePressY);
+            pointOutput.setX(fitXValue + 145);
+            pointOutput.setY(fitYValue - 75);
 
-        pointAsynchronousInput.setX(pointAsynchronousInput.getX() + x - mousePressX);
-        pointAsynchronousInput.setY(pointAsynchronousInput.getY() + y - mousePressY);
+            pointOutputReversed.setX(fitXValue + 145);
+            pointOutputReversed.setY(fitYValue + 75);
 
-        pointReset.setX(pointReset.getX() + x - mousePressX);
-        pointReset.setY(pointReset.getY() + y - mousePressY);
+            pointAsynchronousInput.setX(fitXValue);
+            pointAsynchronousInput.setY(fitYValue - 195);
 
-        pointClock.setX(pointClock.getX() + x - mousePressX);
-        pointClock.setY(pointClock.getY() + y - mousePressY);
+            pointReset.setX(fitXValue);
+            pointReset.setY(fitYValue + 195);
 
-        for(Line l : arrayListLinesInput){
-            if(l.getComponent1() != null && l.getComponent1().equals(this)){
-                l.setX1(pointInput.getX() + x - mousePressX);
-                l.setY1(pointInput.getY() + y - mousePressY);
+            pointClock.setX(fitXValue - 145);
+            pointClock.setY(fitYValue);
+
+            for (Line l : arrayListLinesInput) {
+                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                    l.setX1(fitXValue - 145);
+                    l.setY1(fitYValue - 75);
+                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                    l.setX2(fitXValue - 145);
+                    l.setY2(fitYValue - 75);
+                }
             }
-            else if(l.getComponent2() != null && l.getComponent2().equals(this)){
-                l.setX2(pointInput.getX() + x - mousePressX);
-                l.setY2(pointInput.getY() + y - mousePressY);
+
+            for (Line l : arrayListLinesOutput) {
+                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                    l.setX1(fitXValue + 145);
+                    l.setY1(fitYValue - 75);
+                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                    l.setX2(fitXValue + 145);
+                    l.setY2(fitYValue - 75);
+                }
+            }
+
+            for (Line l : arrayListLinesOutputReverted) {
+                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                    l.setX1(fitXValue + 145);
+                    l.setY1(fitYValue + 75);
+                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                    l.setX2(fitXValue + 145);
+                    l.setY2(fitYValue + 75);
+                }
+            }
+
+            for (Line l : arrayListLinesAsynchronousInput) {
+                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                    l.setX1(fitXValue);
+                    l.setY1(fitYValue - 195);
+                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                    l.setX2(fitXValue);
+                    l.setY2(fitYValue - 195);
+                }
+            }
+
+            for (Line l : arrayListLinesClock) {
+                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                    l.setX1(fitXValue - 145);
+                    l.setY1(fitYValue);
+                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                    l.setX2(fitXValue - 145);
+                    l.setY2(fitYValue);
+                }
+            }
+
+            for (Line l : arrayListLinesReset) {
+                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                    l.setX1(fitXValue);
+                    l.setY1(fitYValue + 195);
+                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                    l.setX2(fitXValue);
+                    l.setY2(fitYValue + 195);
+                }
             }
         }
+        else {
+            pointCenter.setX(pointCenter.getX() + x - mousePressX);
+            pointCenter.setY(pointCenter.getY() + y - mousePressY);
 
-        for(Line l : arrayListLinesOutput){
-            if(l.getComponent1() != null && l.getComponent1().equals(this)){
-                l.setX1(pointOutput.getX() + x - mousePressX);
-                l.setY1(pointOutput.getY() + y - mousePressY);
-            }
-            else if(l.getComponent2() != null && l.getComponent2().equals(this)){
-                l.setX2(pointOutput.getX() + x - mousePressX);
-                l.setY2(pointOutput.getY() + y - mousePressY);
-            }
-        }
+            pointInput.setX(pointInput.getX() + x - mousePressX);
+            pointInput.setY(pointInput.getY() + y - mousePressY);
 
-        for(Line l : arrayListLinesOutputReverted){
-            if(l.getComponent1() != null && l.getComponent1().equals(this)){
-                l.setX1(pointOutputReversed.getX() + x - mousePressX);
-                l.setY1(pointOutputReversed.getY() + y - mousePressY);
-            }
-            else if(l.getComponent2() != null && l.getComponent2().equals(this)){
-                l.setX2(pointOutputReversed.getX() + x - mousePressX);
-                l.setY2(pointOutputReversed.getY() + y - mousePressY);
-            }
-        }
+            pointOutput.setX(pointOutput.getX() + x - mousePressX);
+            pointOutput.setY(pointOutput.getY() + y - mousePressY);
 
-        for(Line l : arrayListLinesAsynchronousInput){
-            if(l.getComponent1() != null && l.getComponent1().equals(this)){
-                l.setX1(pointAsynchronousInput.getX() + x - mousePressX);
-                l.setY1(pointAsynchronousInput.getY() + y - mousePressY);
-            }
-            else if(l.getComponent2() != null && l.getComponent2().equals(this)){
-                l.setX2(pointAsynchronousInput.getX() + x - mousePressX);
-                l.setY2(pointAsynchronousInput.getY() + y - mousePressY);
-            }
-        }
+            pointOutputReversed.setX(pointOutputReversed.getX() + x - mousePressX);
+            pointOutputReversed.setY(pointOutputReversed.getY() + y - mousePressY);
 
-        for(Line l : arrayListLinesClock){
-            if(l.getComponent1() != null && l.getComponent1().equals(this)){
-                l.setX1(pointClock.getX() + x - mousePressX);
-                l.setY1(pointClock.getY() + y - mousePressY);
-            }
-            else if(l.getComponent2() != null && l.getComponent2().equals(this)){
-                l.setX2(pointClock.getX() + x - mousePressX);
-                l.setY2(pointClock.getY() + y - mousePressY);
-            }
-        }
+            pointAsynchronousInput.setX(pointAsynchronousInput.getX() + x - mousePressX);
+            pointAsynchronousInput.setY(pointAsynchronousInput.getY() + y - mousePressY);
 
-        for(Line l : arrayListLinesReset){
-            if(l.getComponent1() != null && l.getComponent1().equals(this)){
-                l.setX1(pointReset.getX() + x - mousePressX);
-                l.setY1(pointReset.getY() + y - mousePressY);
+            pointReset.setX(pointReset.getX() + x - mousePressX);
+            pointReset.setY(pointReset.getY() + y - mousePressY);
+
+            pointClock.setX(pointClock.getX() + x - mousePressX);
+            pointClock.setY(pointClock.getY() + y - mousePressY);
+
+            for (Line l : arrayListLinesInput) {
+                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                    l.setX1(pointInput.getX() + x - mousePressX);
+                    l.setY1(pointInput.getY() + y - mousePressY);
+                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                    l.setX2(pointInput.getX() + x - mousePressX);
+                    l.setY2(pointInput.getY() + y - mousePressY);
+                }
             }
-            else if(l.getComponent2() != null && l.getComponent2().equals(this)){
-                l.setX2(pointReset.getX() + x - mousePressX);
-                l.setY2(pointReset.getY() + y - mousePressY);
+
+            for (Line l : arrayListLinesOutput) {
+                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                    l.setX1(pointOutput.getX() + x - mousePressX);
+                    l.setY1(pointOutput.getY() + y - mousePressY);
+                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                    l.setX2(pointOutput.getX() + x - mousePressX);
+                    l.setY2(pointOutput.getY() + y - mousePressY);
+                }
+            }
+
+            for (Line l : arrayListLinesOutputReverted) {
+                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                    l.setX1(pointOutputReversed.getX() + x - mousePressX);
+                    l.setY1(pointOutputReversed.getY() + y - mousePressY);
+                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                    l.setX2(pointOutputReversed.getX() + x - mousePressX);
+                    l.setY2(pointOutputReversed.getY() + y - mousePressY);
+                }
+            }
+
+            for (Line l : arrayListLinesAsynchronousInput) {
+                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                    l.setX1(pointAsynchronousInput.getX() + x - mousePressX);
+                    l.setY1(pointAsynchronousInput.getY() + y - mousePressY);
+                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                    l.setX2(pointAsynchronousInput.getX() + x - mousePressX);
+                    l.setY2(pointAsynchronousInput.getY() + y - mousePressY);
+                }
+            }
+
+            for (Line l : arrayListLinesClock) {
+                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                    l.setX1(pointClock.getX() + x - mousePressX);
+                    l.setY1(pointClock.getY() + y - mousePressY);
+                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                    l.setX2(pointClock.getX() + x - mousePressX);
+                    l.setY2(pointClock.getY() + y - mousePressY);
+                }
+            }
+
+            for (Line l : arrayListLinesReset) {
+                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                    l.setX1(pointReset.getX() + x - mousePressX);
+                    l.setY1(pointReset.getY() + y - mousePressY);
+                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                    l.setX2(pointReset.getX() + x - mousePressX);
+                    l.setY2(pointReset.getY() + y - mousePressY);
+                }
             }
         }
     }

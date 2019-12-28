@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SwitchPulse extends Switch implements Serializable {
-    private static final long serialVersionUID = 420000000000L;
+    private static final long serialVersionUID = 20300000000L;
     private boolean turnedOn = false;
 
     public SwitchPulse(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
@@ -23,26 +23,6 @@ public class SwitchPulse extends Switch implements Serializable {
         imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/switches/switch_pulse_on.png").toExternalForm(), Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false));
         imageViewSelectedOn = new ImageView(new Image(getClass().getResource("/graphics/switches/switch_pulse_selected_on.png").toExternalForm(), Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false));
         imageViewSelectedOff = new ImageView(new Image(getClass().getResource("/graphics/switches/switch_pulse_selected_off.png").toExternalForm(), Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false));
-    }
-
-    public void draw(GraphicsContext graphicsContext){
-        graphicsContext.drawImage(imageViewOff.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
-
-        if(selected){
-            if(output.get()){
-                graphicsContext.drawImage(imageViewSelectedOn.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
-            }
-            else{
-                graphicsContext.drawImage(imageViewSelectedOff.getImage(),pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
-            }
-        }
-        else {
-            if (output.get()) {
-                graphicsContext.drawImage(imageViewOn.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
-            } else {
-                graphicsContext.drawImage(imageViewOff.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
-            }
-        }
     }
 
     public void lifeCycle(){

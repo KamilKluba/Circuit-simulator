@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class Component implements Serializable {
     private static final long serialVersionUID = 600000000000L;
-    protected int id;
+    protected transient int id;
     protected boolean selected = false;
     protected boolean selectedForDrag = false;
     protected boolean alive = true;
@@ -34,6 +34,7 @@ public abstract class Component implements Serializable {
     protected AtomicBoolean stateChanged = new AtomicBoolean(false);
     protected transient XYChart.Series<Long, String> series;
     protected Long chartMillisCounter;
+    private boolean addingDataToSeriesEnabled = true;
 
     public Component(){}
 
@@ -43,24 +44,26 @@ public abstract class Component implements Serializable {
         this.chartMillisCounter = chartMillisCounter;
 
         if (startLife) {
-            executorService.execute(() -> lifeCycle());
+            executorService.execute(this::lifeCycle);
         }
     }
 
-    protected void addDataToSeries() {
-        Platform.runLater(() -> {
-            if (output.get()) {
-                series.getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - chartMillisCounter, name + " " + id + ": 0"));
-                if(series.getData().size() > 3) {
-                    series.getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - chartMillisCounter, name + " " + id + ": 1"));
-                }
-            } else {
-                series.getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - chartMillisCounter, name + " " + id + ": 1"));
-                if(series.getData().size() > 3){
+    public void addDataToSeries() {
+        if(addingDataToSeriesEnabled) {
+            Platform.runLater(() -> {
+                if (output.get()) {
                     series.getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - chartMillisCounter, name + " " + id + ": 0"));
+                    if (series.getData().size() > 3) {
+                        series.getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - chartMillisCounter, name + " " + id + ": 1"));
+                    }
+                } else {
+                    series.getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - chartMillisCounter, name + " " + id + ": 1"));
+                    if (series.getData().size() > 3) {
+                        series.getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - chartMillisCounter, name + " " + id + ": 0"));
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     public void kill(){
@@ -69,10 +72,15 @@ public abstract class Component implements Serializable {
 
     public void setLife(){
         executorService = Executors.newFixedThreadPool(1);
-        executorService.execute(() -> lifeCycle());
+        executorService.execute(this::lifeCycle);
     }
 
-    public void setSeries(XYChart.Series<Long, String> series){
+    public void setSeriesWithTime(XYChart.Series<Long, String> series, long chartMillisCounter){
+        this.chartMillisCounter = chartMillisCounter;
+        this.series = series;
+    }
+
+    public void resetSeries(XYChart.Series<Long, String> series){
         chartMillisCounter = System.currentTimeMillis();
         this.series = series;
     }
@@ -223,7 +231,7 @@ public abstract class Component implements Serializable {
         return false;
     }
     public void rotate(){}
-    public void move(double x, double y, double mousePressX, double mousePressY){};
+    public void move(double x, double y, double mousePressX, double mousePressY, boolean fitToCheck){};
 
     public int getId() {
         return id;
@@ -269,6 +277,18 @@ public abstract class Component implements Serializable {
 
     public Point getPointCenter() {
         return pointCenter;
+    }
+
+    public boolean isAddingDataToSeriesEnabled() {
+        return addingDataToSeriesEnabled;
+    }
+
+    public void setAddingDataToSeriesEnabled(boolean addingDataToSeriesEnabled) {
+        this.addingDataToSeriesEnabled = addingDataToSeriesEnabled;
+    }
+
+    public Long getChartMillisCounter() {
+        return chartMillisCounter;
     }
 }
 
