@@ -390,7 +390,6 @@ public class ComponentCreator {
     }
 
     private void chooseNewLineHook1(double x, double y, Gate g, Switch s, FlipFlop ff, ComboBox<Point> comboBoxNewLineHook){
-        System.out.println("dupa " + s);
         if(s != null){
             mwc.setLineBuffer(new Line(s.getPointLineHook().getX(), s.getPointLineHook().getY(), x, y, s, null, Color.BLACK));
             s.getArrayListlines().add(mwc.getLineBuffer());
@@ -443,75 +442,77 @@ public class ComponentCreator {
     }
 
     private void chooseNewLineHook2(double x, double y, Gate g, Switch s, FlipFlop ff, ComboBox<Point> comboBoxNewLineHook) {
-        if(s != null){
-            mwc.getLineBuffer().setComponent2(s);
-            s.getArrayListlines().add(mwc.getLineBuffer());
-            mwc.getLineBuffer().setInput2IsOutput(true);
-            mwc.getLineBuffer().setX2(s.getPointLineHook().getX());
-            mwc.getLineBuffer().setY2(s.getPointLineHook().getY());
-        }
-        else {
-            Point p = comboBoxNewLineHook.getSelectionModel().getSelectedItem();
-            String pointName = p.getName();
+        if((g != null && mwc.getLineBuffer().getComponent1() != g) ||
+        (s != null && mwc.getLineBuffer().getComponent1() != s) ||
+        (ff != null && mwc.getLineBuffer().getComponent1() != ff)){
+            if (s != null) {
+                mwc.getLineBuffer().setComponent2(s);
+                s.getArrayListlines().add(mwc.getLineBuffer());
+                mwc.getLineBuffer().setInput2IsOutput(true);
+                mwc.getLineBuffer().setX2(s.getPointLineHook().getX());
+                mwc.getLineBuffer().setY2(s.getPointLineHook().getY());
+            } else {
+                Point p = comboBoxNewLineHook.getSelectionModel().getSelectedItem();
+                String pointName = p.getName();
 
-            mwc.getLineBuffer().setX2(comboBoxNewLineHook.getSelectionModel().getSelectedItem().getX());
-            mwc.getLineBuffer().setY2(comboBoxNewLineHook.getSelectionModel().getSelectedItem().getY());
+                mwc.getLineBuffer().setX2(comboBoxNewLineHook.getSelectionModel().getSelectedItem().getX());
+                mwc.getLineBuffer().setY2(comboBoxNewLineHook.getSelectionModel().getSelectedItem().getY());
 
-            if (g != null) {
-                mwc.getLineBuffer().setComponent2(g);
-                if (pointName.contains("Output")) {
-                    g.getArrayListLinesOutput().add(mwc.getLineBuffer());
-                    mwc.getLineBuffer().setInput2IsOutput(true);
-                } else if (pointName.contains("Input")) {
-                    int inputNumber = Integer.parseInt(pointName.split("Input")[1]);
-                    g.getArrayArrayListLines()[inputNumber - 1].add(mwc.getLineBuffer());
-                    mwc.getLineBuffer().setInput2IsOutput(false);
-                }
-            } else if (ff != null) {
-                mwc.getLineBuffer().setComponent2(ff);
-                if (pointName.equals("Input") || pointName.equals("Input J")) {
-                    ff.getArrayListLinesInput().add(mwc.getLineBuffer());
-                    mwc.getLineBuffer().setInput2IsOutput(false);
-                } else if (pointName.equals("Input K")) {
-                    ((FlipFlopJK) ff).getArrayListLinesInputK().add(mwc.getLineBuffer());
-                    mwc.getLineBuffer().setInput2IsOutput(false);
-                } else if (pointName.equals("Output")) {
-                    ff.getArrayListLinesOutput().add(mwc.getLineBuffer());
-                    mwc.getLineBuffer().setInput2IsOutput(true);
-                } else if (pointName.equals("Output reversed")) {
-                    ff.getArrayListLinesOutputReverted().add(mwc.getLineBuffer());
-                    mwc.getLineBuffer().setInput2IsOutput(true);
-                } else if (pointName.equals("Asynchronous input")) {
-                    ff.getArrayListLinesAsynchronousInput().add(mwc.getLineBuffer());
-                    mwc.getLineBuffer().setInput2IsOutput(true);
-                } else if (pointName.equals("Clock")) {
-                    ff.getArrayListLinesClock().add(mwc.getLineBuffer());
-                    mwc.getLineBuffer().setInput2IsOutput(false);
-                } else if (pointName.equals("Reset")) {
-                    ff.getArrayListLinesReset().add(mwc.getLineBuffer());
-                    mwc.getLineBuffer().setInput2IsOutput(false);
+                if (g != null) {
+                    mwc.getLineBuffer().setComponent2(g);
+                    if (pointName.contains("Output")) {
+                        g.getArrayListLinesOutput().add(mwc.getLineBuffer());
+                        mwc.getLineBuffer().setInput2IsOutput(true);
+                    } else if (pointName.contains("Input")) {
+                        int inputNumber = Integer.parseInt(pointName.split("Input")[1]);
+                        g.getArrayArrayListLines()[inputNumber - 1].add(mwc.getLineBuffer());
+                        mwc.getLineBuffer().setInput2IsOutput(false);
+                    }
+                } else if (ff != null) {
+                    mwc.getLineBuffer().setComponent2(ff);
+                    if (pointName.equals("Input") || pointName.equals("Input J")) {
+                        ff.getArrayListLinesInput().add(mwc.getLineBuffer());
+                        mwc.getLineBuffer().setInput2IsOutput(false);
+                    } else if (pointName.equals("Input K")) {
+                        ((FlipFlopJK) ff).getArrayListLinesInputK().add(mwc.getLineBuffer());
+                        mwc.getLineBuffer().setInput2IsOutput(false);
+                    } else if (pointName.equals("Output")) {
+                        ff.getArrayListLinesOutput().add(mwc.getLineBuffer());
+                        mwc.getLineBuffer().setInput2IsOutput(true);
+                    } else if (pointName.equals("Output reversed")) {
+                        ff.getArrayListLinesOutputReverted().add(mwc.getLineBuffer());
+                        mwc.getLineBuffer().setInput2IsOutput(true);
+                    } else if (pointName.equals("Asynchronous input")) {
+                        ff.getArrayListLinesAsynchronousInput().add(mwc.getLineBuffer());
+                        mwc.getLineBuffer().setInput2IsOutput(true);
+                    } else if (pointName.equals("Clock")) {
+                        ff.getArrayListLinesClock().add(mwc.getLineBuffer());
+                        mwc.getLineBuffer().setInput2IsOutput(false);
+                    } else if (pointName.equals("Reset")) {
+                        ff.getArrayListLinesReset().add(mwc.getLineBuffer());
+                        mwc.getLineBuffer().setInput2IsOutput(false);
+                    }
                 }
             }
+            lineCounter++;
+            mwc.getLineBuffer().setId(lineCounter);
+            arrayListCreatedLines.add(mwc.getLineBuffer());
+
+            for (Line l : arrayListCreatedLines) {
+                l.getArrayListVisitedLines().clear();
+                l.getArrayListDependentComponents().clear();
+            }
+            for (Line l : arrayListCreatedLines) {
+                l.checkForSignals(l.getArrayListDependentComponents(), l.getArrayListVisitedLines());
+            }
+            for (Line l : arrayListCreatedLines) {
+                l.lifeCycle();
+            }
         }
-        lineCounter++;
-        mwc.getLineBuffer().setId(lineCounter);
-        arrayListCreatedLines.add(mwc.getLineBuffer());
         mwc.setLineBuffer(null);
         canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));
         mwc.setWaitForComponent2(false);
         paneWorkspace.getChildren().remove(comboBoxNewLineHook);
-
-        for(Line l : arrayListCreatedLines) {
-            l.getArrayListVisitedLines().clear();
-            l.getArrayListDependentComponents().clear();
-        }
-        for(Line l : arrayListCreatedLines){
-            l.checkForSignals(l.getArrayListDependentComponents(), l.getArrayListVisitedLines());
-        }
-        for(Line l : arrayListCreatedLines){
-            l.lifeCycle();
-        }
-
         canvas.requestFocus();
     }
 

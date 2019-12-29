@@ -226,22 +226,6 @@ public class MainWindowController {
         Executors.newFixedThreadPool(1).execute(() -> repaintThread());
 
         graphicsContext.setFont(new Font("Arial", 24));
-
-        new Thread(() -> {
-            while (true){
-                if (lineBuffer != null) {
-                    System.out.println(lineBuffer.getX1() + " " + lineBuffer.getY1() + "\n" + lineBuffer.getX2() + " " + lineBuffer.getY2() + "\n" +
-                            lineBuffer.getComponent1() + lineBuffer.getComponent2());
-                }
-                else
-                    System.out.println("jest nullem");
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
     }
 
     public void myInitialize(main.Main main){
@@ -290,6 +274,64 @@ public class MainWindowController {
                 }
             }
         }).start();
+    }
+
+    public void repaintThread(){
+        boolean stateChanged;
+
+        while(true) {
+            try {
+                stateChanged = false;
+                for (Component c : arrayListCreatedComponents) {
+                    if (c.isStateChanged()) {
+                        stateChanged = true;
+                    }
+                    c.setStateChanged(false);
+                }
+                for (Line l : arrayListCreatedLines) {
+                    if (l.isStateChanged()) {
+                        stateChanged = true;
+                    }
+                    l.setStateChanged(false);
+                }
+                if (stateChanged) {
+                    repaintScreen();
+                }
+                if (stateChanged) {
+                    Thread.sleep(1);
+                } else {
+                    Thread.sleep(20);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void repaintScreen(){
+        Platform.runLater(() -> {
+            graphicsContext.clearRect(0, 0, canvas.getWidth() + 1, canvas.getHeight() + 1);
+            graphicsContext.setLineWidth(Sizes.baseLineWidth);
+            for (Line l : arrayListCreatedLines) {
+                l.draw(graphicsContext);
+            }
+            for (Component c : arrayListCreatedComponents) {
+                c.draw(graphicsContext);
+            }
+            if (componentBuffer != null) {
+                componentBuffer.draw(graphicsContext);
+            }
+            graphicsContext.setStroke(Color.BLACK);
+            if (lineBuffer != null) {
+                lineBuffer.draw(graphicsContext);
+            }
+            if (coveredError) {
+                mouseActions.drawCoverErrorSquares();
+            }
+            if (draggedSelectionRectngle && mouseButton == MouseButton.PRIMARY){
+                mouseActions.drawSelectionRectangle();
+            }
+        });
     }
 
     public void actionStartStopChart(){
@@ -406,64 +448,6 @@ public class MainWindowController {
                 c.rotate();
             }
         }
-    }
-
-    public void repaintThread(){
-        boolean stateChanged;
-
-        while(true) {
-            try {
-                stateChanged = false;
-                for (Component c : arrayListCreatedComponents) {
-                    if (c.isStateChanged()) {
-                        stateChanged = true;
-                    }
-                    c.setStateChanged(false);
-                }
-                for (Line l : arrayListCreatedLines) {
-                    if (l.isStateChanged()) {
-                        stateChanged = true;
-                    }
-                    l.setStateChanged(false);
-                }
-                if (stateChanged) {
-                    repaintScreen();
-                }
-                if (stateChanged) {
-                    Thread.sleep(1);
-                } else {
-                    Thread.sleep(20);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void repaintScreen(){
-        Platform.runLater(() -> {
-            graphicsContext.clearRect(0, 0, canvas.getWidth() + 1, canvas.getHeight() + 1);
-            graphicsContext.setLineWidth(Sizes.baseLineWidth);
-            for (Line l : arrayListCreatedLines) {
-                l.draw(graphicsContext);
-            }
-            for (Component c : arrayListCreatedComponents) {
-                c.draw(graphicsContext);
-            }
-            if (componentBuffer != null) {
-                componentBuffer.draw(graphicsContext);
-            }
-            graphicsContext.setStroke(Color.BLACK);
-            if (lineBuffer != null) {
-                lineBuffer.draw(graphicsContext);
-            }
-            if (coveredError) {
-                mouseActions.drawCoverErrorSquares();
-            }
-            if (draggedSelectionRectngle && mouseButton == MouseButton.PRIMARY){
-                mouseActions.drawSelectionRectangle();
-            }
-        });
     }
 
     private void actionCanvasKeyPressed(KeyCode code){

@@ -16,7 +16,7 @@ public class Sizes {
     public static final double baseSwitchYShift = baseSwitchYSize * 0.5;
     public static final double minimalXDragToSelect = 20;
     public static final double minimalYDragToSelect = 20;
-    public static final double lineSelectDistance = 10;
+    public static final double lineSelectDistance = 15;
     public static final double baseFlipFlopXSize = 300.0;
     public static final double baseFlipFlopYSize = 400.0;
     public static final double baseFlipFlopXShift = baseFlipFlopXSize * 0.5;

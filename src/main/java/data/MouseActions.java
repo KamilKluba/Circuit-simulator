@@ -142,9 +142,12 @@ public class MouseActions {
                 System.out.println("No special action, trying to select a gate");
             }
 
-            for(Component c : arrayListCreatedComponents){
-                if(button == MouseButton.PRIMARY){
+            if(button == MouseButton.PRIMARY) {
+                for (Component c : arrayListCreatedComponents) {
                     c.select(x, y);
+                }
+                for (Line l : arrayListCreatedLines) {
+                    l.select(x, y);
                 }
             }
             mwc.setCoveredError(false);
@@ -184,7 +187,7 @@ public class MouseActions {
         double y = e.getY();
 
         for(Component c : arrayListCreatedComponents) {
-            if (c.isSelectedForDrag()) {
+            if (c.isSelectedForDrag() || (c.isSelected() && !mwc.isDraggedSelectionRectngle())) {
                 if(fitToCheck){
                     c.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY(), true);
                 }

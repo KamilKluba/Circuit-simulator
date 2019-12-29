@@ -34,6 +34,17 @@ public class Line extends Component implements Serializable {
     private ArrayList<String> arrayListDependentComponentPin = new ArrayList<>();
     private ArrayList<Line> arrayListVisitedLines = new ArrayList<>();
 
+    private boolean horizontal;
+    private boolean vertical;
+    private double a;
+    private double b;
+    private double c;
+    //if < 0, count distance to p1, > 1, to p2, <0;1>, to line
+    private double whereToCount = 0;
+    private boolean isUnderX1 = false;
+    private boolean isUnderX2 = false;
+    private boolean isUnderTheLine = false;
+
     public Line(double x1, double y1, double x2, double y2, Component component1, Component component2, Color color) {
         this.x1 = x1;
         this.y1 = y1;
@@ -185,75 +196,86 @@ public class Line extends Component implements Serializable {
     }
 
     public void select(double x, double y){
-        boolean horizontal;
-        boolean vertical;
-        double a;
-        double b;
-        double c;
-        //if < 0, count distance to p1, > 1, to p2, <0;1>, to line
-        double whereToCount = ((x2 - x1) * (x - x1) + (y2 - y1) * (y - y1)) / (Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
-        boolean isUnderX1 = false;
-        boolean isUnderX2 = false;
-        boolean isUnderTheLine = false;
-
-        if(x1 != x2 && y1 != y2) {
-            a = (y2 - y1) / (x2 - x1);
-            b = -1;
-            if (a != 0) {
-                c = y1 - (a * x1);
-            } else {
-                c = 0;
-            }
-            horizontal = false;
-            vertical = false;
-        }
-        else if(x1 == x2){
-            horizontal = false;
-            vertical = true;
-            a = x1;
-            b = 0;
-            c = 0;
-        }
-        //if(y1 == y2)
-        else{
-            vertical = false;
-            horizontal = true;
-            a = 0;
-            b = y1;
-            c = 0;
-        }
-
-        if(whereToCount < 0)
-            isUnderX1 = Math.sqrt(Math.pow((x - x1), 2) + Math.pow((y - y1), 2)) < Sizes.lineSelectDistance;
-        else if(whereToCount > 1)
-            isUnderX2 =  Math.sqrt(Math.pow((x - x2), 2) + Math.pow((y - y2), 2)) < Sizes.lineSelectDistance;
-        else {
-            if(!vertical && !horizontal)
-                isUnderTheLine = Math.abs(a * x + b * y + c) / Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2)) < Sizes.lineSelectDistance;
-            if(vertical)
-                isUnderTheLine = Math.abs(x - x1) < Sizes.lineSelectDistance;
-            if(horizontal)
-                isUnderTheLine = Math.abs(y - y1) < Sizes.lineSelectDistance;
-        }
-
-        selected =  isUnderX1 || isUnderX2 || isUnderTheLine;
+        selected = checkIfCouldBeSelected(x, y);
     }
 
     public void select(double x1, double y1, double x2, double y2){
-        selected = (this.x1 + this.x2) / 2 > x1 && (this.x1 + this.x2) / 2 < x2 && (this.y1 + this.y2) / 2 > y1 && (this.y1 + this.y2) / 2 < y2;
+        double biggerX;
+        double lesserX;
+        double biggerY;
+        double lesserY;
+        double x = Math.abs(x1 - x2);
+        double y = Math.abs(y1 - y2);
+
+        if(this.x1 < this.x2){
+            lesserX = this.x1;
+            biggerX = this.x2;
+        }
+        else{
+            lesserX = this.x2;
+            biggerX = this.x1;
+        }
+        if(this.y1 < this.y2){
+            lesserY = this.y1;
+            biggerY = this.y2;
+        }
+        else{
+            lesserY = this.y2;
+            biggerY = this.y1;
+        }
+
+        double xDifference = biggerX - lesserX;
+        double yDifference = biggerY - lesserY;
+        int iterationCounter = xDifference > yDifference ? (int)xDifference / 10 : (int)yDifference / 10;
+
+        for(int i = 0; i < iterationCounter; i++){
+            double partX;
+            double partY;
+            if(this.x1 > this.x2){
+                partX = biggerX - (biggerX - lesserX) * i / (iterationCounter - 1);
+            }
+            else{
+                partX = lesserX + (biggerX - lesserX) * i / (iterationCounter - 1);
+            }
+            if(this.y1 > this.y2) {
+                partY = biggerY - (biggerY - lesserY) * i / (iterationCounter - 1);
+            }
+            else{
+                partY = lesserY + (biggerY - lesserY) * i / (iterationCounter - 1);
+            }
+
+            if(partX > x1 && partX < x2 && partY > y1 && partY < y2){
+                selected = true;
+                return;
+            }
+        }
+        selected = false;
     }
 
     public boolean checkIfCouldBeSelected(double x, double y) {
-        boolean horizontal;
-        boolean vertical;
-        double a;
-        double b;
-        double c;
-        //if < 0, count distance to p1, > 1, to p2, <0;1>, to line
-        double whereToCount = ((x2 - x1) * (x - x1) + (y2 - y1) * (y - y1)) / (Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
-        boolean isUnderX1 = false;
-        boolean isUnderX2 = false;
-        boolean isUnderTheLine = false;
+        setSelectionParameters(x, y);
+
+        if (whereToCount < 0)
+            isUnderX1 = Math.sqrt(Math.pow((x - x1), 2) + Math.pow((y - y1), 2)) < Sizes.lineSelectDistance;
+        else if (whereToCount > 1)
+            isUnderX2 = Math.sqrt(Math.pow((x - x2), 2) + Math.pow((y - y2), 2)) < Sizes.lineSelectDistance;
+        else {
+            if (!vertical && !horizontal)
+                isUnderTheLine = Math.abs(a * x + b * y + c) / Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2)) < Sizes.lineSelectDistance;
+            if (vertical)
+                isUnderTheLine = Math.abs(x - x1) < Sizes.lineSelectDistance;
+            if (horizontal)
+                isUnderTheLine = Math.abs(y - y1) < Sizes.lineSelectDistance;
+        }
+
+        return isUnderX1 || isUnderX2 || isUnderTheLine;
+    }
+
+    private void setSelectionParameters(double x, double y){
+        whereToCount = ((x2 - x1) * (x - x1) + (y2 - y1) * (y - y1)) / (Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
+        isUnderX1 = false;
+        isUnderX2 = false;
+        isUnderTheLine = false;
 
         if (x1 != x2 && y1 != y2) {
             a = (y2 - y1) / (x2 - x1);
@@ -280,21 +302,6 @@ public class Line extends Component implements Serializable {
             b = y1;
             c = 0;
         }
-
-        if (whereToCount < 0)
-            isUnderX1 = Math.sqrt(Math.pow((x - x1), 2) + Math.pow((y - y1), 2)) < Sizes.lineSelectDistance;
-        else if (whereToCount > 1)
-            isUnderX2 = Math.sqrt(Math.pow((x - x2), 2) + Math.pow((y - y2), 2)) < Sizes.lineSelectDistance;
-        else {
-            if (!vertical && !horizontal)
-                isUnderTheLine = Math.abs(a * x + b * y + c) / Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2)) < Sizes.lineSelectDistance;
-            if (vertical)
-                isUnderTheLine = Math.abs(x - x1) < Sizes.lineSelectDistance;
-            if (horizontal)
-                isUnderTheLine = Math.abs(y - y1) < Sizes.lineSelectDistance;
-        }
-
-        return isUnderX1 || isUnderX2 || isUnderTheLine;
     }
 
     public void draw(GraphicsContext graphicsContext){
@@ -305,6 +312,8 @@ public class Line extends Component implements Serializable {
             graphicsContext.setStroke(color.getFXColor());
         }
         graphicsContext.strokeLine(x1, y1, x2, y2);
+//        graphicsContext.strokeLine(x1, y1, x1, y2);
+//        graphicsContext.strokeLine(x1, y2, x2, y2);
     }
     
     public void delete(){
