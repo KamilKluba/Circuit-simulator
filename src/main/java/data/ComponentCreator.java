@@ -63,6 +63,7 @@ public class ComponentCreator {
     private int gateCounter = 0;
     private int switchCounter = 0;
     private int flipFlopCounter = 0;
+    private boolean shiftDown = false;
 
     public ComponentCreator(MainWindowController mwc) {
         this.mwc = mwc;
@@ -124,8 +125,14 @@ public class ComponentCreator {
         ArrayList<Component> arrayListComponentsToDelete = new ArrayList<>();
         for (Line l : arrayListCreatedLines) {
             if (l.isSelected()) {
-                arrayListComponentsToDelete.add(l);
-                l.delete();
+                if(shiftDown){
+                    l.getArrayListBreakPoints().remove(l.getClosePoint());
+                    l.setClosePoint(null);
+                }
+                else {
+                    arrayListComponentsToDelete.add(l);
+                    l.delete();
+                }
             }
         }
 
@@ -509,6 +516,9 @@ public class ComponentCreator {
                 l.lifeCycle();
             }
         }
+        else {
+            deleteLineBuffer();
+        }
         mwc.setLineBuffer(null);
         canvas.setOnMouseClicked(e -> mouseActions.actionCanvasMouseClicked(e));
         mwc.setWaitForComponent2(false);
@@ -589,5 +599,13 @@ public class ComponentCreator {
 
     public long getTimeStart() {
         return timeStart;
+    }
+
+    public boolean isShiftDown() {
+        return shiftDown;
+    }
+
+    public void setShiftDown(boolean shiftDown) {
+        this.shiftDown = shiftDown;
     }
 }

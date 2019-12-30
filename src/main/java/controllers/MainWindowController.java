@@ -464,6 +464,9 @@ public class MainWindowController {
         else if(code == KeyCode.DELETE) {
             actionDelete();
         }
+        else if(code == KeyCode.SHIFT){
+            componentCreator.setShiftDown(true);
+        }
 
         mouseActions.actionCanvasMouseMoved(mouseActions.getPointMouseMoved().getX(), mouseActions.getPointMouseMoved().getY());
     }
@@ -483,7 +486,12 @@ public class MainWindowController {
     }
 
     private void actionCanvasKeyReleased(KeyCode code){
-        mouseActions.setFitToCheck(false);
+        if(code == KeyCode.CONTROL){
+            mouseActions.setFitToCheck(false);
+        }
+        else if(code == KeyCode.SHIFT){
+            componentCreator.setShiftDown(false);
+        }
     }
 
     public void actionMenuItemLoad(){

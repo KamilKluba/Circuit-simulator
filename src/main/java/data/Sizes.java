@@ -24,6 +24,7 @@ public class Sizes {
     public static final double baseFlipFLopImageInTableXSize = 60;
     public static final double baseFlipFLopImageInTableYSize = 80;
     public static final double fitComponentPlace = 100;
+    public static final double fitLinePlace = 10;
     public static final int lineSleepTime = 1;
     public static final int gatePropagationTime = 5;
     public static final int gateSleepTime = 1;

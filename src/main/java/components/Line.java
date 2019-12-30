@@ -18,11 +18,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Line extends Component implements Serializable {
     public static final long serialVersionUID = 1L;
     private int id;
-    private double x1;
-    private double y1;
+    private Point point1;
+    private Point point2;
     private boolean input1IsOutput;
-    private double x2;
-    private double y2;
     private boolean input2IsOutput;
     private AtomicBoolean state = new AtomicBoolean(false);
     private boolean lastState = false;
@@ -33,6 +31,11 @@ public class Line extends Component implements Serializable {
     private ArrayList<Component> arrayListDependentComponents = new ArrayList<>();
     private ArrayList<String> arrayListDependentComponentPin = new ArrayList<>();
     private ArrayList<Line> arrayListVisitedLines = new ArrayList<>();
+    private ArrayList<Point> arrayListBreakPoints = new ArrayList<>();
+    private Point point1ToBreak;
+    private Point point2ToBreak;
+    private Point newBreakPoint;
+    private Point closePoint;
 
     private boolean horizontal;
     private boolean vertical;
@@ -46,14 +49,15 @@ public class Line extends Component implements Serializable {
     private boolean isUnderTheLine = false;
 
     public Line(double x1, double y1, double x2, double y2, Component component1, Component component2, Color color) {
-        this.x1 = x1;
-        this.y1 = y1;
-        this.x2 = x2;
-        this.y2 = y2;
+        this.point1 = new Point("Edge 1", x1, y1);
+        this.point2 = new Point("Edge 2", x2, y2);
         this.component1 = component1;
         this.component2 = component2;
         this.color = new SerializableColor(color);
         this.name = Names.lineName;
+
+        arrayListBreakPoints.add(point1);
+        arrayListBreakPoints.add(point2);
     }
 
     public void checkForSignals(ArrayList<Component> arrayListDependentComponents, ArrayList<Line> arrayListVisitedLines) {
@@ -195,6 +199,10 @@ public class Line extends Component implements Serializable {
         }
     }
 
+    public void selectForDrag(double x, double y){
+        selectedForDrag = checkIfCouldBeSelected(x, y);
+    }
+
     public void select(double x, double y){
         selected = checkIfCouldBeSelected(x, y);
     }
@@ -204,102 +212,134 @@ public class Line extends Component implements Serializable {
         double lesserX;
         double biggerY;
         double lesserY;
-        double x = Math.abs(x1 - x2);
-        double y = Math.abs(y1 - y2);
 
-        if(this.x1 < this.x2){
-            lesserX = this.x1;
-            biggerX = this.x2;
-        }
-        else{
-            lesserX = this.x2;
-            biggerX = this.x1;
-        }
-        if(this.y1 < this.y2){
-            lesserY = this.y1;
-            biggerY = this.y2;
-        }
-        else{
-            lesserY = this.y2;
-            biggerY = this.y1;
-        }
+        for(int i = 0; i < arrayListBreakPoints.size() - 1; i++) {
+            point1ToBreak = arrayListBreakPoints.get(i);
+            point2ToBreak = arrayListBreakPoints.get(i + 1);
 
-        double xDifference = biggerX - lesserX;
-        double yDifference = biggerY - lesserY;
-        int iterationCounter = xDifference > yDifference ? (int)xDifference / 10 : (int)yDifference / 10;
-
-        for(int i = 0; i < iterationCounter; i++){
-            double partX;
-            double partY;
-            if(this.x1 > this.x2){
-                partX = biggerX - (biggerX - lesserX) * i / (iterationCounter - 1);
+            if (point1ToBreak.getX() < point2ToBreak.getX()) {
+                lesserX = point1ToBreak.getX();
+                biggerX = point2ToBreak.getX();
+            } else {
+                lesserX = point2ToBreak.getX();
+                biggerX = point1ToBreak.getX();
             }
-            else{
-                partX = lesserX + (biggerX - lesserX) * i / (iterationCounter - 1);
-            }
-            if(this.y1 > this.y2) {
-                partY = biggerY - (biggerY - lesserY) * i / (iterationCounter - 1);
-            }
-            else{
-                partY = lesserY + (biggerY - lesserY) * i / (iterationCounter - 1);
+            if (point1ToBreak.getY() < point2ToBreak.getY()) {
+                lesserY = point1ToBreak.getY();
+                biggerY = point2ToBreak.getY();
+            } else {
+                lesserY = point2ToBreak.getY();
+                biggerY = point1ToBreak.getY();
             }
 
-            if(partX > x1 && partX < x2 && partY > y1 && partY < y2){
-                selected = true;
-                return;
+            double xDifference = biggerX - lesserX;
+            double yDifference = biggerY - lesserY;
+            int iterationCounter = xDifference > yDifference ? (int) xDifference / 10 : (int) yDifference / 10;
+
+            for (int j = 0; j < iterationCounter; j++) {
+                double partX;
+                double partY;
+                if (point1ToBreak.getX() > point2ToBreak.getX()) {
+                    partX = biggerX - (biggerX - lesserX) * j / (iterationCounter - 1);
+                } else {
+                    partX = lesserX + (biggerX - lesserX) * j / (iterationCounter - 1);
+                }
+                if (point1ToBreak.getY() > point2ToBreak.getY()) {
+                    partY = biggerY - (biggerY - lesserY) * j / (iterationCounter - 1);
+                } else {
+                    partY = lesserY + (biggerY - lesserY) * j / (iterationCounter - 1);
+                }
+
+                if (partX > x1 && partX < x2 && partY > y1 && partY < y2) {
+                    selected = true;
+                    return;
+                }
             }
         }
         selected = false;
     }
 
     public boolean checkIfCouldBeSelected(double x, double y) {
-        setSelectionParameters(x, y);
+        for(int i = 0; i < arrayListBreakPoints.size() - 1; i++){
+            point1ToBreak = arrayListBreakPoints.get(i);
+            point2ToBreak = arrayListBreakPoints.get(i + 1);
 
-        if (whereToCount < 0)
-            isUnderX1 = Math.sqrt(Math.pow((x - x1), 2) + Math.pow((y - y1), 2)) < Sizes.lineSelectDistance;
-        else if (whereToCount > 1)
-            isUnderX2 = Math.sqrt(Math.pow((x - x2), 2) + Math.pow((y - y2), 2)) < Sizes.lineSelectDistance;
-        else {
-            if (!vertical && !horizontal)
-                isUnderTheLine = Math.abs(a * x + b * y + c) / Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2)) < Sizes.lineSelectDistance;
-            if (vertical)
-                isUnderTheLine = Math.abs(x - x1) < Sizes.lineSelectDistance;
-            if (horizontal)
-                isUnderTheLine = Math.abs(y - y1) < Sizes.lineSelectDistance;
+            setSelectionParameters(x, y);
+
+            if (whereToCount < 0)
+                isUnderX1 = Math.sqrt(Math.pow((x - point1ToBreak.getX()), 2) + Math.pow((y - point1ToBreak.getY()), 2)) < Sizes.lineSelectDistance;
+            else if (whereToCount > 1)
+                isUnderX2 = Math.sqrt(Math.pow((x - point2ToBreak.getX()), 2) + Math.pow((y - point2ToBreak.getY()), 2)) < Sizes.lineSelectDistance;
+            else {
+                if (!vertical && !horizontal)
+                    isUnderTheLine = Math.abs(a * x + b * y + c) / Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2)) < Sizes.lineSelectDistance;
+                if (vertical)
+                    isUnderTheLine = Math.abs(x - point1ToBreak.getX()) < Sizes.lineSelectDistance;
+                if (horizontal)
+                    isUnderTheLine = Math.abs(y - point1ToBreak.getY()) < Sizes.lineSelectDistance;
+            }
+            if(isUnderX1 || isUnderX2 || isUnderTheLine) {
+                return true;
+            }
         }
+        return false;
+    }
 
-        return isUnderX1 || isUnderX2 || isUnderTheLine;
+    public void createNewBreakPoint(double x, double y){
+        newBreakPoint = new Point("Break", x, y);
+    }
+
+    public void breakLine(double x, double y, boolean fitToCheck){
+        if(newBreakPoint != null) {
+            if(fitToCheck) {
+                double x1 = x % Sizes.fitLinePlace > Sizes.fitLinePlace / 2 ? Sizes.fitLinePlace : 0;
+                double y1 = y % Sizes.fitLinePlace > Sizes.fitLinePlace / 2 ? Sizes.fitLinePlace : 0;
+                newBreakPoint.setX(x - x % Sizes.fitLinePlace + x1);
+                newBreakPoint.setY(y - y % Sizes.fitLinePlace + y1);
+            }
+            else{
+                newBreakPoint.setX(x);
+                newBreakPoint.setY(y);
+            }
+            if(!arrayListBreakPoints.contains(newBreakPoint)) {
+                for (int i = 0; i < arrayListBreakPoints.size() - 1; i++) {
+                    if (arrayListBreakPoints.get(i).equals(point1ToBreak)) {
+                        arrayListBreakPoints.add(i + 1, newBreakPoint);
+                    }
+                }
+            }
+        }
     }
 
     private void setSelectionParameters(double x, double y){
-        whereToCount = ((x2 - x1) * (x - x1) + (y2 - y1) * (y - y1)) / (Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
+        whereToCount = ((point2ToBreak.getX() - point1ToBreak.getX()) * (x - point1ToBreak.getX()) + (point2ToBreak.getY() - point1ToBreak.getY()) * (y - point1ToBreak.getY())) / (Math.pow((point2ToBreak.getX() - point1ToBreak.getX()), 2) + Math.pow((point2ToBreak.getY() - point1ToBreak.getY()), 2));
         isUnderX1 = false;
         isUnderX2 = false;
         isUnderTheLine = false;
 
-        if (x1 != x2 && y1 != y2) {
-            a = (y2 - y1) / (x2 - x1);
+        if (point1ToBreak.getX() != point2ToBreak.getX() && point1ToBreak.getY() != point2ToBreak.getY()) {
+            a = (point2ToBreak.getY() - point1ToBreak.getY()) / (point2ToBreak.getX() - point1ToBreak.getX());
             b = -1;
             if (a != 0) {
-                c = y1 - (a * x1);
+                c = point1ToBreak.getY() - (a * point1ToBreak.getX());
             } else {
                 c = 0;
             }
             horizontal = false;
             vertical = false;
-        } else if (x1 == x2) {
+        } else if (point1ToBreak.getX() == point2ToBreak.getX()) {
             horizontal = false;
             vertical = true;
-            a = x1;
+            a = point1ToBreak.getX();
             b = 0;
             c = 0;
         }
-        //if(y1 == y2)
+        //if(point1.getY() == point2.getY())
         else {
             vertical = false;
             horizontal = true;
             a = 0;
-            b = y1;
+            b = point1ToBreak.getY();
             c = 0;
         }
     }
@@ -307,13 +347,22 @@ public class Line extends Component implements Serializable {
     public void draw(GraphicsContext graphicsContext){
         if(selected) {
             graphicsContext.setStroke(selectionColor.getFXColor());
+            graphicsContext.setFill(selectionColor.getFXColor());
         }
         else{
             graphicsContext.setStroke(color.getFXColor());
+            graphicsContext.setFill(color.getFXColor());
         }
-        graphicsContext.strokeLine(x1, y1, x2, y2);
-//        graphicsContext.strokeLine(x1, y1, x1, y2);
-//        graphicsContext.strokeLine(x1, y2, x2, y2);
+        for(int i = 0; i < arrayListBreakPoints.size() - 1; i++) {
+            Point p1 = arrayListBreakPoints.get(i);
+            Point p2 = arrayListBreakPoints.get(i + 1);
+
+            graphicsContext.strokeLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
+            graphicsContext.fillOval(p1.getX() - Sizes.lineSelectDistance / 2, p1.getY() - Sizes.lineSelectDistance / 2,
+                    Sizes.lineSelectDistance, Sizes.lineSelectDistance);
+        }
+        graphicsContext.fillOval(point2.getX() - Sizes.lineSelectDistance / 2, point2.getY() - Sizes.lineSelectDistance / 2,
+                Sizes.lineSelectDistance, Sizes.lineSelectDistance);
     }
     
     public void delete(){
@@ -363,19 +412,19 @@ public class Line extends Component implements Serializable {
     }
 
     public double getX1() {
-        return x1;
+        return point1.getX();
     }
 
     public void setX1(double x1) {
-        this.x1 = x1;
+        point1.setX(x1);
     }
 
     public double getY1() {
-        return y1;
+        return point1.getY();
     }
 
     public void setY1(double y1) {
-        this.y1 = y1;
+        point1.setY(y1);
     }
 
     public boolean isInput1IsOutput() {
@@ -387,19 +436,19 @@ public class Line extends Component implements Serializable {
     }
 
     public double getX2() {
-        return x2;
+        return point2.getX();
     }
 
     public void setX2(double x2) {
-        this.x2 = x2;
+        point2.setX(x2);
     }
 
     public double getY2() {
-        return y2;
+        return point2.getY();
     }
 
     public void setY2(double y2) {
-        this.y2 = y2;
+        point2.setY(y2);
     }
 
     public boolean isSelected() {
@@ -442,7 +491,27 @@ public class Line extends Component implements Serializable {
         return arrayListVisitedLines;
     }
 
+    public ArrayList<Point> getArrayListBreakPoints() {
+        return arrayListBreakPoints;
+    }
+
     public ArrayList<String> getArrayListDependentComponentPin() {
         return arrayListDependentComponentPin;
+    }
+
+    public Point getNewBreakPoint() {
+        return newBreakPoint;
+    }
+
+    public void setNewBreakPoint(Point newBreakPoint) {
+        this.newBreakPoint = newBreakPoint;
+    }
+
+    public Point getClosePoint() {
+        return closePoint;
+    }
+
+    public void setClosePoint(Point closePoint) {
+        this.closePoint = closePoint;
     }
 }

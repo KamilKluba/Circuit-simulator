@@ -74,7 +74,7 @@ public abstract class FlipFlop extends Component implements Serializable {
     }
 
     public void selectForDrag(double x, double y){
-        selectedForDrag = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseFlipFlopXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseFlipFlopYShift);
+        selectedForDrag = checkIfCouldBeSelected(x, y);
     }
 
     public boolean inside(double x, double y){

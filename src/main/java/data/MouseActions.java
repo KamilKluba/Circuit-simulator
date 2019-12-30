@@ -196,6 +196,11 @@ public class MouseActions {
                 }
             }
         }
+        for(Line l : arrayListCreatedLines){
+            if(l.isSelected() && l.isSelectedForDrag()){
+                l.breakLine(x, y, fitToCheck);
+            }
+        }
 
         pointMousePressedToDrag.setX(x);
         pointMousePressedToDrag.setY(y);
@@ -249,12 +254,25 @@ public class MouseActions {
 
         couldBeSelected = false;
         for (Line l : arrayListCreatedLines) {
-            if(l.checkIfCouldBeSelected(e.getX(), e.getY())){
+            l.selectForDrag(x, y);
+            if(l.checkIfCouldBeSelected(x, y)) {
                 couldBeSelected = true;
+                Point closePoint = null;
+                for (Point p : l.getArrayListBreakPoints()) {
+                    if (Math.sqrt(Math.pow(p.getX() - x, 2) + Math.pow(p.getY() - y, 2)) < Sizes.lineSelectDistance * 2) {
+                        closePoint = p;
+                        l.setClosePoint(p);
+                    }
+                }
+                if (closePoint != null) {
+                    l.setNewBreakPoint(closePoint);
+                } else {
+                    l.createNewBreakPoint(x, y);
+                }
             }
         }
         for (Component c : arrayListCreatedComponents) {
-            if(c.checkIfCouldBeSelected(e.getX(), e.getY())){
+            if(c.checkIfCouldBeSelected(x, y)){
                 couldBeSelected = true;
             }
             if(c.inside(x, y)){
@@ -283,6 +301,10 @@ public class MouseActions {
             if(c.getName().equals(Names.switchMonostableName)){
                 ((Switch)c).setState(false);
             }
+        }
+        for(Line l : arrayListCreatedLines){
+            l.setSelectedForDrag(false);
+            l.setNewBreakPoint(null);
         }
         mwc.setMouseButton(null);
         mwc.setDraggedSelectionRectngle(false);
