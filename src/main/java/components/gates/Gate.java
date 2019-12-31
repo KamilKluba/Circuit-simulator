@@ -170,6 +170,7 @@ public abstract class Gate extends Component {
         else {
             graphicsContext.drawImage(imageViewOff.getImage(), pointCenter.getX() - Sizes.baseGateXShift, pointCenter.getY() - Sizes.baseGateYShift);
         }
+        graphicsContext.setFill(Color.BLACK);
         graphicsContext.fillText("" + id, pointCenter.getX() - 8, pointCenter.getY() + 8);
     }
 
@@ -183,8 +184,8 @@ public abstract class Gate extends Component {
             pointCenter.setX(fitXValue);
             pointCenter.setY(fitYValue);
 
-            pointOutput.setX(fitXValue);
-            pointOutput.setY(fitYValue);
+            pointOutput.setX(fitXValue + rotatedOutputX);
+            pointOutput.setY(fitYValue + rotatedOutputY);
 
             for(int i = 0; i < arrayArrayListLines.length; i++){
                 arrayPointsInputs[i].setX(fitXValue + rotatedInputX + nextInputsX * 60 * (double) i / (inputsNumber - 1));

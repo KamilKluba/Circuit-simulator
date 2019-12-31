@@ -3,13 +3,11 @@ package components.switches;
 import components.Line;
 import data.Names;
 import data.Sizes;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.XYChart;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.Serializable;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class SwitchMonostable extends Switch implements Serializable {
     private static final long serialVersionUID = 20200000000L;
@@ -44,7 +42,7 @@ public class SwitchMonostable extends Switch implements Serializable {
             pointLineHook.setY(pointCenter.getY());
         }
 
-        for(Line l : arrayListlines){
+        for(Line l : arrayListLines){
             if(l.getComponent1() != null && l.getComponent1().equals(this)){
                 l.setX1(pointLineHook.getX());
                 l.setY1(pointLineHook.getY());

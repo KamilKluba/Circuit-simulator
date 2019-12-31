@@ -1,9 +1,6 @@
 package data;
 
-import components.Component;
-import components.Line;
-import components.Point;
-import components.TableComponent;
+import components.*;
 import components.flipflops.FlipFlop;
 import components.flipflops.FlipFlopD;
 import components.flipflops.FlipFlopJK;
@@ -50,7 +47,9 @@ public class ComponentCreator {
     private ArrayList<Gate> arrayListCreatedGates;
     private ArrayList<Switch> arrayListCreatedSwitches;
     private ArrayList<FlipFlop> arrayListCreatedFlipFlops;
+    private ArrayList<Bulb> arrayListCreatedBulbs;
     private ArrayList<Line> arrayListCreatedLines;
+    private ArrayList<Connector> arrayListCreatedConnectors;
     private ArrayList<XYChart.Series<Long, String>> arrayListSeries;
     private LineChart lineChartStates;
     private ComboBox<Point> comboBoxNewLineHook;
@@ -63,6 +62,8 @@ public class ComponentCreator {
     private int gateCounter = 0;
     private int switchCounter = 0;
     private int flipFlopCounter = 0;
+    private int bulbCounter = 0;
+    private int connectorCounter = 0;
     private boolean shiftDown = false;
 
     public ComponentCreator(MainWindowController mwc) {
@@ -72,7 +73,9 @@ public class ComponentCreator {
         this.arrayListCreatedGates = mwc.getArrayListCreatedGates();
         this.arrayListCreatedSwitches = mwc.getArrayListCreatedSwitches();
         this.arrayListCreatedFlipFlops = mwc.getArrayListCreatedFlipFlops();
+        this.arrayListCreatedBulbs = mwc.getArrayListCreatedBulbs();
         this.arrayListCreatedLines = mwc.getArrayListCreatedLines();
+        this.arrayListCreatedConnectors = mwc.getArrayListCreatedConnectors();
         this.arrayListSeries = mwc.getArrayListSeries();
         this.lineChartStates = mwc.getLineChartStates();
         this.canvas = mwc.getCanvas();
@@ -83,9 +86,6 @@ public class ComponentCreator {
     }
 
     public Gate getCoveredGate(double x, double y){
-        double xShift = Sizes.baseGateXShift;
-        double yShift = Sizes.baseGateYShift;
-
         for(Gate g : arrayListCreatedGates) {
             if (Math.abs(x - g.getPointCenter().getX()) <= Sizes.baseGateXShift &&
                     Math.abs(y - g.getPointCenter().getY()) <= Sizes.baseGateYShift) {
@@ -96,9 +96,6 @@ public class ComponentCreator {
     }
 
     public Switch getCoveredSwitch(double x, double y){
-        double xShift = Sizes.baseSwitchXShift;
-        double yShift = Sizes.baseSwitchYShift;
-
         for(Switch s : arrayListCreatedSwitches) {
             if (Math.abs(x - s.getPointCenter().getX()) <= Sizes.baseSwitchXShift &&
                     Math.abs(y - s.getPointCenter().getY()) <= Sizes.baseSwitchYShift) {
@@ -109,13 +106,30 @@ public class ComponentCreator {
     }
 
     public FlipFlop getCoveredFlipFlop(double x, double y){
-        double xShift = Sizes.baseFlipFlopXShift;
-        double yShift = Sizes.baseFlipFlopYShift;
-
         for(FlipFlop ff : arrayListCreatedFlipFlops) {
             if (Math.abs(x - ff.getPointCenter().getX()) <= Sizes.baseFlipFlopXShift &&
                     Math.abs(y - ff.getPointCenter().getY()) <= Sizes.baseFlipFlopYShift) {
                 return ff;
+            }
+        }
+        return null;
+    }
+
+    public Bulb getCoveredBulb(double x, double y){
+        for(Bulb b : arrayListCreatedBulbs) {
+            if (Math.abs(x - b.getPointCenter().getX()) <= Sizes.baseGateXShift &&
+                    Math.abs(y - b.getPointCenter().getY()) <= Sizes.baseGateYShift) {
+                return b;
+            }
+        }
+        return null;
+    }
+
+    public Connector getCoveredConnector(double x, double y){
+        for(Connector con : arrayListCreatedConnectors) {
+            if (Math.abs(x - con.getPointCenter().getX()) <= Sizes.baseConnectorXShift &&
+                    Math.abs(y - con.getPointCenter().getY()) <= Sizes.baseConnectorYShift) {
+                return con;
             }
         }
         return null;
@@ -154,9 +168,9 @@ public class ComponentCreator {
 
         for (Switch s : arrayListCreatedSwitches) {
             if (s.isSelected()) {
-                while (s.getArrayListlines().size() > 0) {
-                    arrayListComponentsToDelete.add(s.getArrayListlines().get(0));
-                    s.getArrayListlines().get(0).delete();
+                while (s.getArrayListLines().size() > 0) {
+                    arrayListComponentsToDelete.add(s.getArrayListLines().get(0));
+                    s.getArrayListLines().get(0).delete();
                 }
                 arrayListComponentsToDelete.add(s);
             }
@@ -198,6 +212,26 @@ public class ComponentCreator {
             }
         }
 
+        for (Bulb b : arrayListCreatedBulbs) {
+            if (b.isSelected()) {
+                while (b.getArrayListLines().size() > 0) {
+                    arrayListComponentsToDelete.add(b.getArrayListLines().get(0));
+                    b.getArrayListLines().get(0).delete();
+                }
+                arrayListComponentsToDelete.add(b);
+            }
+        }
+
+        for (Connector con : arrayListCreatedConnectors) {
+            if (con.isSelected()) {
+                while (con.getArrayListLines().size() > 0) {
+                    arrayListComponentsToDelete.add(con.getArrayListLines().get(0));
+                    con.getArrayListLines().get(0).delete();
+                }
+                arrayListComponentsToDelete.add(con);
+            }
+        }
+
         for(Component c : arrayListComponentsToDelete){
             c.kill();
             arrayListCreatedLines.remove(c);
@@ -205,6 +239,8 @@ public class ComponentCreator {
             arrayListCreatedSwitches.remove(c);
             arrayListCreatedFlipFlops.remove(c);
             arrayListCreatedComponents.remove(c);
+            arrayListCreatedBulbs.remove(c);
+            arrayListCreatedConnectors.remove(c);
             arrayListSeries.remove(c.getSeries());
             lineChartStates.getData().remove(c.getSeries());
         }
@@ -226,7 +262,14 @@ public class ComponentCreator {
         try {
             Component newComponent = null;
             XYChart.Series<Long, String> newSeries= new XYChart.Series<>();
-            if (newComponentName.equals(Names.gateNotName)) {
+
+            if (newComponentName.equals(Names.connectorName)) {
+                newComponent = new Connector(x, y, true, null, timeStart);
+            }
+            else if (newComponentName.equals(Names.bulbName)) {
+                newComponent = new Bulb(x, y, true, newSeries, timeStart);
+            }
+            else if (newComponentName.equals(Names.gateNotName)) {
                 newComponent = new Not(x, y, true, newSeries, timeStart);
             }
             else if (newComponentName.equals(Names.gateAnd2Name)) {
@@ -318,18 +361,29 @@ public class ComponentCreator {
                     flipFlopCounter++;
                     newComponent.setId(flipFlopCounter);
                 }
-                arrayListCreatedComponents.add(newComponent);
+                else if(newComponent.getName().contains(Names.bulbName)){
+                    arrayListCreatedBulbs.add((Bulb)newComponent);
+                    bulbCounter++;
+                    newComponent.setId(bulbCounter);
+                }
+                else if(newComponent.getName().contains(Names.connectorName)){
+                    arrayListCreatedConnectors.add((Connector)newComponent);
+                    connectorCounter++;
+                    newComponent.setId(connectorCounter);
+                }
 
-                newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 0"));
-                newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 1"));
-                if(newComponent.isSignalOutput()) {
-                    newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 1"));
-                }
-                else{
+                if(!newComponent.getName().equals(Names.connectorName)) {
+                    arrayListCreatedComponents.add(newComponent);
                     newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 0"));
+                    newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 1"));
+                    if (newComponent.isSignalOutput()) {
+                        newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 1"));
+                    } else {
+                        newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 0"));
+                    }
+                    arrayListSeries.add(newSeries);
+                    lineChartStates.getData().add(newSeries);
                 }
-                arrayListSeries.add(newSeries);
-                lineChartStates.getData().add(newSeries);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -342,15 +396,15 @@ public class ComponentCreator {
         Gate g = getCoveredGate(x, y);
         Switch s = getCoveredSwitch(x, y);
         FlipFlop ff = getCoveredFlipFlop(x, y);
+        Bulb b = getCoveredBulb(x, y);
+        Connector con = getCoveredConnector(x, y);
 
         tableViewComponents.getSelectionModel().clearSelection();
-        if(s != null){
-            g = null;
-            ff = null;
+        if(s != null || b != null || con != null){
             if (!mwc.isWaitForComponent2()) {
-                chooseNewLineHook1(x, y, g, s, ff, null);
+                chooseNewLineHook1(x, y, g, s, ff, b, con, null);
             } else {
-                chooseNewLineHook2(x, y, g, s, ff, null);
+                chooseNewLineHook2(x, y, g, s, ff, b, con, null);
             }
         }
         else {
@@ -363,8 +417,6 @@ public class ComponentCreator {
                 for (Point p : g.getArrayPointsInputs()) {
                     comboBoxNewLineHook.getItems().add(p);
                 }
-                s = null;
-                ff = null;
             } else if (ff != null) {
                 comboBoxNewLineHook.getItems().add(ff.getPointInput());
                 if (ff.getName().equals(Names.flipFlopJK)) {
@@ -375,8 +427,6 @@ public class ComponentCreator {
                 comboBoxNewLineHook.getItems().add(ff.getPointAsynchronousInput());
                 comboBoxNewLineHook.getItems().add(ff.getPointClock());
                 comboBoxNewLineHook.getItems().add(ff.getPointReset());
-                g = null;
-                s = null;
             }
             paneWorkspace.getChildren().add(comboBoxNewLineHook);
 
@@ -388,19 +438,31 @@ public class ComponentCreator {
             final Gate finalG = g;
             final Switch finalS = s;
             final FlipFlop finalFF = ff;
+            final Bulb finalB = b;
+            final Connector finalCon = con;
             if (!mwc.isWaitForComponent2()) {
-                comboBoxNewLineHook.setOnAction(e -> chooseNewLineHook1(x, y, finalG, finalS, finalFF, comboBoxNewLineHook));
+                comboBoxNewLineHook.setOnAction(e -> chooseNewLineHook1(x, y, finalG, finalS, finalFF, finalB, finalCon, comboBoxNewLineHook));
             } else {
-                comboBoxNewLineHook.setOnAction(e -> chooseNewLineHook2(x, y, finalG, finalS, finalFF, comboBoxNewLineHook));
+                comboBoxNewLineHook.setOnAction(e -> chooseNewLineHook2(x, y, finalG, finalS, finalFF, finalB, finalCon, comboBoxNewLineHook));
             }
         }
     }
 
-    private void chooseNewLineHook1(double x, double y, Gate g, Switch s, FlipFlop ff, ComboBox<Point> comboBoxNewLineHook){
+    private void chooseNewLineHook1(double x, double y, Gate g, Switch s, FlipFlop ff, Bulb b, Connector con, ComboBox<Point> comboBoxNewLineHook){
         if(s != null){
             mwc.setLineBuffer(new Line(s.getPointLineHook().getX(), s.getPointLineHook().getY(), x, y, s, null, Color.BLACK));
-            s.getArrayListlines().add(mwc.getLineBuffer());
+            s.getArrayListLines().add(mwc.getLineBuffer());
             mwc.getLineBuffer().setInput1IsOutput(true);
+        }
+        else if(b != null){
+            mwc.setLineBuffer(new Line(b.getPointLineHook().getX(), b.getPointLineHook().getY(), x, y, b, null, Color.BLACK));
+            b.getArrayListLines().add(mwc.getLineBuffer());
+            mwc.getLineBuffer().setInput1IsOutput(false);
+        }
+        else if(con != null){
+            mwc.setLineBuffer(new Line(con.getPointCenter().getX(), con.getPointCenter().getY(), x, y, con, null, Color.BLACK));
+            con.getArrayListLines().add(mwc.getLineBuffer());
+            mwc.getLineBuffer().setInput1IsOutput(false);
         }
         else {
             Point p = comboBoxNewLineHook.getSelectionModel().getSelectedItem();
@@ -448,17 +510,34 @@ public class ComponentCreator {
         canvas.requestFocus();
     }
 
-    private void chooseNewLineHook2(double x, double y, Gate g, Switch s, FlipFlop ff, ComboBox<Point> comboBoxNewLineHook) {
+    private void chooseNewLineHook2(double x, double y, Gate g, Switch s, FlipFlop ff, Bulb b, Connector con, ComboBox<Point> comboBoxNewLineHook) {
         if((g != null && mwc.getLineBuffer().getComponent1() != g) ||
         (s != null && mwc.getLineBuffer().getComponent1() != s) ||
-        (ff != null && mwc.getLineBuffer().getComponent1() != ff)){
+        (ff != null && mwc.getLineBuffer().getComponent1() != ff) ||
+        (b != null && mwc.getLineBuffer().getComponent1() != b) ||
+        (con != null && mwc.getLineBuffer().getComponent1() != con)){
             if (s != null) {
                 mwc.getLineBuffer().setComponent2(s);
-                s.getArrayListlines().add(mwc.getLineBuffer());
+                s.getArrayListLines().add(mwc.getLineBuffer());
                 mwc.getLineBuffer().setInput2IsOutput(true);
                 mwc.getLineBuffer().setX2(s.getPointLineHook().getX());
                 mwc.getLineBuffer().setY2(s.getPointLineHook().getY());
-            } else {
+            }
+            else if(b != null) {
+                mwc.getLineBuffer().setComponent2(b);
+                b.getArrayListLines().add(mwc.getLineBuffer());
+                mwc.getLineBuffer().setInput2IsOutput(false);
+                mwc.getLineBuffer().setX2(b.getPointLineHook().getX());
+                mwc.getLineBuffer().setY2(b.getPointLineHook().getY());
+            }
+            else if(con != null) {
+                mwc.getLineBuffer().setComponent2(con);
+                con.getArrayListLines().add(mwc.getLineBuffer());
+                mwc.getLineBuffer().setInput2IsOutput(false);
+                mwc.getLineBuffer().setX2(con.getPointCenter().getX());
+                mwc.getLineBuffer().setY2(con.getPointCenter().getY());
+            }
+            else {
                 Point p = comboBoxNewLineHook.getSelectionModel().getSelectedItem();
                 String pointName = p.getName();
 
@@ -545,7 +624,7 @@ public class ComponentCreator {
                 }
             } else if (name.contains(Names.switchSearchName)) {
                 Switch sw = (Switch) component;
-                sw.getArrayListlines().remove(mwc.getLineBuffer());
+                sw.getArrayListLines().remove(mwc.getLineBuffer());
             } else if (name.contains(Names.flipFlopSearchName)) {
                 FlipFlop flipFlop = (FlipFlop) component;
                 flipFlop.getArrayListLinesOutput().remove(mwc.getLineBuffer());
@@ -556,6 +635,12 @@ public class ComponentCreator {
                 if (flipFlop.getName().equals(Names.flipFlopJK)) {
                     ((FlipFlopJK) flipFlop).getArrayListLinesInputK().remove(mwc.getLineBuffer());
                 }
+            } else if (name.contains(Names.bulbName)) {
+                Bulb b = (Bulb) component;
+                b.getArrayListLines().remove(mwc.getLineBuffer());
+            } else if (name.contains(Names.connectorName)) {
+                Connector con = (Connector) component;
+                con.getArrayListLines().remove(mwc.getLineBuffer());
             }
             mwc.setLineBuffer(null);
         }
@@ -595,6 +680,22 @@ public class ComponentCreator {
 
     public void setFlipFlopCounter(int flipFlopCounter) {
         this.flipFlopCounter = flipFlopCounter;
+    }
+
+    public int getBulbCounter() {
+        return bulbCounter;
+    }
+
+    public void setBulbCounter(int bulbCounter) {
+        this.bulbCounter = bulbCounter;
+    }
+
+    public int getConnectorCounter() {
+        return connectorCounter;
+    }
+
+    public void setConnectorCounter(int connectorCounter) {
+        this.connectorCounter = connectorCounter;
     }
 
     public long getTimeStart() {

@@ -8,6 +8,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -54,6 +55,7 @@ public class Main extends Application {
         primaryStage.setMinWidth(600);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Symulator układów cyfrowych");
+        primaryStage.getIcons().add(new Image(getClass().getResource("/graphics/and/and2_gate_off.png").toExternalForm()));
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {

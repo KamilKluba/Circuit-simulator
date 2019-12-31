@@ -30,6 +30,8 @@ public class Names {
     public static String flipFlopD = "Flip-flop D";
     public static String flipFlopT = "Flip-flop T";
     public static String flipFlopJK = "Flip-flop JK";
+    public static String bulbName = "Bulb";
+    public static String connectorName = "Connector";
     public static String pointOutputName = "Output";
     public static String pointCenterName = "Center";
     public static String pointInputName = "Input";

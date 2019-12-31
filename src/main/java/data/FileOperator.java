@@ -1,8 +1,6 @@
 package data;
 
-import components.Component;
-import components.Line;
-import components.TableComponent;
+import components.*;
 import components.flipflops.FlipFlop;
 import components.gates.Gate;
 import components.switches.Switch;
@@ -27,7 +25,9 @@ public class FileOperator {
     private ArrayList<Gate> arrayListCreatedGates;
     private ArrayList<Switch> arrayListCreatedSwitches;
     private ArrayList<FlipFlop> arrayListCreatedFlipFlops;
+    private ArrayList<Bulb> arrayListCreatedBulbs;
     private ArrayList<Line> arrayListCreatedLines;
+    private ArrayList<Connector> arrayListCreatedConnector;
     private ArrayList<XYChart.Series<Long, String>> arrayListSeries;
     private LineChart lineChartStates;
     private File saveFile = null;
@@ -40,7 +40,9 @@ public class FileOperator {
         this.arrayListCreatedGates = mwc.getArrayListCreatedGates();
         this.arrayListCreatedSwitches = mwc.getArrayListCreatedSwitches();
         this.arrayListCreatedFlipFlops = mwc.getArrayListCreatedFlipFlops();
+        this.arrayListCreatedBulbs = mwc.getArrayListCreatedBulbs();
         this.arrayListCreatedLines = mwc.getArrayListCreatedLines();
+        this.arrayListCreatedConnector = mwc.getArrayListCreatedConnectors();
         this.arrayListSeries = mwc.getArrayListSeries();
         this.lineChartStates = mwc.getLineChartStates();
     }
@@ -111,9 +113,19 @@ public class FileOperator {
                     componentCreator.setFlipFlopCounter(componentCreator.getFlipFlopCounter() + 1);
                     c.setId(componentCreator.getFlipFlopCounter());
                 }
+                else if(c.getName().contains(Names.bulbName)){
+                    arrayListCreatedBulbs.add((Bulb)c);
+                    componentCreator.setBulbCounter(componentCreator.getBulbCounter() + 1);
+                    c.setId(componentCreator.getBulbCounter());
+                }
+                else if(c.getName().contains(Names.connectorName)){
+                    arrayListCreatedConnector.add((Connector)c);
+                    componentCreator.setConnectorCounter(componentCreator.getConnectorCounter() + 1);
+                    c.setId(componentCreator.getConnectorCounter());
+                }
                 c.setLife();
-                c.setAddingDataToSeriesEnabled(true);
-                if(!c.getName().equals(Names.lineName)) {
+                if(!c.getName().equals(Names.lineName) || !c.getName().equals(Names.connectorName)) {
+                    c.setAddingDataToSeriesEnabled(true);
                     c.setPictures();
                     System.out.println(c.getName());
                     XYChart.Series<Long, String> newSeries = new XYChart.Series<>();

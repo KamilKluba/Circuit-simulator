@@ -10,7 +10,6 @@ import data.Sizes;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import java.beans.Transient;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -28,6 +27,7 @@ public class Line extends Component implements Serializable {
     private Component component2;
     private SerializableColor color;
     private SerializableColor selectionColor = new SerializableColor(0.459, 0, 0, 1);
+    private SerializableColor onColor = new SerializableColor(0, 0.8, 0.8, 1);
     private ArrayList<Component> arrayListDependentComponents = new ArrayList<>();
     private ArrayList<String> arrayListDependentComponentPin = new ArrayList<>();
     private ArrayList<Line> arrayListVisitedLines = new ArrayList<>();
@@ -69,6 +69,10 @@ public class Line extends Component implements Serializable {
                 checkForSignalsSwitch((Switch) component1, arrayListDependentComponents, arrayListVisitedLines);
             } else if (component1.getName().contains(Names.flipFlopSearchName)) {
                 checkForSignalsFlipFlop((FlipFlop) component1, arrayListDependentComponents, arrayListVisitedLines);
+            } else if (component1.getName().contains(Names.bulbName)) {
+                checkForSignalsBulb((Bulb) component1, arrayListDependentComponents, arrayListVisitedLines);
+            } else if (component1.getName().contains(Names.connectorName)) {
+                checkForSignalsConnector((Connector) component1, arrayListDependentComponents, arrayListVisitedLines);
             }
             if (component2.getName().contains(Names.gateSearchName)) {
                 checkForSignalsGate((Gate) component2, arrayListDependentComponents, arrayListVisitedLines);
@@ -76,6 +80,10 @@ public class Line extends Component implements Serializable {
                 checkForSignalsSwitch((Switch) component2, arrayListDependentComponents, arrayListVisitedLines);
             } else if (component2.getName().contains(Names.flipFlopSearchName)) {
                 checkForSignalsFlipFlop((FlipFlop) component2, arrayListDependentComponents, arrayListVisitedLines);
+            } else if (component2.getName().contains(Names.bulbName)) {
+                checkForSignalsBulb((Bulb) component2, arrayListDependentComponents, arrayListVisitedLines);
+            } else if (component2.getName().contains(Names.connectorName)) {
+                checkForSignalsConnector((Connector) component2, arrayListDependentComponents, arrayListVisitedLines);
             }
         }
     }
@@ -104,7 +112,7 @@ public class Line extends Component implements Serializable {
         if(!arrayListDependentComponents.contains(sw)) {
             arrayListDependentComponents.add(sw);
         }
-        for(Line l : sw.getArrayListlines()){
+        for(Line l : sw.getArrayListLines()){
             l.checkForSignals(arrayListDependentComponents, arrayListVisitedLines);
         }
     }
@@ -148,6 +156,18 @@ public class Line extends Component implements Serializable {
         }
     }
 
+    public void checkForSignalsConnector(Connector con, ArrayList<Component> arrayListDependentComponents, ArrayList<Line> arrayListVisitedLines) {
+        for(Line l : con.getArrayListLines()){
+            l.checkForSignals(arrayListDependentComponents, arrayListVisitedLines);
+        }
+    }
+
+    public void checkForSignalsBulb(Bulb b, ArrayList<Component> arrayListDependentComponents, ArrayList<Line> arrayListVisitedLines) {
+        for(Line l : b.getArrayListLines()){
+            l.checkForSignals(arrayListDependentComponents, arrayListVisitedLines);
+        }
+    }
+
     public void lifeCycle(){
         executorService.execute(() -> {
             while(true){
@@ -173,7 +193,7 @@ public class Line extends Component implements Serializable {
                     if(state.get() != lastState) {
                         lastState = state.get();
                         if (state.get()) {
-                            color = new SerializableColor(0, 0.8, 0.8, 1);
+                            color = onColor;
                         } else {
                             color = new SerializableColor(Color.BLACK);
                         }
@@ -344,6 +364,13 @@ public class Line extends Component implements Serializable {
         }
     }
 
+    public void move(double x, double y, double mousePressX, double mousePressY, boolean fitToCheck) {
+        for(int i = 1; i < arrayListBreakPoints.size() - 1; i++){
+            arrayListBreakPoints.get(i).setX(arrayListBreakPoints.get(i).getX() + x - mousePressX);
+            arrayListBreakPoints.get(i).setY(arrayListBreakPoints.get(i).getY() + y - mousePressY);
+        }
+    }
+
     public void draw(GraphicsContext graphicsContext){
         if(selected) {
             graphicsContext.setStroke(selectionColor.getFXColor());
@@ -379,7 +406,7 @@ public class Line extends Component implements Serializable {
             }
         }
         else if(component.getName().contains(Names.switchSearchName)){
-            ((Switch)component).getArrayListlines().remove(this);
+            ((Switch)component).getArrayListLines().remove(this);
         }
         else if(component.getName().contains(Names.flipFlopSearchName)){
             FlipFlop flipFlop = (FlipFlop)component;
@@ -392,6 +419,12 @@ public class Line extends Component implements Serializable {
             flipFlop.getArrayListLinesAsynchronousInput().remove(this);
             flipFlop.getArrayListLinesClock().remove(this);
             flipFlop.getArrayListLinesReset().remove(this);
+        }
+        else if(component.getName().contains(Names.bulbName)){
+            ((Bulb)component).getArrayListLines().remove(this);
+        }
+        else if(component.getName().contains(Names.connectorName)){
+            ((Connector)component).getArrayListLines().remove(this);
         }
     }
 

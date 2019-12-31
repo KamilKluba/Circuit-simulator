@@ -21,6 +21,10 @@ public class Sizes {
     public static final double baseFlipFlopYSize = 400.0;
     public static final double baseFlipFlopXShift = baseFlipFlopXSize * 0.5;
     public static final double baseFlipFlopYShift = baseFlipFlopYSize * 0.5;
+    public static final double baseConnectorXSize = 75.0;
+    public static final double baseConnectorYSize = 75.0;
+    public static final double baseConnectorXShift = baseConnectorXSize * 0.5;
+    public static final double baseConnectorYShift = baseConnectorYSize * 0.5;
     public static final double baseFlipFLopImageInTableXSize = 60;
     public static final double baseFlipFLopImageInTableYSize = 80;
     public static final double fitComponentPlace = 100;

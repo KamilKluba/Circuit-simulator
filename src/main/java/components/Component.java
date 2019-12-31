@@ -86,7 +86,12 @@ public abstract class Component implements Serializable {
     }
 
     public void setPictures(){
-        if(name.equals(Names.gateAnd2Name)){
+        if(name.equals(Names.gateNotName)){
+            imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/not/not_off.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
+            imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/not/not_on.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
+            imageViewSelectedOn = new ImageView(new Image(getClass().getResource("/graphics/not/not_selected.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
+        }
+        else if(name.equals(Names.gateAnd2Name)){
             imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/and/and2_gate_off.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
             imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/and/and2_gate_on.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
             imageViewSelectedOn = new ImageView(new Image(getClass().getResource("/graphics/and/and2_gate_selected.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
@@ -214,6 +219,17 @@ public abstract class Component implements Serializable {
             imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/flipflops/d_off.png").toExternalForm(), Sizes.baseFlipFlopXSize, Sizes.baseFlipFlopYSize, false, false));
             imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/flipflops/d_on.png").toExternalForm(), Sizes.baseFlipFlopXSize, Sizes.baseFlipFlopYSize, false, false));
             imageViewSelectedOn = new ImageView(new Image(getClass().getResource("/graphics/flipflops/d_selected.png").toExternalForm(), Sizes.baseFlipFlopXSize, Sizes.baseFlipFlopYSize, false, false));
+        }
+
+        for(int i = 0; i < rotation; i++){
+            SnapshotParameters snapshotParameters = new SnapshotParameters();
+            snapshotParameters.setFill(Color.TRANSPARENT);
+            imageViewOff.setRotate(90);
+            imageViewOff.setImage(imageViewOff.snapshot(snapshotParameters, null));
+            imageViewOn.setRotate(90);
+            imageViewOn.setImage(imageViewOn.snapshot(snapshotParameters, null));
+            imageViewSelectedOn.setRotate(90);
+            imageViewSelectedOn.setImage(imageViewSelectedOn.snapshot(snapshotParameters, null));
         }
     }
 

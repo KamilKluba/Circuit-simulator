@@ -6,15 +6,14 @@ import components.Point;
 import data.Sizes;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.XYChart;
-import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class Switch extends Component{
+public abstract class Switch extends Component implements Serializable {
     private static final long serialVersionUID = 20000000000L;
-    protected ArrayList<Line> arrayListlines = new ArrayList<>();
+    protected ArrayList<Line> arrayListLines = new ArrayList<>();
     protected Point pointLineHook;
     private double pointOutputXShift = 0;
     private double pointOutputYShift = -35;
@@ -52,6 +51,7 @@ public abstract class Switch extends Component{
                 graphicsContext.drawImage(imageViewOff.getImage(), pointCenter.getX() - Sizes.baseSwitchXShift, pointCenter.getY() - Sizes.baseSwitchYShift);
             }
         }
+        graphicsContext.setFill(Color.BLACK);
         graphicsContext.fillText("" + id, pointCenter.getX() - 50, pointCenter.getY() + 50);
     }
 
@@ -94,7 +94,7 @@ public abstract class Switch extends Component{
             pointOutputYShift = 0;
         }
 
-        for(Line l : arrayListlines){
+        for(Line l : arrayListLines){
             if(l.getComponent1() != null && l.getComponent1().equals(this)){
                 l.setX1(pointLineHook.getX());
                 l.setY1(pointLineHook.getY());
@@ -120,7 +120,7 @@ public abstract class Switch extends Component{
             pointLineHook.setX(fitXValue + pointOutputXShift);
             pointLineHook.setY(fitYValue + pointOutputYShift);
 
-            for (Line l : arrayListlines) {
+            for (Line l : arrayListLines) {
                 if (l.getComponent1() != null && l.getComponent1().equals(this)) {
                     l.setX1(fitXValue + pointOutputXShift);
                     l.setY1(fitYValue + pointOutputYShift);
@@ -137,7 +137,7 @@ public abstract class Switch extends Component{
             pointLineHook.setX(pointLineHook.getX() + x - mousePressX);
             pointLineHook.setY(pointLineHook.getY() + y - mousePressY);
 
-            for (Line l : arrayListlines) {
+            for (Line l : arrayListLines) {
                 if (l.getComponent1() != null && l.getComponent1().equals(this)) {
                     l.setX1(pointLineHook.getX() + x - mousePressX);
                     l.setY1(pointLineHook.getY() + y - mousePressY);
@@ -152,7 +152,7 @@ public abstract class Switch extends Component{
     public void invertState(){
         boolean bufferValue = output.get();
         output.set(!bufferValue);
-        for(Line l : arrayListlines){
+        for(Line l : arrayListLines){
             l.setState(output.get());
         }
         addDataToSeries();
@@ -200,8 +200,8 @@ public abstract class Switch extends Component{
         this.selectedForDrag = selectedForDrag;
     }
 
-    public ArrayList<Line> getArrayListlines() {
-        return arrayListlines;
+    public ArrayList<Line> getArrayListLines() {
+        return arrayListLines;
     }
 
     public Point getPointLineHook() {

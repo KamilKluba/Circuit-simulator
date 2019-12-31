@@ -9,10 +9,13 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 
 public class ZoomableScrollPaneChart extends ScrollPane {
-    private double scaleValue = 0.7;
+    private double scaleValueX = 1.0;
+    private double scaleValueY = 1.0;
     private double zoomIntensity = 0.02;
     private Node target;
     private Node zoomNode;
+    private boolean altDown = false;
+    private boolean ctrldown = false;
 
     public ZoomableScrollPaneChart(Node target) {
         super();
@@ -23,7 +26,7 @@ public class ZoomableScrollPaneChart extends ScrollPane {
         setHvalue(0.5);
         setVvalue(0.5);
 
-        setPannable(false);
+        setPannable(true);
         setFitToHeight(true); //center
         setFitToWidth(true); //center
 
@@ -49,7 +52,8 @@ public class ZoomableScrollPaneChart extends ScrollPane {
     }
 
     private void updateScale() {
-        target.setScaleX(scaleValue);
+        target.setScaleX(scaleValueX);
+        target.setScaleY(scaleValueY);
         target.getStyleClass().clear();
     }
 
@@ -63,7 +67,7 @@ public class ZoomableScrollPaneChart extends ScrollPane {
         double valX = this.getHvalue() * (innerBounds.getWidth() - viewportBounds.getWidth());
         double valY = this.getVvalue() * (innerBounds.getHeight() - viewportBounds.getHeight());
 
-        scaleValue = scaleValue * zoomFactor;
+
         updateScale();
         this.layout(); // refresh ScrollPane scroll positions & target bounds
 
@@ -76,11 +80,22 @@ public class ZoomableScrollPaneChart extends ScrollPane {
         // convert back to [0, 1] range
         // (too large/small values are automatically corrected by ScrollPane)
         Bounds updatedInnerBounds = zoomNode.getBoundsInLocal();
-        this.setHvalue((valX + adjustment.getX()) / (updatedInnerBounds.getWidth() - viewportBounds.getWidth()));
-        this.setVvalue((valY + adjustment.getY()) / (updatedInnerBounds.getHeight() - viewportBounds.getHeight()));
+
+        if(ctrldown) {
+            scaleValueX = scaleValueX * zoomFactor;
+            this.setHvalue((valX + adjustment.getX()) / (updatedInnerBounds.getWidth() - viewportBounds.getWidth()));
+        }
+        if(altDown) {
+            scaleValueY = scaleValueY * zoomFactor;
+            this.setVvalue((valY + adjustment.getY()) / (updatedInnerBounds.getHeight() - viewportBounds.getHeight()));
+        }
     }
 
-    public double getScaleValue() {
-        return scaleValue;
+    public void setAltDown(boolean altDown) {
+        this.altDown = altDown;
+    }
+
+    public void setCtrldown(boolean ctrldown) {
+        this.ctrldown = ctrldown;
     }
 }

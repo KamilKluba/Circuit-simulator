@@ -31,15 +31,12 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
-import javafx.stage.FileChooser;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 import main.Main;
 import components.gates.and.And2;
@@ -58,12 +55,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
-import java.io.*;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 public class MainWindowController {
@@ -88,9 +81,11 @@ public class MainWindowController {
 
     private Main main;
     private ArrayList<Line> arrayListCreatedLines = new ArrayList<>();
+    private ArrayList<Connector> arrayListCreatedConnectors = new ArrayList<>();
     private ArrayList<Gate> arrayListCreatedGates = new ArrayList<>();
     private ArrayList<Switch> arrayListCreatedSwitches = new ArrayList<>();
     private ArrayList<FlipFlop> arrayListCreatedFlipFlops = new ArrayList<>();
+    private ArrayList<Bulb> arrayListCreatedBulbs = new ArrayList<>();
     private ArrayList<Component> arrayListCreatedComponents = new ArrayList<>();
     private GraphicsContext graphicsContext;
     private ArrayList<TableComponent> arrayListPossibleComponents = new ArrayList<>();
@@ -116,6 +111,12 @@ public class MainWindowController {
     public void initialize(){
         arrayListPossibleComponents.add(new TableComponent("Line", 2,
                                         new ImageView(new Image(getClass().getResource("/graphics/line_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent("Bulb", 1,
+                                        new ImageView(new Image(getClass().getResource("/graphics/bulb/bulb_off.png").toExternalForm(),
+                                                Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
+        arrayListPossibleComponents.add(new TableComponent("Connector", 1,
+                                        new ImageView(new Image(getClass().getResource("/graphics/connector.png").toExternalForm(),
                                                 Sizes.baseGateImageInTableXSize, Sizes.baseGateImageInTableYSize, false, false))));
         arrayListPossibleComponents.add(new TableComponent(Names.switchMonostableName, 1,
                                         new ImageView(new Image(getClass().getResource("/graphics/switches/switch_monostable_off.png").toExternalForm(),
@@ -239,9 +240,18 @@ public class MainWindowController {
     }
 
     public void actionDebug(){
-        for (XYChart.Series<Long, String> s : arrayListSeries){
-            System.out.println(s.getData().size());
-        }
+        new Thread(() -> {
+            while(true){
+                for(Connector con : arrayListCreatedConnectors){
+                    System.out.println(con.getArrayListLines().size());
+                }
+                try {
+                    Thread.sleep(30);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     private void setChart(){
@@ -259,6 +269,7 @@ public class MainWindowController {
                 if(maxLength > 0 && lineChartStates.getPrefWidth() < 924 + maxLength * 21.5 + chartExtension){
                     lineChartStates.setPrefWidth(924 + maxLength * 21.5 + chartExtension);
                 }
+                lineChartStates.setPrefHeight(lineChartStates.getData().size() * 100);
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -317,6 +328,9 @@ public class MainWindowController {
             }
             for (Component c : arrayListCreatedComponents) {
                 c.draw(graphicsContext);
+            }
+            for (Connector con : arrayListCreatedConnectors){
+                con.draw(graphicsContext);
             }
             if (componentBuffer != null) {
                 componentBuffer.draw(graphicsContext);
@@ -409,7 +423,7 @@ public class MainWindowController {
         try {
             String selectedName = tableViewComponents.getSelectionModel().getSelectedItem().getName();
             waitForPlaceComponent = selectedName.contains(Names.gateSearchName) || selectedName.contains(Names.switchSearchName) ||
-                    selectedName.contains(Names.flipFlopSearchName);
+                    selectedName.contains(Names.flipFlopSearchName) || selectedName.contains(Names.bulbName) || selectedName.contains(Names.connectorName);
             createComponentBuffer(selectedName);
             mouseActions.setNewComponentName(selectedName);
         } catch(Exception e){
@@ -460,12 +474,17 @@ public class MainWindowController {
         }
         else if(code == KeyCode.CONTROL){
             mouseActions.setFitToCheck(true);
+            zoomableScrollPaneChart.setCtrldown(true);
         }
         else if(code == KeyCode.DELETE) {
             actionDelete();
         }
         else if(code == KeyCode.SHIFT){
             componentCreator.setShiftDown(true);
+            mouseActions.setShiftDown(true);
+        }
+        else if(code == KeyCode.ALT){
+            zoomableScrollPaneChart.setAltDown(true);
         }
 
         mouseActions.actionCanvasMouseMoved(mouseActions.getPointMouseMoved().getX(), mouseActions.getPointMouseMoved().getY());
@@ -488,9 +507,14 @@ public class MainWindowController {
     private void actionCanvasKeyReleased(KeyCode code){
         if(code == KeyCode.CONTROL){
             mouseActions.setFitToCheck(false);
+            zoomableScrollPaneChart.setCtrldown(false);
         }
         else if(code == KeyCode.SHIFT){
             componentCreator.setShiftDown(false);
+            mouseActions.setShiftDown(false);
+        }
+        else if(code == KeyCode.ALT){
+            zoomableScrollPaneChart.setAltDown(false);
         }
     }
 
@@ -551,7 +575,11 @@ public class MainWindowController {
     }
 
     public void createComponentBuffer(String newComponentName){
-        if (newComponentName.equals(Names.gateNotName)) {
+        if (newComponentName.equals(Names.bulbName)) {
+            componentBuffer = new Bulb(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.connectorName)) {
+            componentBuffer = new Connector(-200, -200, false, null, null);
+        } else if (newComponentName.equals(Names.gateNotName)) {
             componentBuffer = new Not(-200, -200, false, null, null);
         } else if (newComponentName.equals(Names.gateAnd2Name)) {
             componentBuffer = new And2(-200, -200, false, null, null);
@@ -664,6 +692,14 @@ public class MainWindowController {
 
     public ArrayList<Component> getArrayListCreatedComponents() {
         return arrayListCreatedComponents;
+    }
+
+    public ArrayList<Connector> getArrayListCreatedConnectors() {
+        return arrayListCreatedConnectors;
+    }
+
+    public ArrayList<Bulb> getArrayListCreatedBulbs() {
+        return arrayListCreatedBulbs;
     }
 
     public ArrayList<TableComponent> getArrayListPossibleComponents() {

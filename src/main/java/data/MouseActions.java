@@ -24,9 +24,11 @@ public class MouseActions {
     private TableView<TableComponent> tableViewComponents;
     private ArrayList<Gate> arrayListCreatedGates;
     private ArrayList<Switch> arrayListCreatedSwitches;
-    private ArrayList<Line> arrayListCreatedLines;
     private ArrayList<FlipFlop> arrayListCreatedFlipFlops;
+    private ArrayList<Bulb> arrayListCreatedBulbs;
     private ArrayList<Component> arrayListCreatedComponents;
+    private ArrayList<Line> arrayListCreatedLines;
+    private ArrayList<Connector> arrayListCreatedConnectors;
     private Point pointMousePressed = new Point();
     private Point pointMouseMoved = new Point();
     private Point pointMouseReleased = new Point();
@@ -36,6 +38,7 @@ public class MouseActions {
     private Component componentMoveBuffer = null;
     private String newComponentName = null;
     private boolean fitToCheck = false;
+    private boolean shiftDown = false;
     
 
     public MouseActions(MainWindowController mwc){
@@ -44,9 +47,11 @@ public class MouseActions {
         this.tableViewComponents = mwc.getTableViewComponents();
         this.arrayListCreatedGates = mwc.getArrayListCreatedGates();
         this.arrayListCreatedSwitches = mwc.getArrayListCreatedSwitches();
-        this.arrayListCreatedLines = mwc.getArrayListCreatedLines();
         this.arrayListCreatedFlipFlops = mwc.getArrayListCreatedFlipFlops();
+        this.arrayListCreatedBulbs = mwc.getArrayListCreatedBulbs();
         this.arrayListCreatedComponents = mwc.getArrayListCreatedComponents();
+        this.arrayListCreatedLines = mwc.getArrayListCreatedLines();
+        this.arrayListCreatedConnectors = mwc.getArrayListCreatedConnectors();
         this.zoomableScrollPaneChart = mwc.getZoomableScrollPaneChart();
         this.hBoxChartArea = mwc.gethBoxChartArea();
     }
@@ -188,17 +193,22 @@ public class MouseActions {
 
         for(Component c : arrayListCreatedComponents) {
             if (c.isSelectedForDrag() || (c.isSelected() && !mwc.isDraggedSelectionRectngle())) {
-                if(fitToCheck){
-                    c.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY(), true);
-                }
-                else {
-                    c.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY(), false);
-                }
+                c.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY(), fitToCheck);
             }
         }
         for(Line l : arrayListCreatedLines){
-            if(l.isSelected() && l.isSelectedForDrag()){
-                l.breakLine(x, y, fitToCheck);
+            if(l.isSelectedForDrag() || (l.isSelected() && !mwc.isDraggedSelectionRectngle())){
+                if(shiftDown) {
+                    l.breakLine(x, y, fitToCheck);
+                }
+                else{
+                    l.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY(), fitToCheck);
+                }
+            }
+        }
+        for(Connector con : arrayListCreatedConnectors){
+            if (con.isSelectedForDrag() || (con.isSelected() && !mwc.isDraggedSelectionRectngle())) {
+                con.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY(), fitToCheck);
             }
         }
 
@@ -227,6 +237,9 @@ public class MouseActions {
             for (Component c : arrayListCreatedComponents) {
                 c.select(x1, y1, x2, y2);
             }
+            for (Connector con : arrayListCreatedConnectors){
+                con.select(x1, y1, x2, y2);
+          }
         }
         mwc.repaintScreen();
     }
@@ -282,6 +295,15 @@ public class MouseActions {
                 }
             }
         }
+        for (Connector con :arrayListCreatedConnectors){
+            if(con.checkIfCouldBeSelected(x, y)){
+                couldBeSelected = true;
+            }
+            if(con.inside(x, y)) {
+                con.selectForDrag(x, y);
+            }
+        }
+
         mwc.setMouseButton(e.getButton());
         mwc.setDraggedSelectionRectngle(!couldBeSelected);
         mwc.repaintScreen();
@@ -306,6 +328,10 @@ public class MouseActions {
             l.setSelectedForDrag(false);
             l.setNewBreakPoint(null);
         }
+        for (Connector con :arrayListCreatedConnectors) {
+            con.setSelectedForDrag(false);
+        }
+
         mwc.setMouseButton(null);
         mwc.setDraggedSelectionRectngle(false);
         mwc.repaintScreen();
@@ -357,6 +383,14 @@ public class MouseActions {
             xSizeCompare = Sizes.baseFlipFlopXSize;
             ySizeCompare = Sizes.baseFlipFlopYSize;
         }
+        else if(componentName.contains(Names.bulbName)){
+            xSizeCompare = Sizes.baseGateXSize;
+            ySizeCompare = Sizes.baseGateYSize;
+        }
+        else if(componentName.contains(Names.connectorName)){
+            xSizeCompare = Sizes.baseConnectorXSize;
+            ySizeCompare = Sizes.baseConnectorYSize;
+        }
 
         for(Gate g : arrayListCreatedGates) {
             if (Math.abs(x - g.getPointCenter().getX()) <= (Sizes.baseGateXSize + xSizeCompare) / 2 &&
@@ -375,6 +409,20 @@ public class MouseActions {
         for(FlipFlop ff : arrayListCreatedFlipFlops) {
             if (Math.abs(x - ff.getPointCenter().getX()) <= (Sizes.baseFlipFlopXSize + xSizeCompare) / 2 &&
                     Math.abs(y - ff.getPointCenter().getY()) <= (Sizes.baseFlipFlopYSize + ySizeCompare) / 2){
+                return true;
+            }
+        }
+
+        for(Bulb b : arrayListCreatedBulbs) {
+            if (Math.abs(x - b.getPointCenter().getX()) <= (Sizes.baseGateXSize + xSizeCompare) / 2 &&
+                    Math.abs(y - b.getPointCenter().getY()) <= (Sizes.baseGateYSize + ySizeCompare) / 2){
+                return true;
+            }
+        }
+
+        for(Connector con : arrayListCreatedConnectors) {
+            if (Math.abs(x - con.getPointCenter().getX()) <= (Sizes.baseConnectorXSize + xSizeCompare) / 2 &&
+                    Math.abs(y - con.getPointCenter().getY()) <= (Sizes.baseConnectorYSize + ySizeCompare) / 2){
                 return true;
             }
         }
@@ -398,6 +446,14 @@ public class MouseActions {
             xShiftCompare = Sizes.baseFlipFlopXShift;
             yShiftCompare = Sizes.baseFlipFlopYShift;
         }
+        else if(componentName.contains(Names.bulbName)){
+            xShiftCompare = Sizes.baseGateXShift;
+            yShiftCompare = Sizes.baseGateYShift;
+        }
+        else if(componentName.contains(Names.connectorName)){
+            xShiftCompare = Sizes.baseConnectorXShift;
+            yShiftCompare = Sizes.baseConnectorYShift;
+        }
 
         for(Gate g : arrayListCreatedGates) {
             if (Math.abs(x - g.getPointCenter().getX()) <= (Sizes.baseGateXShift + xShiftCompare) / 2 &&
@@ -420,6 +476,19 @@ public class MouseActions {
             }
         }
 
+        for(Bulb b : arrayListCreatedBulbs) {
+            if (Math.abs(x - b.getPointCenter().getX()) <= (Sizes.baseGateXShift + xShiftCompare) / 2 &&
+                    Math.abs(y - b.getPointCenter().getY()) <= (Sizes.baseGateYShift + yShiftCompare) / 2){
+                return true;
+            }
+        }
+
+        for(Connector con : arrayListCreatedConnectors) {
+            if (Math.abs(x - con.getPointCenter().getX()) <= (Sizes.baseConnectorXShift + xShiftCompare) / 2 &&
+                    Math.abs(y - con.getPointCenter().getY()) <= (Sizes.baseConnectorYShift + yShiftCompare) / 2){
+                return true;
+            }
+        }
         return false;
     }
 
@@ -432,6 +501,8 @@ public class MouseActions {
         double shiftSwitchY = Sizes.baseSwitchYShift;
         double shiftFlipFlopX = Sizes.baseFlipFlopXShift;
         double shiftFlipFlopY = Sizes.baseFlipFlopYShift;
+        double shiftConnectorX = Sizes.baseConnectorXShift;
+        double shiftConnectorY = Sizes.baseConnectorYShift;
         double x = pointMouseMoved.getX();
         double y = pointMouseMoved.getY();
 
@@ -455,6 +526,20 @@ public class MouseActions {
             graphicsContext.strokeLine(pointCenter.getX() - shiftFlipFlopX, pointCenter.getY() + shiftFlipFlopY, pointCenter.getX() + shiftFlipFlopX, pointCenter.getY() + shiftFlipFlopY);
             graphicsContext.strokeLine(pointCenter.getX() + shiftFlipFlopX, pointCenter.getY() + shiftFlipFlopY, pointCenter.getX() + shiftFlipFlopX, pointCenter.getY() - shiftFlipFlopY);
             graphicsContext.strokeLine(pointCenter.getX() + shiftFlipFlopX, pointCenter.getY() - shiftFlipFlopY, pointCenter.getX() - shiftFlipFlopX, pointCenter.getY() - shiftFlipFlopY);
+        }
+        for (Bulb b : arrayListCreatedBulbs) {
+            Point pointCenter = b.getPointCenter();
+            graphicsContext.strokeLine(pointCenter.getX() - shiftGateX, pointCenter.getY() - shiftGateY, pointCenter.getX() - shiftGateX, pointCenter.getY() + shiftGateY);
+            graphicsContext.strokeLine(pointCenter.getX() - shiftGateX, pointCenter.getY() + shiftGateY, pointCenter.getX() + shiftGateX, pointCenter.getY() + shiftGateY);
+            graphicsContext.strokeLine(pointCenter.getX() + shiftGateX, pointCenter.getY() + shiftGateY, pointCenter.getX() + shiftGateX, pointCenter.getY() - shiftGateY);
+            graphicsContext.strokeLine(pointCenter.getX() + shiftGateX, pointCenter.getY() - shiftGateY, pointCenter.getX() - shiftGateX, pointCenter.getY() - shiftGateY);
+        }
+        for (Connector con : arrayListCreatedConnectors) {
+            Point pointCenter = con.getPointCenter();
+            graphicsContext.strokeLine(pointCenter.getX() - shiftConnectorX, pointCenter.getY() - shiftConnectorY, pointCenter.getX() - shiftConnectorX, pointCenter.getY() + shiftConnectorY);
+            graphicsContext.strokeLine(pointCenter.getX() - shiftConnectorX, pointCenter.getY() + shiftConnectorY, pointCenter.getX() + shiftConnectorX, pointCenter.getY() + shiftConnectorY);
+            graphicsContext.strokeLine(pointCenter.getX() + shiftConnectorX, pointCenter.getY() + shiftConnectorY, pointCenter.getX() + shiftConnectorX, pointCenter.getY() - shiftConnectorY);
+            graphicsContext.strokeLine(pointCenter.getX() + shiftConnectorX, pointCenter.getY() - shiftConnectorY, pointCenter.getX() - shiftConnectorX, pointCenter.getY() - shiftConnectorY);
         }
 
         if(checkIfCoverTotal(newComponentName, x, y)){
@@ -481,6 +566,18 @@ public class MouseActions {
             graphicsContext.strokeLine(x - shiftFlipFlopX, y + shiftFlipFlopY, x + shiftFlipFlopX, y + shiftFlipFlopY);
             graphicsContext.strokeLine(x + shiftFlipFlopX, y + shiftFlipFlopY, x + shiftFlipFlopX, y - shiftFlipFlopY);
             graphicsContext.strokeLine(x + shiftFlipFlopX, y - shiftFlipFlopY, x - shiftFlipFlopX, y - shiftFlipFlopY);
+        }
+        else if(newComponentName.contains(Names.bulbName)){
+            graphicsContext.strokeLine(x - shiftSwitchX, y - shiftSwitchY, x - shiftSwitchX, y + shiftSwitchY);
+            graphicsContext.strokeLine(x - shiftSwitchX, y + shiftSwitchY, x + shiftSwitchX, y + shiftSwitchY);
+            graphicsContext.strokeLine(x + shiftSwitchX, y + shiftSwitchY, x + shiftSwitchX, y - shiftSwitchY);
+            graphicsContext.strokeLine(x + shiftSwitchX, y - shiftSwitchY, x - shiftSwitchX, y - shiftSwitchY);
+        }
+        else if(newComponentName.contains(Names.connectorName)){
+            graphicsContext.strokeLine(x - shiftConnectorX, y - shiftConnectorY, x - shiftConnectorX, y + shiftConnectorY);
+            graphicsContext.strokeLine(x - shiftConnectorX, y + shiftConnectorY, x + shiftConnectorX, y + shiftConnectorY);
+            graphicsContext.strokeLine(x + shiftConnectorX, y + shiftConnectorY, x + shiftConnectorX, y - shiftConnectorY);
+            graphicsContext.strokeLine(x + shiftConnectorX, y - shiftConnectorY, x - shiftConnectorX, y - shiftConnectorY);
         }
     }
 
@@ -516,5 +613,9 @@ public class MouseActions {
 
     public void setFitToCheck(boolean setFitToCheck) {
         this.fitToCheck = setFitToCheck;
+    }
+
+    public void setShiftDown(boolean shiftDown) {
+        this.shiftDown = shiftDown;
     }
 }

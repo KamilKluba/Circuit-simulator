@@ -7,6 +7,7 @@ import data.Sizes;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.XYChart;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ public abstract class FlipFlop extends Component implements Serializable {
         } else {
             graphicsContext.drawImage(imageViewOff.getImage(), pointCenter.getX() - Sizes.baseFlipFlopXShift, pointCenter.getY() - Sizes.baseFlipFlopYShift);
         }
+        graphicsContext.setFill(Color.BLACK);
         graphicsContext.fillText("" + id, pointCenter.getX() - 8, pointCenter.getY() + 8);
     }
 
