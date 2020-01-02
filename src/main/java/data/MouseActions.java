@@ -26,9 +26,12 @@ public class MouseActions {
     private ArrayList<Switch> arrayListCreatedSwitches;
     private ArrayList<FlipFlop> arrayListCreatedFlipFlops;
     private ArrayList<Bulb> arrayListCreatedBulbs;
-    private ArrayList<Component> arrayListCreatedComponents;
     private ArrayList<Line> arrayListCreatedLines;
     private ArrayList<Connector> arrayListCreatedConnectors;
+    private ArrayList<Component> arrayListCreatedComponents;
+    private ArrayList<Component> arrayListDeletedComponents;
+    private ArrayList<Change> arrayListChanges;
+    private ArrayList<MovePoint> arrayListPointsCenter = new ArrayList<>();
     private Point pointMousePressed = new Point();
     private Point pointMouseMoved = new Point();
     private Point pointMouseReleased = new Point();
@@ -49,9 +52,10 @@ public class MouseActions {
         this.arrayListCreatedSwitches = mwc.getArrayListCreatedSwitches();
         this.arrayListCreatedFlipFlops = mwc.getArrayListCreatedFlipFlops();
         this.arrayListCreatedBulbs = mwc.getArrayListCreatedBulbs();
-        this.arrayListCreatedComponents = mwc.getArrayListCreatedComponents();
         this.arrayListCreatedLines = mwc.getArrayListCreatedLines();
         this.arrayListCreatedConnectors = mwc.getArrayListCreatedConnectors();
+        this.arrayListDeletedComponents = mwc.getArrayListDeletedComponents();
+        this.arrayListChanges = mwc.getArrayListChanges();
         this.zoomableScrollPaneChart = mwc.getZoomableScrollPaneChart();
         this.hBoxChartArea = mwc.gethBoxChartArea();
     }
@@ -154,6 +158,9 @@ public class MouseActions {
                 for (Line l : arrayListCreatedLines) {
                     l.select(x, y);
                 }
+                for (Connector con : arrayListCreatedConnectors){
+                    con.select(x, y);
+                }
             }
             mwc.setCoveredError(false);
         }
@@ -164,9 +171,15 @@ public class MouseActions {
             }
             for(Component c : arrayListCreatedComponents) {
                 if (c.getName().equals(Names.switchPulseName) && event.getButton() == MouseButton.SECONDARY && c.inside(x, y)) {
+                    arrayListChanges.add(new Change(arrayListChanges.size() + 1, c.getName(), c.getId(),
+                            4, c.isSignalOutput(), c.getPointCenter().getX(), c.getPointCenter().getY()));
+                    mwc.setChangeCounter(mwc.getChangeCounter() + 1);
                     ((SwitchPulse) c).setTurnedOn(!((SwitchPulse) c).isTurnedOn());
                 }
                 else if(c.getName().equals(Names.switchBistableName) && c.inside(x, y)){
+                    arrayListChanges.add(new Change(arrayListChanges.size() + 1, c.getName(), c.getId(),
+                            4, c.isSignalOutput(), c.getPointCenter().getX(), c.getPointCenter().getY()));
+                    mwc.setChangeCounter(mwc.getChangeCounter() + 1);
                     ((Switch)c).invertState();
                 }
             }
@@ -265,6 +278,8 @@ public class MouseActions {
         pointMousePressedToDrag.setX(x);
         pointMousePressedToDrag.setY(y);
 
+        arrayListPointsCenter.clear();
+
         couldBeSelected = false;
         for (Line l : arrayListCreatedLines) {
             l.selectForDrag(x, y);
@@ -294,6 +309,7 @@ public class MouseActions {
                     ((Switch)c).setState(true);
                 }
             }
+            arrayListPointsCenter.add(new MovePoint(c.getName(), c.getId(), c.getPointCenter()));
         }
         for (Connector con :arrayListCreatedConnectors){
             if(con.checkIfCouldBeSelected(x, y)){
@@ -302,6 +318,7 @@ public class MouseActions {
             if(con.inside(x, y)) {
                 con.selectForDrag(x, y);
             }
+            arrayListPointsCenter.add(new MovePoint(con.getName(), con.getId(), con.getPointCenter()));
         }
 
         mwc.setMouseButton(e.getButton());
@@ -322,6 +339,17 @@ public class MouseActions {
             c.setSelectedForDrag(false);
             if(c.getName().equals(Names.switchMonostableName)){
                 ((Switch)c).setState(false);
+            }
+
+            for(MovePoint mp : arrayListPointsCenter){
+                if(c.getName().equals(mp.getComponentName()) && c.getId() == mp.getComponentId()){
+                    if(c.getPointCenter().getX() != mp.getPoint().getX() || c.getPointCenter().getY() != mp.getPoint().getY()){
+                        arrayListChanges.add(new Change(arrayListChanges.size() + 1, c.getName(), c.getId(), 3,
+                                c.isSignalOutput(), mp.getPoint().getX(), mp.getPoint().getY()));
+                        mwc.setChangeCounter(mwc.getChangeCounter() + 1);
+                    }
+                    break;
+                }
             }
         }
         for(Line l : arrayListCreatedLines){

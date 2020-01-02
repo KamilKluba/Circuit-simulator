@@ -43,13 +43,15 @@ import java.util.ArrayList;
 public class ComponentCreator {
     private MainWindowController mwc;
     private TableView<TableComponent> tableViewComponents;
-    private ArrayList<Component> arrayListCreatedComponents;
     private ArrayList<Gate> arrayListCreatedGates;
     private ArrayList<Switch> arrayListCreatedSwitches;
     private ArrayList<FlipFlop> arrayListCreatedFlipFlops;
     private ArrayList<Bulb> arrayListCreatedBulbs;
     private ArrayList<Line> arrayListCreatedLines;
     private ArrayList<Connector> arrayListCreatedConnectors;
+    private ArrayList<Component> arrayListCreatedComponents;
+    private ArrayList<Component> arrayListDeletedComponents;
+    private ArrayList<Change> arrayListChanges;
     private ArrayList<XYChart.Series<Long, String>> arrayListSeries;
     private LineChart lineChartStates;
     private ComboBox<Point> comboBoxNewLineHook;
@@ -69,13 +71,15 @@ public class ComponentCreator {
     public ComponentCreator(MainWindowController mwc) {
         this.mwc = mwc;
         this.tableViewComponents = mwc.getTableViewComponents();
-        this.arrayListCreatedComponents = mwc.getArrayListCreatedComponents();
         this.arrayListCreatedGates = mwc.getArrayListCreatedGates();
         this.arrayListCreatedSwitches = mwc.getArrayListCreatedSwitches();
         this.arrayListCreatedFlipFlops = mwc.getArrayListCreatedFlipFlops();
         this.arrayListCreatedBulbs = mwc.getArrayListCreatedBulbs();
         this.arrayListCreatedLines = mwc.getArrayListCreatedLines();
         this.arrayListCreatedConnectors = mwc.getArrayListCreatedConnectors();
+        this.arrayListCreatedComponents = mwc.getArrayListCreatedComponents();
+        this.arrayListDeletedComponents = mwc.getArrayListDeletedComponents();
+        this.arrayListChanges = mwc.getArrayListChanges();
         this.arrayListSeries = mwc.getArrayListSeries();
         this.lineChartStates = mwc.getLineChartStates();
         this.canvas = mwc.getCanvas();
@@ -83,6 +87,10 @@ public class ComponentCreator {
         this.mouseActions = mwc.getMouseActions();
 
         timeStart = System.currentTimeMillis();
+    }
+
+    public void revertChange(){
+        Change change =
     }
 
     public Gate getCoveredGate(double x, double y){
@@ -243,6 +251,9 @@ public class ComponentCreator {
             arrayListCreatedConnectors.remove(c);
             arrayListSeries.remove(c.getSeries());
             lineChartStates.getData().remove(c.getSeries());
+            arrayListDeletedComponents.add(c);
+            arrayListChanges.add(new Change(arrayListChanges.size() + 1, c.getName(), c.getId(), 2,
+                    c.isSignalOutput(), c.getPointCenter().getX(), c.getPointCenter().getY() ));
         }
 
         for(Line l : arrayListCreatedLines){
@@ -384,6 +395,10 @@ public class ComponentCreator {
                     arrayListSeries.add(newSeries);
                     lineChartStates.getData().add(newSeries);
                 }
+
+                arrayListChanges.add(new Change(arrayListChanges.size() + 1, newComponentName, newComponent.getId(),
+                        1, newComponent.isSignalOutput(), x, y));
+                mwc.setChangeCounter(mwc.getChangeCounter() + 1);
             }
         } catch (Exception e) {
             e.printStackTrace();

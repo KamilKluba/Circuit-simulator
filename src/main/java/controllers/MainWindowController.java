@@ -87,6 +87,8 @@ public class MainWindowController {
     private ArrayList<FlipFlop> arrayListCreatedFlipFlops = new ArrayList<>();
     private ArrayList<Bulb> arrayListCreatedBulbs = new ArrayList<>();
     private ArrayList<Component> arrayListCreatedComponents = new ArrayList<>();
+    private ArrayList<Component> arrayListDeletedComponents = new ArrayList<>();
+    private ArrayList<Change> arrayListChanges = new ArrayList<>();
     private GraphicsContext graphicsContext;
     private ArrayList<TableComponent> arrayListPossibleComponents = new ArrayList<>();
     private ArrayList<XYChart.Series<Long, String>> arrayListSeries = new ArrayList<>();
@@ -96,6 +98,7 @@ public class MainWindowController {
     private boolean waitForPlaceComponent = false;
     private boolean coveredError = false;
     private boolean draggedSelectionRectngle = false;
+    private boolean ctrlDown = false;
     private ComboBox<Point> comboBoxNewLineHook;
     private MouseActions mouseActions;
     private ComponentCreator componentCreator;
@@ -103,6 +106,8 @@ public class MainWindowController {
     private Component componentBuffer = null;
     private MouseButton mouseButton = null;
     private int chartExtension = 0;
+    private int changeCounter = 0;
+    private int changeIterator = 0;
 
     private ZoomableScrollPaneWorkspace zoomableScrollPaneWorkspace;
     private ZoomableScrollPaneChart zoomableScrollPaneChart;
@@ -473,6 +478,7 @@ public class MainWindowController {
             componentCreator.deleteLineBuffer();
         }
         else if(code == KeyCode.CONTROL){
+            ctrlDown = true;
             mouseActions.setFitToCheck(true);
             zoomableScrollPaneChart.setCtrldown(true);
         }
@@ -500,12 +506,18 @@ public class MainWindowController {
                 tableViewComponents.getSelectionModel().clearSelection();
             }
         }
+        else if(character.equals("z") || character.matches("Z")){
+            if(ctrlDown){
+                componentCreator.revertChange();
+            }
+        }
 
         mouseActions.actionCanvasMouseMoved(mouseActions.getPointMouseMoved().getX(), mouseActions.getPointMouseMoved().getY());
     }
 
     private void actionCanvasKeyReleased(KeyCode code){
         if(code == KeyCode.CONTROL){
+            ctrlDown = false;
             mouseActions.setFitToCheck(false);
             zoomableScrollPaneChart.setCtrldown(false);
         }
@@ -702,8 +714,12 @@ public class MainWindowController {
         return arrayListCreatedBulbs;
     }
 
-    public ArrayList<TableComponent> getArrayListPossibleComponents() {
-        return arrayListPossibleComponents;
+    public ArrayList<Component> getArrayListDeletedComponents() {
+        return arrayListDeletedComponents;
+    }
+
+    public ArrayList<Change> getArrayListChanges() {
+        return arrayListChanges;
     }
 
     public Canvas getCanvas() {
@@ -776,6 +792,22 @@ public class MainWindowController {
 
     public ComponentCreator getComponentCreator() {
         return componentCreator;
+    }
+
+    public int getChangeCounter() {
+        return changeCounter;
+    }
+
+    public void setChangeCounter(int changeCounter) {
+        this.changeCounter = changeCounter;
+    }
+
+    public int getChangeIterator() {
+        return changeIterator;
+    }
+
+    public void setChangeIterator(int changeIterator) {
+        this.changeIterator = changeIterator;
     }
 }
 
