@@ -86,19 +86,20 @@ public class MainWindowController {
     private ArrayList<Switch> arrayListCreatedSwitches = new ArrayList<>();
     private ArrayList<FlipFlop> arrayListCreatedFlipFlops = new ArrayList<>();
     private ArrayList<Bulb> arrayListCreatedBulbs = new ArrayList<>();
-    private ArrayList<Component> arrayListCreatedComponents = new ArrayList<>();
+    private ArrayList<Component> arrayListCreatedEndComponents = new ArrayList<>();
+    private ArrayList<Component> arrayListAllCreatedComponents = new ArrayList<>();
     private ArrayList<Component> arrayListDeletedComponents = new ArrayList<>();
-    private ArrayList<Change> arrayListChanges = new ArrayList<>();
     private GraphicsContext graphicsContext;
     private ArrayList<TableComponent> arrayListPossibleComponents = new ArrayList<>();
     private ArrayList<XYChart.Series<Long, String>> arrayListSeries = new ArrayList<>();
+    private Stack<Change> stackUndoChanges = new Stack<>();
+    private Stack<Change> stackRedoChanges = new Stack<>();
 
     private Line lineBuffer;
     private boolean waitForComponent2 = false;
     private boolean waitForPlaceComponent = false;
     private boolean coveredError = false;
     private boolean draggedSelectionRectngle = false;
-    private boolean ctrlDown = false;
     private ComboBox<Point> comboBoxNewLineHook;
     private MouseActions mouseActions;
     private ComponentCreator componentCreator;
@@ -106,8 +107,6 @@ public class MainWindowController {
     private Component componentBuffer = null;
     private MouseButton mouseButton = null;
     private int chartExtension = 0;
-    private int changeCounter = 0;
-    private int changeIterator = 0;
 
     private ZoomableScrollPaneWorkspace zoomableScrollPaneWorkspace;
     private ZoomableScrollPaneChart zoomableScrollPaneChart;
@@ -247,11 +246,9 @@ public class MainWindowController {
     public void actionDebug(){
         new Thread(() -> {
             while(true){
-                for(Connector con : arrayListCreatedConnectors){
-                    System.out.println(con.getArrayListLines().size());
-                }
+                System.out.println(stackUndoChanges.size() + " " + stackRedoChanges.size() + " " + arrayListCreatedEndComponents.size());
                 try {
-                    Thread.sleep(30);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -298,7 +295,7 @@ public class MainWindowController {
         while(true) {
             try {
                 stateChanged = false;
-                for (Component c : arrayListCreatedComponents) {
+                for (Component c : arrayListCreatedEndComponents) {
                     if (c.isStateChanged()) {
                         stateChanged = true;
                     }
@@ -331,11 +328,8 @@ public class MainWindowController {
             for (Line l : arrayListCreatedLines) {
                 l.draw(graphicsContext);
             }
-            for (Component c : arrayListCreatedComponents) {
+            for (Component c : arrayListAllCreatedComponents) {
                 c.draw(graphicsContext);
-            }
-            for (Connector con : arrayListCreatedConnectors){
-                con.draw(graphicsContext);
             }
             if (componentBuffer != null) {
                 componentBuffer.draw(graphicsContext);
@@ -356,7 +350,7 @@ public class MainWindowController {
     public void actionStartStopChart(){
         boolean checked = false;
         boolean chartAlive = false;
-        for(Component c : arrayListCreatedComponents){
+        for(Component c : arrayListCreatedEndComponents){
             c.setAddingDataToSeriesEnabled(!c.isAddingDataToSeriesEnabled());
             if(!checked){
                 checked = true;
@@ -382,7 +376,7 @@ public class MainWindowController {
     public void actionResetChart(){
         lineChartStates.getData().clear();
         arrayListSeries.clear();
-        for(Component c : arrayListCreatedComponents){
+        for(Component c : arrayListCreatedEndComponents){
             XYChart.Series<Long, String> s = new XYChart.Series<>();
             s.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 0"));
             s.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 1"));
@@ -462,7 +456,7 @@ public class MainWindowController {
     }
 
     public void actionRotate(){
-        for(Component c : arrayListCreatedComponents){
+        for(Component c : arrayListCreatedEndComponents){
             if(c.isSelected()){
                 c.rotate();
             }
@@ -478,7 +472,6 @@ public class MainWindowController {
             componentCreator.deleteLineBuffer();
         }
         else if(code == KeyCode.CONTROL){
-            ctrlDown = true;
             mouseActions.setFitToCheck(true);
             zoomableScrollPaneChart.setCtrldown(true);
         }
@@ -497,6 +490,9 @@ public class MainWindowController {
     }
 
     private void actionCanvasKeyTyped(String character){
+        int charValue = character.getBytes()[0];
+        System.out.println(charValue);
+
         if(character.matches("[0-9]")){
             int index = Integer.parseInt(character);
             if(tableViewComponents.getItems().size() >= index){
@@ -506,10 +502,11 @@ public class MainWindowController {
                 tableViewComponents.getSelectionModel().clearSelection();
             }
         }
-        else if(character.equals("z") || character.matches("Z")){
-            if(ctrlDown){
-                componentCreator.revertChange();
-            }
+        else if(charValue == 26){
+            componentCreator.revertChange(true);
+        }
+        else if(charValue == 25){
+            componentCreator.revertChange(false);
         }
 
         mouseActions.actionCanvasMouseMoved(mouseActions.getPointMouseMoved().getX(), mouseActions.getPointMouseMoved().getY());
@@ -517,7 +514,6 @@ public class MainWindowController {
 
     private void actionCanvasKeyReleased(KeyCode code){
         if(code == KeyCode.CONTROL){
-            ctrlDown = false;
             mouseActions.setFitToCheck(false);
             zoomableScrollPaneChart.setCtrldown(false);
         }
@@ -543,7 +539,7 @@ public class MainWindowController {
     }
 
     public void actionMenuItemExit(){
-        for(Component c : arrayListCreatedComponents){
+        for(Component c : arrayListCreatedEndComponents){
             c.kill();
         }
         System.exit(0);
@@ -557,7 +553,7 @@ public class MainWindowController {
             Stage stage = new Stage();
             stage.setScene(scene);
             ChangeCanvasSizeController changeCanvasSizeController = loader.getController();
-            changeCanvasSizeController.setArrayListComponents(arrayListCreatedComponents);
+            changeCanvasSizeController.setArrayListComponents(arrayListCreatedEndComponents);
             changeCanvasSizeController.setCanvas(canvas);
             changeCanvasSizeController.setPaneWorkspace(paneWorkspace);
             changeCanvasSizeController.setStage(stage);
@@ -702,8 +698,8 @@ public class MainWindowController {
         return arrayListCreatedFlipFlops;
     }
 
-    public ArrayList<Component> getArrayListCreatedComponents() {
-        return arrayListCreatedComponents;
+    public ArrayList<Component> getArrayListCreatedEndComponents() {
+        return arrayListCreatedEndComponents;
     }
 
     public ArrayList<Connector> getArrayListCreatedConnectors() {
@@ -718,8 +714,16 @@ public class MainWindowController {
         return arrayListDeletedComponents;
     }
 
-    public ArrayList<Change> getArrayListChanges() {
-        return arrayListChanges;
+    public ArrayList<Component> getArrayListAllCreatedComponents() {
+        return arrayListAllCreatedComponents;
+    }
+
+    public Stack<Change> getStackUndoChanges() {
+        return stackUndoChanges;
+    }
+
+    public Stack<Change> getStackRedoChanges() {
+        return stackRedoChanges;
     }
 
     public Canvas getCanvas() {
@@ -792,22 +796,6 @@ public class MainWindowController {
 
     public ComponentCreator getComponentCreator() {
         return componentCreator;
-    }
-
-    public int getChangeCounter() {
-        return changeCounter;
-    }
-
-    public void setChangeCounter(int changeCounter) {
-        this.changeCounter = changeCounter;
-    }
-
-    public int getChangeIterator() {
-        return changeIterator;
-    }
-
-    public void setChangeIterator(int changeIterator) {
-        this.changeIterator = changeIterator;
     }
 }
 

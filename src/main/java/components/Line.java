@@ -170,7 +170,7 @@ public class Line extends Component implements Serializable {
 
     public void lifeCycle(){
         executorService.execute(() -> {
-            while(true){
+            while(alive){
                 try{
                     boolean dependentComponentsState = false;
                     for(Component c : arrayListDependentComponents){

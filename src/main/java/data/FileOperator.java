@@ -5,10 +5,8 @@ import components.flipflops.FlipFlop;
 import components.gates.Gate;
 import components.switches.Switch;
 import controllers.MainWindowController;
-import javafx.collections.FXCollections;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
 import main.Main;
 
@@ -36,7 +34,7 @@ public class FileOperator {
         this.mwc = mwc;
         this.main = mwc.getMain();
         this.componentCreator = mwc.getComponentCreator();
-        this.arrayListCreatedComponents = mwc.getArrayListCreatedComponents();
+        this.arrayListCreatedComponents = mwc.getArrayListCreatedEndComponents();
         this.arrayListCreatedGates = mwc.getArrayListCreatedGates();
         this.arrayListCreatedSwitches = mwc.getArrayListCreatedSwitches();
         this.arrayListCreatedFlipFlops = mwc.getArrayListCreatedFlipFlops();

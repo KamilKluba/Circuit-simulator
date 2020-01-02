@@ -8,17 +8,22 @@ public class Change {
     private int description;
 
     private boolean state;
-    private double x;
-    private double y;
+    private double oldX;
+    private double oldY;
+    private double newX;
+    private double newY;
 
-    public Change(int id, String componentName, int componentId, int description, boolean state, double x, double y) {
+    public Change(int id, String componentName, int componentId, int description, boolean state, double oldX,
+                  double oldY, double newX, double newY) {
         this.id = id;
         this.componentName = componentName;
         this.componentId = componentId;
         this.description = description;
         this.state = state;
-        this.x = x;
-        this.y = y;
+        this.oldX = oldX;
+        this.oldY = oldY;
+        this.newX = newX;
+        this.newY = newY;
     }
 
     public int getId() {
@@ -61,19 +66,35 @@ public class Change {
         this.state = state;
     }
 
-    public double getX() {
-        return x;
+    public double getOldX() {
+        return oldX;
     }
 
-    public void setX(double x) {
-        this.x = x;
+    public void setOldX(double oldX) {
+        this.oldX = oldX;
     }
 
-    public double getY() {
-        return y;
+    public double getOldY() {
+        return oldY;
     }
 
-    public void setY(double y) {
-        this.y = y;
+    public void setOldY(double oldY) {
+        this.oldY = oldY;
+    }
+
+    public double getNewX() {
+        return newX;
+    }
+
+    public void setNewX(double newX) {
+        this.newX = newX;
+    }
+
+    public double getNewY() {
+        return newY;
+    }
+
+    public void setNewY(double newY) {
+        this.newY = newY;
     }
 }

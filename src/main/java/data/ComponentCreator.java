@@ -39,6 +39,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class ComponentCreator {
     private MainWindowController mwc;
@@ -49,9 +50,11 @@ public class ComponentCreator {
     private ArrayList<Bulb> arrayListCreatedBulbs;
     private ArrayList<Line> arrayListCreatedLines;
     private ArrayList<Connector> arrayListCreatedConnectors;
-    private ArrayList<Component> arrayListCreatedComponents;
+    private ArrayList<Component> arrayListCreatedEndComponents;
+    private ArrayList<Component> arrayListAllCreatedComponents;
     private ArrayList<Component> arrayListDeletedComponents;
-    private ArrayList<Change> arrayListChanges;
+    private Stack<Change> stackUndoChanges = new Stack<>();
+    private Stack<Change> stackRedoChanges = new Stack<>();
     private ArrayList<XYChart.Series<Long, String>> arrayListSeries;
     private LineChart lineChartStates;
     private ComboBox<Point> comboBoxNewLineHook;
@@ -77,9 +80,11 @@ public class ComponentCreator {
         this.arrayListCreatedBulbs = mwc.getArrayListCreatedBulbs();
         this.arrayListCreatedLines = mwc.getArrayListCreatedLines();
         this.arrayListCreatedConnectors = mwc.getArrayListCreatedConnectors();
-        this.arrayListCreatedComponents = mwc.getArrayListCreatedComponents();
+        this.arrayListCreatedEndComponents = mwc.getArrayListCreatedEndComponents();
+        this.arrayListAllCreatedComponents = mwc.getArrayListAllCreatedComponents();
         this.arrayListDeletedComponents = mwc.getArrayListDeletedComponents();
-        this.arrayListChanges = mwc.getArrayListChanges();
+        this.stackUndoChanges = mwc.getStackUndoChanges();
+        this.stackRedoChanges = mwc.getStackRedoChanges();
         this.arrayListSeries = mwc.getArrayListSeries();
         this.lineChartStates = mwc.getLineChartStates();
         this.canvas = mwc.getCanvas();
@@ -89,8 +94,80 @@ public class ComponentCreator {
         timeStart = System.currentTimeMillis();
     }
 
-    public void revertChange(){
-        Change change =
+    public void revertChange(boolean undoChange){
+        Change change = null;
+
+        if(stackUndoChanges.size() > 0) {
+            change = stackUndoChanges.pop();
+            stackRedoChanges.push(change);
+
+            String componentName = change.getComponentName();
+            int componentId = change.getComponentId();
+            Component component = null;
+
+
+
+            switch (change.getDescription()) {
+                case 1:
+                    for (Component c : arrayListAllCreatedComponents) {
+                        if (c.getName().equals(componentName) && c.getId() == componentId) {
+                            component = c;
+                        }
+                    }
+                    if(componentName.contains(Names.lineName)) {
+                        for (Line l : arrayListCreatedLines) {
+                            if (l.getId() == componentId) {
+                                component = l;
+                            }
+                        }
+                    }
+                    component.kill();
+                    arrayListDeletedComponents.add(component);
+                    arrayListCreatedLines.remove(component);
+                    arrayListCreatedGates.remove(component);
+                    arrayListCreatedSwitches.remove(component);
+                    arrayListCreatedFlipFlops.remove(component);
+                    arrayListCreatedConnectors.remove(component);
+                    arrayListCreatedEndComponents.remove(component);
+                    arrayListAllCreatedComponents.remove(component);
+                    break;
+                case 2:
+                    for (Component c : arrayListDeletedComponents) {
+                        if (c.getName().equals(componentName) && c.getId() == componentId) {
+                            component = c;
+                        }
+                    }
+                    component.revive();
+                    if(component.getName().contains(Names.lineName)) {
+                        arrayListCreatedLines.add((Line) component);
+                    }
+                    else if(component.getName().contains(Names.gateSearchName)){
+                        arrayListCreatedGates.add((Gate)component);
+                        arrayListCreatedEndComponents.add(component);
+                    }
+                    else if(component.getName().contains(Names.switchSearchName)){
+                        arrayListCreatedSwitches.add((Switch)component);
+                        arrayListCreatedEndComponents.add(component);
+                    }
+                    else if(component.getName().contains(Names.flipFlopSearchName)){
+                        arrayListCreatedFlipFlops.add((FlipFlop)component);
+                        arrayListCreatedEndComponents.add(component);
+                    }
+                    else if(component.getName().contains(Names.bulbName)){
+                        arrayListCreatedBulbs.add((Bulb)component);
+                        arrayListCreatedEndComponents.add(component);
+                    }
+                    else if(component.getName().contains(Names.connectorName)){
+                        arrayListCreatedConnectors.add((Connector)component);
+                    }
+                    arrayListAllCreatedComponents.add(component);
+                    arrayListDeletedComponents.remove(component);
+                    break;
+                case 3:
+                    break;
+                case 4:
+            }
+        }
     }
 
     public Gate getCoveredGate(double x, double y){
@@ -246,14 +323,15 @@ public class ComponentCreator {
             arrayListCreatedGates.remove(c);
             arrayListCreatedSwitches.remove(c);
             arrayListCreatedFlipFlops.remove(c);
-            arrayListCreatedComponents.remove(c);
             arrayListCreatedBulbs.remove(c);
             arrayListCreatedConnectors.remove(c);
+            arrayListAllCreatedComponents.remove(c);
+            arrayListCreatedEndComponents.remove(c);
             arrayListSeries.remove(c.getSeries());
             lineChartStates.getData().remove(c.getSeries());
             arrayListDeletedComponents.add(c);
-            arrayListChanges.add(new Change(arrayListChanges.size() + 1, c.getName(), c.getId(), 2,
-                    c.isSignalOutput(), c.getPointCenter().getX(), c.getPointCenter().getY() ));
+            stackUndoChanges.push(new Change(stackUndoChanges.size() + 1, c.getName(), c.getId(), 2,
+                    c.isSignalOutput(), 0, 0, 0, 0));
         }
 
         for(Line l : arrayListCreatedLines){
@@ -384,7 +462,7 @@ public class ComponentCreator {
                 }
 
                 if(!newComponent.getName().equals(Names.connectorName)) {
-                    arrayListCreatedComponents.add(newComponent);
+                    arrayListCreatedEndComponents.add(newComponent);
                     newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 0"));
                     newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 1"));
                     if (newComponent.isSignalOutput()) {
@@ -396,9 +474,10 @@ public class ComponentCreator {
                     lineChartStates.getData().add(newSeries);
                 }
 
-                arrayListChanges.add(new Change(arrayListChanges.size() + 1, newComponentName, newComponent.getId(),
-                        1, newComponent.isSignalOutput(), x, y));
-                mwc.setChangeCounter(mwc.getChangeCounter() + 1);
+                arrayListAllCreatedComponents.add(newComponent);
+
+                stackUndoChanges.add(new Change(stackUndoChanges.size() + 1, newComponentName, newComponent.getId(),
+                        1, newComponent.isSignalOutput(), 0, 0, 0, 0));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -598,6 +677,9 @@ public class ComponentCreator {
             lineCounter++;
             mwc.getLineBuffer().setId(lineCounter);
             arrayListCreatedLines.add(mwc.getLineBuffer());
+            stackRedoChanges.clear();
+            stackUndoChanges.push(new Change(stackUndoChanges.size() + 1, mwc.getLineBuffer().getName(), mwc.getLineBuffer().getId(),
+                    1, mwc.getLineBuffer().isSignalOutput(), 0, 0, 0, 0));
 
             for (Line l : arrayListCreatedLines) {
                 l.getArrayListVisitedLines().clear();

@@ -70,6 +70,11 @@ public abstract class Component implements Serializable {
         alive = false;
     }
 
+    public void revive() {
+        alive = true;
+        executorService.execute(this::lifeCycle);
+    }
+
     public void setLife(){
         executorService = Executors.newFixedThreadPool(1);
         executorService.execute(this::lifeCycle);
