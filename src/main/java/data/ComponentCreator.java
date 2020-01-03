@@ -53,8 +53,8 @@ public class ComponentCreator {
     private ArrayList<Component> arrayListCreatedEndComponents;
     private ArrayList<Component> arrayListAllCreatedComponents;
     private ArrayList<Component> arrayListDeletedComponents;
-    private Stack<Change> stackUndoChanges = new Stack<>();
-    private Stack<Change> stackRedoChanges = new Stack<>();
+    private Stack<Change> stackUndoChanges;
+    private Stack<Change> stackRedoChanges;
     private ArrayList<XYChart.Series<Long, String>> arrayListSeries;
     private LineChart lineChartStates;
     private ComboBox<Point> comboBoxNewLineHook;
@@ -97,75 +97,167 @@ public class ComponentCreator {
     public void revertChange(boolean undoChange){
         Change change = null;
 
-        if(stackUndoChanges.size() > 0) {
+        if(undoChange && stackUndoChanges.size() > 0) {
             change = stackUndoChanges.pop();
             stackRedoChanges.push(change);
+        }
+        else if(stackRedoChanges.size() > 0) {
+            change = stackRedoChanges.pop();
+            stackUndoChanges.push(change);
+        }
 
+        if(change != null){
             String componentName = change.getComponentName();
             int componentId = change.getComponentId();
             Component component = null;
 
-
-
             switch (change.getDescription()) {
                 case 1:
+                    if(undoChange) {
+                        for (Component c : arrayListAllCreatedComponents) {
+                            if (c.getName().equals(componentName) && c.getId() == componentId) {
+                                component = c;
+                            }
+                        }
+                        if(componentName.contains(Names.lineName)) {
+                            for (Line l : arrayListCreatedLines) {
+                                if (l.getId() == componentId) {
+                                    component = l;
+                                    l.delete();
+                                }
+                            }
+                        }
+                        component.kill();
+                        arrayListDeletedComponents.add(component);
+                        arrayListCreatedLines.remove(component);
+                        arrayListCreatedGates.remove(component);
+                        arrayListCreatedSwitches.remove(component);
+                        arrayListCreatedFlipFlops.remove(component);
+                        arrayListCreatedConnectors.remove(component);
+                        arrayListCreatedEndComponents.remove(component);
+                        arrayListAllCreatedComponents.remove(component);
+                    }
+                    else{
+                        for (Component c : arrayListDeletedComponents) {
+                            if (c.getName().equals(componentName) && c.getId() == componentId) {
+                                component = c;
+                            }
+                        }
+                        component.revive();
+                        if(component.getName().contains(Names.lineName)) {
+                            arrayListCreatedLines.add((Line) component);
+                        }
+                        else if(component.getName().contains(Names.gateSearchName)){
+                            arrayListCreatedGates.add((Gate)component);
+                            arrayListCreatedEndComponents.add(component);
+                            arrayListAllCreatedComponents.add(component);
+                        }
+                        else if(component.getName().contains(Names.switchSearchName)){
+                            arrayListCreatedSwitches.add((Switch)component);
+                            arrayListCreatedEndComponents.add(component);
+                            arrayListAllCreatedComponents.add(component);
+                        }
+                        else if(component.getName().contains(Names.flipFlopSearchName)){
+                            arrayListCreatedFlipFlops.add((FlipFlop)component);
+                            arrayListCreatedEndComponents.add(component);
+                            arrayListAllCreatedComponents.add(component);
+                        }
+                        else if(component.getName().contains(Names.bulbName)){
+                            arrayListCreatedBulbs.add((Bulb)component);
+                            arrayListCreatedEndComponents.add(component);
+                            arrayListAllCreatedComponents.add(component);
+                        }
+                        else if(component.getName().contains(Names.connectorName)){
+                            arrayListCreatedConnectors.add((Connector)component);
+                            arrayListAllCreatedComponents.add(component);
+                        }
+                        arrayListDeletedComponents.remove(component);
+                    }
+                    break;
+                case 2:
+                    if(undoChange) {
+                        for (Component c : arrayListDeletedComponents) {
+                            if (c.getName().equals(componentName) && c.getId() == componentId) {
+                                component = c;
+                            }
+                        }
+                        component.revive();
+                        if (component.getName().contains(Names.lineName)) {
+                            arrayListCreatedLines.add((Line) component);
+                        } else if (component.getName().contains(Names.gateSearchName)) {
+                            arrayListCreatedGates.add((Gate) component);
+                            arrayListCreatedEndComponents.add(component);
+                            arrayListAllCreatedComponents.add(component);
+                        } else if (component.getName().contains(Names.switchSearchName)) {
+                            arrayListCreatedSwitches.add((Switch) component);
+                            arrayListAllCreatedComponents.add(component);
+                            arrayListCreatedEndComponents.add(component);
+                        } else if (component.getName().contains(Names.flipFlopSearchName)) {
+                            arrayListCreatedFlipFlops.add((FlipFlop) component);
+                            arrayListCreatedEndComponents.add(component);
+                            arrayListAllCreatedComponents.add(component);
+                        } else if (component.getName().contains(Names.bulbName)) {
+                            arrayListCreatedBulbs.add((Bulb) component);
+                            arrayListCreatedEndComponents.add(component);
+                            arrayListAllCreatedComponents.add(component);
+                        } else if (component.getName().contains(Names.connectorName)) {
+                            arrayListCreatedConnectors.add((Connector) component);
+                            arrayListAllCreatedComponents.add(component);
+                        }
+                        arrayListDeletedComponents.remove(component);
+                    }
+                    else{
+                        for (Component c : arrayListAllCreatedComponents) {
+                            if (c.getName().equals(componentName) && c.getId() == componentId) {
+                                component = c;
+                            }
+                        }
+                        if(componentName.contains(Names.lineName)) {
+                            for (Line l : arrayListCreatedLines) {
+                                if (l.getId() == componentId) {
+                                    component = l;
+                                }
+                            }
+                        }
+                        component.kill();
+                        arrayListDeletedComponents.add(component);
+                        arrayListCreatedLines.remove(component);
+                        arrayListCreatedGates.remove(component);
+                        arrayListCreatedSwitches.remove(component);
+                        arrayListCreatedFlipFlops.remove(component);
+                        arrayListCreatedConnectors.remove(component);
+                        arrayListCreatedEndComponents.remove(component);
+                        arrayListAllCreatedComponents.remove(component);
+                    }
+                    break;
+                case 3:
                     for (Component c : arrayListAllCreatedComponents) {
                         if (c.getName().equals(componentName) && c.getId() == componentId) {
                             component = c;
                         }
                     }
-                    if(componentName.contains(Names.lineName)) {
-                        for (Line l : arrayListCreatedLines) {
-                            if (l.getId() == componentId) {
-                                component = l;
-                            }
-                        }
+                    if(undoChange){
+                        component.getPointCenter().setX(change.getOldX());
+                        component.getPointCenter().setY(change.getOldY());
                     }
-                    component.kill();
-                    arrayListDeletedComponents.add(component);
-                    arrayListCreatedLines.remove(component);
-                    arrayListCreatedGates.remove(component);
-                    arrayListCreatedSwitches.remove(component);
-                    arrayListCreatedFlipFlops.remove(component);
-                    arrayListCreatedConnectors.remove(component);
-                    arrayListCreatedEndComponents.remove(component);
-                    arrayListAllCreatedComponents.remove(component);
-                    break;
-                case 2:
-                    for (Component c : arrayListDeletedComponents) {
-                        if (c.getName().equals(componentName) && c.getId() == componentId) {
-                            component = c;
-                        }
+                    else{
+                        component.getPointCenter().setX(change.getNewX());
+                        component.getPointCenter().setY(change.getNewY());
                     }
-                    component.revive();
-                    if(component.getName().contains(Names.lineName)) {
-                        arrayListCreatedLines.add((Line) component);
-                    }
-                    else if(component.getName().contains(Names.gateSearchName)){
-                        arrayListCreatedGates.add((Gate)component);
-                        arrayListCreatedEndComponents.add(component);
-                    }
-                    else if(component.getName().contains(Names.switchSearchName)){
-                        arrayListCreatedSwitches.add((Switch)component);
-                        arrayListCreatedEndComponents.add(component);
-                    }
-                    else if(component.getName().contains(Names.flipFlopSearchName)){
-                        arrayListCreatedFlipFlops.add((FlipFlop)component);
-                        arrayListCreatedEndComponents.add(component);
-                    }
-                    else if(component.getName().contains(Names.bulbName)){
-                        arrayListCreatedBulbs.add((Bulb)component);
-                        arrayListCreatedEndComponents.add(component);
-                    }
-                    else if(component.getName().contains(Names.connectorName)){
-                        arrayListCreatedConnectors.add((Connector)component);
-                    }
-                    arrayListAllCreatedComponents.add(component);
-                    arrayListDeletedComponents.remove(component);
-                    break;
-                case 3:
+                    component.movePoints();
                     break;
                 case 4:
+                    for(Switch s : arrayListCreatedSwitches){
+                        if(s.getId() == componentId){
+                            if(undoChange) {
+                                s.setState(change.isOldState());
+                            }
+                            else{
+                                s.setState(change.isNewState());
+                            }
+                            break;
+                        }
+                    }
             }
         }
     }
@@ -330,8 +422,7 @@ public class ComponentCreator {
             arrayListSeries.remove(c.getSeries());
             lineChartStates.getData().remove(c.getSeries());
             arrayListDeletedComponents.add(c);
-            stackUndoChanges.push(new Change(stackUndoChanges.size() + 1, c.getName(), c.getId(), 2,
-                    c.isSignalOutput(), 0, 0, 0, 0));
+            stackUndoChanges.push(new Change(2, c));
         }
 
         for(Line l : arrayListCreatedLines){
@@ -476,8 +567,7 @@ public class ComponentCreator {
 
                 arrayListAllCreatedComponents.add(newComponent);
 
-                stackUndoChanges.add(new Change(stackUndoChanges.size() + 1, newComponentName, newComponent.getId(),
-                        1, newComponent.isSignalOutput(), 0, 0, 0, 0));
+                stackUndoChanges.add(new Change(1, newComponent));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -678,8 +768,7 @@ public class ComponentCreator {
             mwc.getLineBuffer().setId(lineCounter);
             arrayListCreatedLines.add(mwc.getLineBuffer());
             stackRedoChanges.clear();
-            stackUndoChanges.push(new Change(stackUndoChanges.size() + 1, mwc.getLineBuffer().getName(), mwc.getLineBuffer().getId(),
-                    1, mwc.getLineBuffer().isSignalOutput(), 0, 0, 0, 0));
+            stackUndoChanges.push(new Change(1, mwc.getLineBuffer()));
 
             for (Line l : arrayListCreatedLines) {
                 l.getArrayListVisitedLines().clear();

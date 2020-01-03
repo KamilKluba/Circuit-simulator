@@ -93,83 +93,7 @@ public abstract class FlipFlop extends Component implements Serializable {
             pointCenter.setX(fitXValue);
             pointCenter.setY(fitYValue);
 
-            pointInput.setX(fitXValue - 145);
-            pointInput.setY(fitYValue - 75);
-
-            pointOutput.setX(fitXValue + 145);
-            pointOutput.setY(fitYValue - 75);
-
-            pointOutputReversed.setX(fitXValue + 145);
-            pointOutputReversed.setY(fitYValue + 75);
-
-            pointAsynchronousInput.setX(fitXValue);
-            pointAsynchronousInput.setY(fitYValue - 195);
-
-            pointReset.setX(fitXValue);
-            pointReset.setY(fitYValue + 195);
-
-            pointClock.setX(fitXValue - 145);
-            pointClock.setY(fitYValue);
-
-            for (Line l : arrayListLinesInput) {
-                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
-                    l.setX1(fitXValue - 145);
-                    l.setY1(fitYValue - 75);
-                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
-                    l.setX2(fitXValue - 145);
-                    l.setY2(fitYValue - 75);
-                }
-            }
-
-            for (Line l : arrayListLinesOutput) {
-                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
-                    l.setX1(fitXValue + 145);
-                    l.setY1(fitYValue - 75);
-                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
-                    l.setX2(fitXValue + 145);
-                    l.setY2(fitYValue - 75);
-                }
-            }
-
-            for (Line l : arrayListLinesOutputReverted) {
-                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
-                    l.setX1(fitXValue + 145);
-                    l.setY1(fitYValue + 75);
-                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
-                    l.setX2(fitXValue + 145);
-                    l.setY2(fitYValue + 75);
-                }
-            }
-
-            for (Line l : arrayListLinesAsynchronousInput) {
-                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
-                    l.setX1(fitXValue);
-                    l.setY1(fitYValue - 195);
-                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
-                    l.setX2(fitXValue);
-                    l.setY2(fitYValue - 195);
-                }
-            }
-
-            for (Line l : arrayListLinesClock) {
-                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
-                    l.setX1(fitXValue - 145);
-                    l.setY1(fitYValue);
-                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
-                    l.setX2(fitXValue - 145);
-                    l.setY2(fitYValue);
-                }
-            }
-
-            for (Line l : arrayListLinesReset) {
-                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
-                    l.setX1(fitXValue);
-                    l.setY1(fitYValue + 195);
-                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
-                    l.setX2(fitXValue);
-                    l.setY2(fitYValue + 195);
-                }
-            }
+            movePoints();
         }
         else {
             pointCenter.setX(pointCenter.getX() + x - mousePressX);
@@ -255,6 +179,86 @@ public abstract class FlipFlop extends Component implements Serializable {
         }
     }
 
+    public void movePoints(){
+
+        pointInput.setX(pointCenter.getX() - 145);
+        pointInput.setY(pointCenter.getY() - 75);
+
+        pointOutput.setX(pointCenter.getX() + 145);
+        pointOutput.setY(pointCenter.getY() - 75);
+
+        pointOutputReversed.setX(pointCenter.getX() + 145);
+        pointOutputReversed.setY(pointCenter.getY() + 75);
+
+        pointAsynchronousInput.setX(pointCenter.getX());
+        pointAsynchronousInput.setY(pointCenter.getY() - 195);
+
+        pointReset.setX(pointCenter.getX());
+        pointReset.setY(pointCenter.getY() + 195);
+
+        pointClock.setX(pointCenter.getX() - 145);
+        pointClock.setY(pointCenter.getY());
+
+        for (Line l : arrayListLinesInput) {
+            if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                l.setX1(pointCenter.getX() - 145);
+                l.setY1(pointCenter.getY() - 75);
+            } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                l.setX2(pointCenter.getX() - 145);
+                l.setY2(pointCenter.getY() - 75);
+            }
+        }
+
+        for (Line l : arrayListLinesOutput) {
+            if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                l.setX1(pointCenter.getX() + 145);
+                l.setY1(pointCenter.getY() - 75);
+            } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                l.setX2(pointCenter.getX() + 145);
+                l.setY2(pointCenter.getY() - 75);
+            }
+        }
+
+        for (Line l : arrayListLinesOutputReverted) {
+            if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                l.setX1(pointCenter.getX() + 145);
+                l.setY1(pointCenter.getY() + 75);
+            } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                l.setX2(pointCenter.getX() + 145);
+                l.setY2(pointCenter.getY() + 75);
+            }
+        }
+
+        for (Line l : arrayListLinesAsynchronousInput) {
+            if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                l.setX1(pointCenter.getX());
+                l.setY1(pointCenter.getY() - 195);
+            } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                l.setX2(pointCenter.getX());
+                l.setY2(pointCenter.getY() - 195);
+            }
+        }
+
+        for (Line l : arrayListLinesClock) {
+            if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                l.setX1(pointCenter.getX() - 145);
+                l.setY1(pointCenter.getY());
+            } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                l.setX2(pointCenter.getX() - 145);
+                l.setY2(pointCenter.getY());
+            }
+        }
+
+        for (Line l : arrayListLinesReset) {
+            if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                l.setX1(pointCenter.getX());
+                l.setY1(pointCenter.getY() + 195);
+            } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                l.setX2(pointCenter.getX());
+                l.setY2(pointCenter.getY() + 195);
+            }
+        }
+    }
 
     public boolean isSignalInput() {
         return signalInput;

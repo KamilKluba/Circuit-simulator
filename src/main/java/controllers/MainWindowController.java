@@ -244,16 +244,28 @@ public class MainWindowController {
     }
 
     public void actionDebug(){
-        new Thread(() -> {
-            while(true){
-                System.out.println(stackUndoChanges.size() + " " + stackRedoChanges.size() + " " + arrayListCreatedEndComponents.size());
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+//        new Thread(() -> {
+//            while(true){
+//                System.out.println(stackUndoChanges.size() + " " + stackRedoChanges.size() + " " + arrayListCreatedEndComponents.size());
+//                try {
+//                    Thread.sleep(100);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
+        System.out.println("SWITCHES--------------------");
+        for(Switch s : arrayListCreatedSwitches){
+            System.out.println(s.getId() + " " + s.isSignalOutput() + " " + s.isAlive());
+        }
+        System.out.println("LINES--------------------");
+        for(Line l : arrayListCreatedLines){
+            System.out.println(l.getId() + " " + l.isSignalOutput() + " " + l.isAlive());
+        }
+        System.out.println("BULBS--------------------");
+        for(Bulb b : arrayListCreatedBulbs){
+            System.out.println(b.getId() + " " + b.isSignalOutput() + " " + b.isAlive());
+        }
     }
 
     private void setChart(){
@@ -295,7 +307,7 @@ public class MainWindowController {
         while(true) {
             try {
                 stateChanged = false;
-                for (Component c : arrayListCreatedEndComponents) {
+                for (Component c : arrayListAllCreatedComponents) {
                     if (c.isStateChanged()) {
                         stateChanged = true;
                     }
@@ -491,7 +503,6 @@ public class MainWindowController {
 
     private void actionCanvasKeyTyped(String character){
         int charValue = character.getBytes()[0];
-        System.out.println(charValue);
 
         if(character.matches("[0-9]")){
             int index = Integer.parseInt(character);

@@ -1,37 +1,216 @@
 package data;
 
+import components.*;
+import components.flipflops.FlipFlop;
+import components.flipflops.FlipFlopJK;
+import components.gates.Gate;
+import components.switches.Switch;
+
+import java.util.ArrayList;
+
 public class Change {
-    private int id;
-    private String componentName;
-    private int componentId;
     // 1 - creation, 2 - deletion, 3 - moving, 4 - changing state
     private int description;
+    private Component component;
+    private String componentName;
+    private int componentId;
 
-    private boolean state;
+    //1
+    private Component component1;
+    private ArrayList<Line> arrayListHook1;
+    private Point pointHook1;
+    private Component component2;
+    private ArrayList<Line> arrayListHook2;
+    private Point pointHook2;
+    //3
     private double oldX;
     private double oldY;
     private double newX;
     private double newY;
+    //4
+    private boolean oldState;
+    private boolean newState;
 
-    public Change(int id, String componentName, int componentId, int description, boolean state, double oldX,
-                  double oldY, double newX, double newY) {
-        this.id = id;
-        this.componentName = componentName;
-        this.componentId = componentId;
+    public Change(int description, Component component) {
         this.description = description;
-        this.state = state;
+        this.component = component;
+        this.componentId = component.getId();
+        this.componentName = component.getName();
+
+        if(componentName.contains(Names.lineName)){
+            Line line = (Line)component;
+            component1 = line.getComponent1();
+            component2 = line.getComponent2();
+
+            if (component1.getName().contains(Names.gateSearchName)) {
+                checkForArrayGate((Gate) component1,1, line);
+            } else if (component1.getName().contains(Names.switchSearchName)) {
+                checkForArraySwitch((Switch) component1, 1, line);
+            } else if (component1.getName().contains(Names.flipFlopSearchName)) {
+                checkForArrayFlipFlop((FlipFlop) component1, 1, line);
+            } else if (component1.getName().contains(Names.bulbName)) {
+                checkForArrayBulb((Bulb) component1, 1, line);
+            } else if (component1.getName().contains(Names.connectorName)) {
+                checkForArrayConnector((Connector) component1, 1, line);
+            }
+            if (component2.getName().contains(Names.gateSearchName)) {
+                checkForArrayGate((Gate) component2, 2, line);
+            } else if (component2.getName().contains(Names.switchSearchName)) {
+                checkForArraySwitch((Switch) component2, 2, line);
+            } else if (component2.getName().contains(Names.flipFlopSearchName)) {
+                checkForArrayFlipFlop((FlipFlop) component2, 2, line);
+            } else if (component2.getName().contains(Names.bulbName)) {
+                checkForArrayBulb((Bulb) component2, 2, line);
+            } else if (component2.getName().contains(Names.connectorName)) {
+                checkForArrayConnector((Connector) component2,2, line);
+            }
+
+            System.out.println(arrayListHook1 + " "  +arrayListHook2 + " " + pointHook1 + " " + pointHook2);
+        }
+    }
+
+    public Change(int description, Component component, double oldX, double oldY, double newX, double newY) {
+        this.description = description;
+        this.component = component;
+        this.componentId = component.getId();
+        this.componentName = component.getName();
         this.oldX = oldX;
         this.oldY = oldY;
         this.newX = newX;
         this.newY = newY;
     }
 
-    public int getId() {
-        return id;
+    public Change(int description, Component component, boolean oldState, boolean newState) {
+        this.description = description;
+        this.component = component;
+        this.componentId = component.getId();
+        this.componentName = component.getName();
+        this.oldState = oldState;
+        this.newState = newState;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void checkForArrayGate(Gate gate, int componentNumber, Line line) {
+
+        if (gate.getArrayListLinesOutput().contains(line)) {
+            if(componentNumber == 1) {
+                arrayListHook1 = gate.getArrayListLinesOutput();
+                pointHook1 = gate.getPointOutput();
+            }
+            else{
+                arrayListHook2 = gate.getArrayListLinesOutput();
+                pointHook2 = gate.getPointOutput();
+            }
+        } else {
+            for (int i = 0; i < gate.getArrayArrayListLines().length; i++) {
+                if (gate.getArrayArrayListLines()[i].contains(line)) {
+                    if(componentNumber == 1) {
+                        arrayListHook1 = gate.getArrayArrayListLines()[i];
+                        pointHook1 = gate.getArrayPointsInputs()[i];
+                    }
+                    else{
+                        arrayListHook2 = gate.getArrayArrayListLines()[i];
+                        pointHook2 = gate.getArrayPointsInputs()[i];
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    public void checkForArraySwitch(Switch sw, int componentNumber, Line line) {
+        if(componentNumber == 1) {
+            arrayListHook1 = sw.getArrayListLines();
+            pointHook1 = sw.getPointLineHook();
+        }
+        else{
+            arrayListHook2 = sw.getArrayListLines();
+            pointHook2 = sw.getPointLineHook();
+        }
+    }
+
+    public void checkForArrayFlipFlop(FlipFlop flipFlop, int componentNumber, Line line) {
+        if(flipFlop.getArrayListLinesOutput().contains(line)){
+            if(componentNumber == 1) {
+                arrayListHook1 = flipFlop.getArrayListLinesOutput();
+                pointHook1 = flipFlop.getPointOutput();
+            }
+            else{
+                arrayListHook2 = flipFlop.getArrayListLinesOutput();
+                pointHook2 = flipFlop.getPointOutput();
+            }
+        }
+        if(flipFlop.getArrayListLinesOutputReverted().contains(line)){
+            if(componentNumber == 1) {
+                arrayListHook1 = flipFlop.getArrayListLinesOutputReverted();
+                pointHook1 = flipFlop.getPointOutputReversed();
+            }
+            else{
+                arrayListHook2 = flipFlop.getArrayListLinesOutputReverted();
+                pointHook2 = flipFlop.getPointOutputReversed();
+            }
+        }
+        if(flipFlop.getArrayListLinesReset().contains(line)){
+            if(componentNumber == 1) {
+                arrayListHook1 = flipFlop.getArrayListLinesReset();
+                pointHook1 = flipFlop.getPointReset();
+            }
+            else{
+                arrayListHook2 = flipFlop.getArrayListLinesReset();
+                pointHook2 = flipFlop.getPointReset();
+            }
+        }
+        if(flipFlop.getArrayListLinesClock().contains(line)){
+            if(componentNumber == 1) {
+                arrayListHook1 = flipFlop.getArrayListLinesClock();
+                pointHook1 = flipFlop.getPointClock();
+            }
+            else{
+                arrayListHook2 = flipFlop.getArrayListLinesClock();
+                pointHook2 = flipFlop.getPointClock();
+            }
+        }
+        if(flipFlop.getArrayListLinesInput().contains(line)){
+            if(componentNumber == 1) {
+                arrayListHook1 = flipFlop.getArrayListLinesInput();
+                pointHook1 = flipFlop.getPointInput();
+            }
+            else{
+                arrayListHook2 = flipFlop.getArrayListLinesInput();
+                pointHook2 = flipFlop.getPointInput();
+            }
+        }
+        if(flipFlop.getName().equals(Names.flipFlopJK) && ((FlipFlopJK) flipFlop).getArrayListLinesInputK().contains(line)){
+            if(componentNumber == 1) {
+                arrayListHook1 = ((FlipFlopJK) flipFlop).getArrayListLinesInputK();
+                pointHook1 = ((FlipFlopJK) flipFlop).getPointInputK();
+            }
+            else{
+                arrayListHook2 = ((FlipFlopJK) flipFlop).getArrayListLinesInputK();
+                pointHook2 = ((FlipFlopJK) flipFlop).getPointInputK();
+            }
+        }
+    }
+
+    public void checkForArrayConnector(Connector con, int componentNumber, Line line) {
+        if(componentNumber == 1) {
+            arrayListHook1 = con.getArrayListLines();
+            pointHook1 = con.getPointCenter();
+        }
+        else{
+            arrayListHook2 = con.getArrayListLines();
+            pointHook2 = con.getPointCenter();
+        }
+    }
+
+    public void checkForArrayBulb(Bulb b, int componentNumber, Line line) {
+        if(componentNumber == 1) {
+            arrayListHook1 = b.getArrayListLines();
+            pointHook1 = b.getPointLineHook();
+        }
+        else{
+            arrayListHook2 = b.getArrayListLines();
+            pointHook2 = b.getPointLineHook();
+        }
     }
 
     public String getComponentName() {
@@ -58,12 +237,20 @@ public class Change {
         this.description = description;
     }
 
-    public boolean isState() {
-        return state;
+    public boolean isOldState() {
+        return oldState;
     }
 
-    public void setState(boolean state) {
-        this.state = state;
+    public void setOldState(boolean oldState) {
+        this.oldState = oldState;
+    }
+
+    public boolean isNewState() {
+        return newState;
+    }
+
+    public void setNewState(boolean newState) {
+        this.newState = newState;
     }
 
     public double getOldX() {

@@ -69,41 +69,8 @@ public abstract class Switch extends Component implements Serializable {
             rotation = 0;
         }
 
-        if(rotation == 0){
-            pointLineHook.setX(pointCenter.getX());
-            pointLineHook.setY(pointCenter.getY() - 35);
-            pointOutputXShift = 0;
-            pointOutputYShift = -35;
-        }
-        else if(rotation == 1){
-            pointLineHook.setX(pointCenter.getX() + 20);
-            pointLineHook.setY(pointCenter.getY());
-            pointOutputXShift = 20;
-            pointOutputYShift = 0;
-        }
-        else if(rotation == 2){
-            pointLineHook.setX(pointCenter.getX());
-            pointLineHook.setY(pointCenter.getY() + 35);
-            pointOutputXShift = 0;
-            pointOutputYShift = +35;
-        }
-        else{
-            pointLineHook.setX(pointCenter.getX() - 20);
-            pointLineHook.setY(pointCenter.getY());
-            pointOutputXShift = -20;
-            pointOutputYShift = 0;
-        }
+        movePoints();
 
-        for(Line l : arrayListLines){
-            if(l.getComponent1() != null && l.getComponent1().equals(this)){
-                l.setX1(pointLineHook.getX());
-                l.setY1(pointLineHook.getY());
-            }
-            else if(l.getComponent2() != null && l.getComponent2().equals(this)){
-                l.setX2(pointLineHook.getX());
-                l.setY2(pointLineHook.getY());
-            }
-        }
         stateChanged.set(true);
     }
 
@@ -149,12 +116,47 @@ public abstract class Switch extends Component implements Serializable {
         }
     }
 
+    public void movePoints(){
+        if(rotation == 0){
+            pointLineHook.setX(pointCenter.getX());
+            pointLineHook.setY(pointCenter.getY() - 35);
+            pointOutputXShift = 0;
+            pointOutputYShift = -35;
+        }
+        else if(rotation == 1){
+            pointLineHook.setX(pointCenter.getX() + 20);
+            pointLineHook.setY(pointCenter.getY());
+            pointOutputXShift = 20;
+            pointOutputYShift = 0;
+        }
+        else if(rotation == 2){
+            pointLineHook.setX(pointCenter.getX());
+            pointLineHook.setY(pointCenter.getY() + 35);
+            pointOutputXShift = 0;
+            pointOutputYShift = +35;
+        }
+        else{
+            pointLineHook.setX(pointCenter.getX() - 20);
+            pointLineHook.setY(pointCenter.getY());
+            pointOutputXShift = -20;
+            pointOutputYShift = 0;
+        }
+
+        for(Line l : arrayListLines){
+            if(l.getComponent1() != null && l.getComponent1().equals(this)){
+                l.setX1(pointLineHook.getX());
+                l.setY1(pointLineHook.getY());
+            }
+            else if(l.getComponent2() != null && l.getComponent2().equals(this)){
+                l.setX2(pointLineHook.getX());
+                l.setY2(pointLineHook.getY());
+            }
+        }
+    }
+
     public void invertState(){
         boolean bufferValue = output.get();
         output.set(!bufferValue);
-        for(Line l : arrayListLines){
-            l.setState(output.get());
-        }
         addDataToSeries();
     }
 

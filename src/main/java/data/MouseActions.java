@@ -33,8 +33,8 @@ public class MouseActions {
     private ArrayList<Component> arrayListAllCreatedComponents;
     private ArrayList<Component> arrayListDeletedComponents;
     private ArrayList<MovePoint> arrayListPointsCenter = new ArrayList<>();
-    private Stack<Change> stackUndoChanges = new Stack<>();
-    private Stack<Change> stackRedoChanges = new Stack<>();
+    private Stack<Change> stackUndoChanges;
+    private Stack<Change> stackRedoChanges;
     private Point pointMousePressed = new Point();
     private Point pointMouseMoved = new Point();
     private Point pointMouseReleased = new Point();
@@ -177,16 +177,14 @@ public class MouseActions {
             }
             for(Component c : arrayListAllCreatedComponents) {
                 if (c.getName().equals(Names.switchPulseName) && event.getButton() == MouseButton.SECONDARY && c.inside(x, y)) {
-                    stackRedoChanges.clear();
-                    stackUndoChanges.push(new Change(stackUndoChanges.size() + 1, c.getName(), c.getId(),
-                            4, c.isSignalOutput(), 0, 0, 0, 0));
                     ((SwitchPulse) c).setTurnedOn(!((SwitchPulse) c).isTurnedOn());
+                    stackRedoChanges.clear();
+                    stackUndoChanges.push(new Change(4, c, !c.isSignalOutput(), c.isSignalOutput()));
                 }
                 else if(c.getName().equals(Names.switchBistableName) && c.inside(x, y)){
-                    stackRedoChanges.clear();
-                    stackUndoChanges.push(new Change(stackUndoChanges.size() + 1, c.getName(), c.getId(),
-                            4, c.isSignalOutput(), 0, 0, 0, 0));
                     ((Switch)c).invertState();
+                    stackRedoChanges.clear();
+                    stackUndoChanges.push(new Change(4, c, !c.isSignalOutput(), c.isSignalOutput()));
                 }
             }
         }
@@ -210,18 +208,19 @@ public class MouseActions {
         double x = e.getX();
         double y = e.getY();
 
-        for(Component c : arrayListAllCreatedComponents) {
-            if (c.isSelectedForDrag() || (c.isSelected() && !mwc.isDraggedSelectionRectngle())) {
-                c.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY(), fitToCheck);
-            }
-        }
-        for(Line l : arrayListCreatedLines){
-            if(l.isSelectedForDrag() || (l.isSelected() && !mwc.isDraggedSelectionRectngle())){
-                if(shiftDown) {
-                    l.breakLine(x, y, fitToCheck);
+        if(e.getButton() == MouseButton.PRIMARY) {
+            for (Component c : arrayListAllCreatedComponents) {
+                if (c.isSelectedForDrag() || (c.isSelected() && !mwc.isDraggedSelectionRectngle())) {
+                    c.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY(), fitToCheck);
                 }
-                else{
-                    l.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY(), fitToCheck);
+            }
+            for (Line l : arrayListCreatedLines) {
+                if (l.isSelectedForDrag() || (l.isSelected() && !mwc.isDraggedSelectionRectngle())) {
+                    if (shiftDown) {
+                        l.breakLine(x, y, fitToCheck);
+                    } else {
+                        l.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY(), fitToCheck);
+                    }
                 }
             }
         }
@@ -331,14 +330,10 @@ public class MouseActions {
                 ((Switch)c).setState(false);
             }
             for(MovePoint mp : arrayListPointsCenter){
-                System.out.println("halo1");
                 if(c.getName().equals(mp.getComponentName()) && c.getId() == mp.getComponentId()){
-                    System.out.println("halo2");
                     if(c.getPointCenter().getX() != mp.getPoint().getX() || c.getPointCenter().getY() != mp.getPoint().getY()){
-                        System.out.println("halo3");
                         stackRedoChanges.clear();
-                        stackUndoChanges.push(new Change(stackUndoChanges.size() + 1, c.getName(), c.getId(), 3,
-                                c.isSignalOutput(), mp.getPoint().getX(), mp.getPoint().getY(), x, y));
+                        stackUndoChanges.push(new Change(3, c, mp.getPoint().getX(), mp.getPoint().getY(), x, y));
                     }
                     break;
                 }

@@ -70,6 +70,22 @@ public class FlipFlopJK extends FlipFlop implements Serializable {
         }
     }
 
+    public void movePoints(){
+        super.movePoints();
+        pointInputK.setX(pointCenter.getX() - 145);
+        pointInputK.setY(pointCenter.getY() + 75);
+
+        for (Line l : arrayListLinesInputK) {
+            if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                l.setX1(pointCenter.getX() - 145);
+                l.setY1(pointCenter.getY() + 75);
+            } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                l.setX2(pointCenter.getX() - 145);
+                l.setY2(pointCenter.getY() + 75);
+            }
+        }
+    }
+
     public void lifeCycle(){
         while(alive) {
             try{

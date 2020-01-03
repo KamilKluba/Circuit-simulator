@@ -29,6 +29,10 @@ public class SwitchMonostable extends Switch implements Serializable {
             rotation = 0;
         }
 
+       movePoints();
+    }
+
+    public void movePoints(){
         if(rotation == 0){
             pointLineHook.setX(pointCenter.getX());
             pointLineHook.setY(pointCenter.getY() + 35);
@@ -53,6 +57,7 @@ public class SwitchMonostable extends Switch implements Serializable {
             }
         }
     }
+
     @Override
     public void setState(boolean state){
         this.output.set(state);

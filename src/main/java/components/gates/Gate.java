@@ -79,6 +79,12 @@ public abstract class Gate extends Component {
             rotation = 0;
         }
 
+        movePoints();
+
+        stateChanged.set(true);
+    }
+
+    public void movePoints(){
         if(rotation == 0){
             rotatedInputX = -93;
             rotatedInputY = -30;
@@ -156,7 +162,6 @@ public abstract class Gate extends Component {
                 l.setY2(pointCenter.getY() + rotatedOutputY);
             }
         }
-        stateChanged.set(true);
     }
 
     public void draw(GraphicsContext graphicsContext){

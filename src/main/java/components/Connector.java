@@ -126,4 +126,15 @@ public class Connector extends Component implements Serializable {
         }
     }
 
+    public void movePoints(){
+        for (Line l : arrayListLines) {
+            if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                l.setX1(pointCenter.getX());
+                l.setY1(pointCenter.getY());
+            } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                l.setX2(pointCenter.getX());
+                l.setY2(pointCenter.getY());
+            }
+        }
+    }
 }

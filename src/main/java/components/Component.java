@@ -253,6 +253,7 @@ public abstract class Component implements Serializable {
     }
     public void rotate(){}
     public void move(double x, double y, double mousePressX, double mousePressY, boolean fitToCheck){};
+    public void movePoints(){};
 
     public int getId() {
         return id;
@@ -310,6 +311,10 @@ public abstract class Component implements Serializable {
 
     public Long getChartMillisCounter() {
         return chartMillisCounter;
+    }
+
+    public boolean isAlive() {
+        return alive;
     }
 }
 
