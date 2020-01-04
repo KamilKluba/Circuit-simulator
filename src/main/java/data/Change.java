@@ -9,7 +9,7 @@ import components.switches.Switch;
 import java.util.ArrayList;
 
 public class Change {
-    // 1 - creation, 2 - deletion, 3 - moving, 4 - changing state
+    // 1 - creation, 2 - deletion, 3 - moving, 4 - changing state, 5 - break on line, 6 - moved break point
     private int description;
     private Component component;
     private String componentName;
@@ -22,7 +22,7 @@ public class Change {
     private Component component2;
     private ArrayList<Line> arrayListHook2;
     private Point pointHook2;
-    //3
+    //3, 6
     private double oldX;
     private double oldY;
     private double newX;
@@ -30,6 +30,9 @@ public class Change {
     //4
     private boolean oldState;
     private boolean newState;
+    //5, 6
+    private Point pointBreak;
+    private int newPointIndex;
 
     public Change(int description, Component component) {
         this.description = description;
@@ -64,8 +67,6 @@ public class Change {
             } else if (component2.getName().contains(Names.connectorName)) {
                 checkForArrayConnector((Connector) component2,2, line);
             }
-
-            System.out.println(arrayListHook1 + " "  +arrayListHook2 + " " + pointHook1 + " " + pointHook2);
         }
     }
 
@@ -87,6 +88,35 @@ public class Change {
         this.componentName = component.getName();
         this.oldState = oldState;
         this.newState = newState;
+    }
+
+    public Change(int description, Component component, Point newBreakPoint, int newPointIndex) {
+        this.description = description;
+        this.component = component;
+        this.componentId = component.getId();
+        this.componentName = component.getName();
+        this.pointBreak = newBreakPoint;
+        this.newPointIndex = newPointIndex;
+    }
+
+    public Change(int description, Component component, Point oldPoint, Point newPoint){
+        this.description = description;
+        this.component = component;
+        this.componentId = component.getId();
+        this.componentName = component.getName();
+        this.pointBreak = newPoint;
+        this.oldX = oldPoint.getX();
+        this.oldY = oldPoint.getY();
+        this.newX = newPoint.getX();
+        this.newY = newPoint.getY();
+    }
+
+    public void restoreLine(){
+        Line line = (Line)component;
+        line.setComponent1(component1);
+        line.setComponent2(component2);
+        arrayListHook1.add(line);
+        arrayListHook2.add(line);
     }
 
     public void checkForArrayGate(Gate gate, int componentNumber, Line line) {
@@ -213,6 +243,14 @@ public class Change {
         }
     }
 
+    public Component getComponent() {
+        return component;
+    }
+
+    public void setComponent(Component component) {
+        this.component = component;
+    }
+
     public String getComponentName() {
         return componentName;
     }
@@ -283,5 +321,21 @@ public class Change {
 
     public void setNewY(double newY) {
         this.newY = newY;
+    }
+
+    public Point getPointBreak() {
+        return pointBreak;
+    }
+
+    public void setPointBreak(Point pointBreak) {
+        this.pointBreak = pointBreak;
+    }
+
+    public int getNewPointIndex() {
+        return newPointIndex;
+    }
+
+    public void setNewPointIndex(int newPointIndex) {
+        this.newPointIndex = newPointIndex;
     }
 }

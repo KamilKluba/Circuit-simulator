@@ -180,7 +180,6 @@ public abstract class FlipFlop extends Component implements Serializable {
     }
 
     public void movePoints(){
-
         pointInput.setX(pointCenter.getX() - 145);
         pointInput.setY(pointCenter.getY() - 75);
 

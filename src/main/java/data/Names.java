@@ -41,4 +41,6 @@ public class Names {
     public static String manualTitle = "Tytuł";
     public static String manualHeader = "Z tego okienka dowiesz się wszystkiego o tym programie.";
     public static String manualContent = "Aby wyjść wciśnij X";
+    public static String unsavedChangesTitle = "Niezapisane zmiany";
+    public static String unsavedChangesHeader = "Posiadasz niezapisane zmiany. Czy na pewno chcesz wyłączyć?";
 }

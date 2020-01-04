@@ -38,6 +38,11 @@ public class Bulb extends Component implements Serializable {
 
     public void lifeCycle(){
         while(alive){
+            repaintPoints++;
+            if (repaintPoints == 100) {
+                repaintPoints = 0;
+                movePoints();
+            }
             boolean nextState = arrayListLines.size() > 0 && arrayListLines.get(0).isSignalOutput();
 
             if(output.get() != nextState){

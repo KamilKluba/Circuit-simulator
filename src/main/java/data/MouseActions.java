@@ -45,6 +45,8 @@ public class MouseActions {
     private String newComponentName = null;
     private boolean fitToCheck = false;
     private boolean shiftDown = false;
+    private Point pointBreak;
+    private Point closePoint = null;
     
 
     public MouseActions(MainWindowController mwc){
@@ -180,11 +182,13 @@ public class MouseActions {
                     ((SwitchPulse) c).setTurnedOn(!((SwitchPulse) c).isTurnedOn());
                     stackRedoChanges.clear();
                     stackUndoChanges.push(new Change(4, c, !c.isSignalOutput(), c.isSignalOutput()));
+                    mwc.getMain().setUnsavedChanges(true);
                 }
                 else if(c.getName().equals(Names.switchBistableName) && c.inside(x, y)){
                     ((Switch)c).invertState();
                     stackRedoChanges.clear();
                     stackUndoChanges.push(new Change(4, c, !c.isSignalOutput(), c.isSignalOutput()));
+                    mwc.getMain().setUnsavedChanges(true);
                 }
             }
         }
@@ -282,17 +286,22 @@ public class MouseActions {
             l.selectForDrag(x, y);
             if(l.checkIfCouldBeSelected(x, y)) {
                 couldBeSelected = true;
-                Point closePoint = null;
                 for (Point p : l.getArrayListBreakPoints()) {
                     if (Math.sqrt(Math.pow(p.getX() - x, 2) + Math.pow(p.getY() - y, 2)) < Sizes.lineSelectDistance * 2) {
                         closePoint = p;
                         l.setClosePoint(p);
+                        pointBreak = new Point("Break", p.getX(), p.getY());
                     }
                 }
                 if (closePoint != null) {
                     l.setNewBreakPoint(closePoint);
                 } else {
-                    l.createNewBreakPoint(x, y);
+                    Point newBreakPoint = new Point("Break", x, y);
+                    int newPointIndex = l.createNewBreakPoint(newBreakPoint);
+                    if(newPointIndex > 0) {
+                        stackUndoChanges.push(new Change(5, l, newBreakPoint, newPointIndex));
+                        mwc.getMain().setUnsavedChanges(true);
+                    }
                 }
             }
         }
@@ -334,6 +343,7 @@ public class MouseActions {
                     if(c.getPointCenter().getX() != mp.getPoint().getX() || c.getPointCenter().getY() != mp.getPoint().getY()){
                         stackRedoChanges.clear();
                         stackUndoChanges.push(new Change(3, c, mp.getPoint().getX(), mp.getPoint().getY(), x, y));
+                        mwc.getMain().setUnsavedChanges(true);
                     }
                     break;
                 }
@@ -341,7 +351,14 @@ public class MouseActions {
         }
         for(Line l : arrayListCreatedLines){
             l.setSelectedForDrag(false);
-            l.setNewBreakPoint(null);
+            if(l.getNewBreakPoint() != null) {
+                if(closePoint != null) {
+                    stackUndoChanges.push(new Change(6, l, pointBreak, l.getNewBreakPoint()));
+                    mwc.getMain().setUnsavedChanges(true);
+                    closePoint = null;
+                }
+                l.setNewBreakPoint(null);
+            }
         }
 
         mwc.setMouseButton(null);

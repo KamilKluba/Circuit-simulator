@@ -35,6 +35,7 @@ public abstract class Component implements Serializable {
     protected transient XYChart.Series<Long, String> series;
     protected Long chartMillisCounter;
     private boolean addingDataToSeriesEnabled = true;
+    protected int repaintPoints = 0;
 
     public Component(){}
 

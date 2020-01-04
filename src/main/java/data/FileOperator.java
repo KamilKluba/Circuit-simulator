@@ -50,8 +50,11 @@ public class FileOperator {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Wybierz plik do załadowania");
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Pliki symulatora układów cyfrowych", "*.kksuc"));
-            saveFile = fileChooser.showOpenDialog(main.getPrimaryStage());
-            loadCircuit(saveFile);
+            File file  = fileChooser.showOpenDialog(main.getPrimaryStage());
+            if(file != null) {
+                saveFile = file;
+                loadCircuit(saveFile);
+            }
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -125,7 +128,6 @@ public class FileOperator {
                 if(!c.getName().equals(Names.lineName) || !c.getName().equals(Names.connectorName)) {
                     c.setAddingDataToSeriesEnabled(true);
                     c.setPictures();
-                    System.out.println(c.getName());
                     XYChart.Series<Long, String> newSeries = new XYChart.Series<>();
                     newSeries.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 0"));
                     newSeries.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 1"));
@@ -165,6 +167,8 @@ public class FileOperator {
 
             oos.close();
             fos.close();
+
+            mwc.getMain().setUnsavedChanges(false);
         }
         catch(Exception e){
             e.printStackTrace();

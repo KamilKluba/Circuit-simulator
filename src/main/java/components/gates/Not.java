@@ -34,6 +34,11 @@ public class Not extends Gate implements Serializable {
 
     public void lifeCycle() {
         while (alive) {
+            repaintPoints++;
+            if(repaintPoints == 100){
+                repaintPoints = 0;
+                movePoints();
+            }
             boolean nextState = arrayArrayListLines[0].size() > 0 && arrayArrayListLines[0].get(0).isSignalOutput();
 
             if (output.get() == nextState) {

@@ -305,8 +305,14 @@ public class Line extends Component implements Serializable {
         return false;
     }
 
-    public void createNewBreakPoint(double x, double y){
-        newBreakPoint = new Point("Break", x, y);
+    public int createNewBreakPoint(Point newBreakPoint){
+        this.newBreakPoint = newBreakPoint;
+        for(int i = 0; i < arrayListBreakPoints.size(); i++){
+            if(point2ToBreak.equals(arrayListBreakPoints.get(i))){
+                return i;
+            }
+        }
+        return -1;
     }
 
     public void breakLine(double x, double y, boolean fitToCheck){

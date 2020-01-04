@@ -108,24 +108,13 @@ public class ComponentCreator {
 
         if(change != null){
             String componentName = change.getComponentName();
-            int componentId = change.getComponentId();
-            Component component = null;
+            Component component = change.getComponent();
 
             switch (change.getDescription()) {
                 case 1:
                     if(undoChange) {
-                        for (Component c : arrayListAllCreatedComponents) {
-                            if (c.getName().equals(componentName) && c.getId() == componentId) {
-                                component = c;
-                            }
-                        }
                         if(componentName.contains(Names.lineName)) {
-                            for (Line l : arrayListCreatedLines) {
-                                if (l.getId() == componentId) {
-                                    component = l;
-                                    l.delete();
-                                }
-                            }
+                            ((Line)component).delete();
                         }
                         component.kill();
                         arrayListDeletedComponents.add(component);
@@ -138,14 +127,10 @@ public class ComponentCreator {
                         arrayListAllCreatedComponents.remove(component);
                     }
                     else{
-                        for (Component c : arrayListDeletedComponents) {
-                            if (c.getName().equals(componentName) && c.getId() == componentId) {
-                                component = c;
-                            }
-                        }
                         component.revive();
                         if(component.getName().contains(Names.lineName)) {
                             arrayListCreatedLines.add((Line) component);
+                            change.restoreLine();
                         }
                         else if(component.getName().contains(Names.gateSearchName)){
                             arrayListCreatedGates.add((Gate)component);
@@ -172,18 +157,16 @@ public class ComponentCreator {
                             arrayListAllCreatedComponents.add(component);
                         }
                         arrayListDeletedComponents.remove(component);
+                        component.setSelected(false);
+                        component.setSelectedForDrag(false);
                     }
                     break;
                 case 2:
                     if(undoChange) {
-                        for (Component c : arrayListDeletedComponents) {
-                            if (c.getName().equals(componentName) && c.getId() == componentId) {
-                                component = c;
-                            }
-                        }
                         component.revive();
                         if (component.getName().contains(Names.lineName)) {
                             arrayListCreatedLines.add((Line) component);
+                            change.restoreLine();
                         } else if (component.getName().contains(Names.gateSearchName)) {
                             arrayListCreatedGates.add((Gate) component);
                             arrayListCreatedEndComponents.add(component);
@@ -205,19 +188,12 @@ public class ComponentCreator {
                             arrayListAllCreatedComponents.add(component);
                         }
                         arrayListDeletedComponents.remove(component);
+                        component.setSelected(false);
+                        component.setSelectedForDrag(false);
                     }
                     else{
-                        for (Component c : arrayListAllCreatedComponents) {
-                            if (c.getName().equals(componentName) && c.getId() == componentId) {
-                                component = c;
-                            }
-                        }
                         if(componentName.contains(Names.lineName)) {
-                            for (Line l : arrayListCreatedLines) {
-                                if (l.getId() == componentId) {
-                                    component = l;
-                                }
-                            }
+                            ((Line)component).delete();
                         }
                         component.kill();
                         arrayListDeletedComponents.add(component);
@@ -231,11 +207,6 @@ public class ComponentCreator {
                     }
                     break;
                 case 3:
-                    for (Component c : arrayListAllCreatedComponents) {
-                        if (c.getName().equals(componentName) && c.getId() == componentId) {
-                            component = c;
-                        }
-                    }
                     if(undoChange){
                         component.getPointCenter().setX(change.getOldX());
                         component.getPointCenter().setY(change.getOldY());
@@ -247,16 +218,29 @@ public class ComponentCreator {
                     component.movePoints();
                     break;
                 case 4:
-                    for(Switch s : arrayListCreatedSwitches){
-                        if(s.getId() == componentId){
-                            if(undoChange) {
-                                s.setState(change.isOldState());
-                            }
-                            else{
-                                s.setState(change.isNewState());
-                            }
-                            break;
-                        }
+                    if(undoChange) {
+                        ((Switch)component).setState(change.isOldState());
+                    }
+                    else{
+                        ((Switch)component).setState(change.isNewState());
+                    }
+                    break;
+                case 5:
+                    if(undoChange){
+                        ((Line)change.getComponent()).getArrayListBreakPoints().remove(change.getPointBreak());
+                    }
+                    else{
+                        ((Line)change.getComponent()).getArrayListBreakPoints().add(change.getNewPointIndex(), change.getPointBreak());
+                    }
+                    break;
+                case 6:
+                    if(undoChange){
+                        change.getPointBreak().setX(change.getOldX());
+                        change.getPointBreak().setY(change.getOldY());
+                    }
+                    else{
+                        change.getPointBreak().setX(change.getNewX());
+                        change.getPointBreak().setY(change.getNewY());
                     }
             }
         }
@@ -423,6 +407,9 @@ public class ComponentCreator {
             lineChartStates.getData().remove(c.getSeries());
             arrayListDeletedComponents.add(c);
             stackUndoChanges.push(new Change(2, c));
+            mwc.getMain().setUnsavedChanges(true);
+            c.setSelected(false);
+            c.setSelectedForDrag(false);
         }
 
         for(Line l : arrayListCreatedLines){
@@ -568,6 +555,7 @@ public class ComponentCreator {
                 arrayListAllCreatedComponents.add(newComponent);
 
                 stackUndoChanges.add(new Change(1, newComponent));
+                mwc.getMain().setUnsavedChanges(true);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -769,6 +757,7 @@ public class ComponentCreator {
             arrayListCreatedLines.add(mwc.getLineBuffer());
             stackRedoChanges.clear();
             stackUndoChanges.push(new Change(1, mwc.getLineBuffer()));
+            mwc.getMain().setUnsavedChanges(true);
 
             for (Line l : arrayListCreatedLines) {
                 l.getArrayListVisitedLines().clear();

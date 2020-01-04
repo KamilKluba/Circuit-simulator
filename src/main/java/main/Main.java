@@ -1,13 +1,16 @@
 package main;
 
-import components.ZoomableScrollPaneWorkspace;
 import controllers.MainWindowController;
 import controllers.StartWindowController;
+import data.Names;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -15,7 +18,7 @@ import javafx.stage.WindowEvent;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Optional;
 
 public class Main extends Application {
     private StartWindowController startWindowController;
@@ -24,6 +27,7 @@ public class Main extends Application {
     private BorderPane borderPane;
     private Scene scene;
     private Stage primaryStage;
+    private boolean unsavedChanges = false;
 
 
     public static void main(String[] args) {
@@ -59,7 +63,20 @@ public class Main extends Application {
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
-                System.exit(0);
+                if(unsavedChanges){
+                    ButtonType confirmClose = new ButtonType("Tak", ButtonBar.ButtonData.OK_DONE);
+                    ButtonType discardClose = new ButtonType("Nie", ButtonBar.ButtonData.CANCEL_CLOSE);
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", confirmClose, discardClose);
+                    alert.setTitle(Names.unsavedChangesTitle);
+                    alert.setHeaderText(Names.unsavedChangesHeader);
+                    Optional<ButtonType> answer = alert.showAndWait();
+                    if(answer.get().getButtonData().isDefaultButton()){
+                        System.exit(0);
+                    }
+                    else{
+                        event.consume();
+                    }
+                }
             }
         });
         primaryStage.show();
@@ -98,5 +115,9 @@ public class Main extends Application {
 
     public Stage getPrimaryStage() {
         return primaryStage;
+    }
+
+    public void setUnsavedChanges(boolean unsavedChanges) {
+        this.unsavedChanges = unsavedChanges;
     }
 }
