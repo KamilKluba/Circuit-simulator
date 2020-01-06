@@ -19,7 +19,8 @@ public class FileOperator {
     private MainWindowController mwc;
     private Main main;
     private ComponentCreator componentCreator;
-    private ArrayList<Component> arrayListCreatedComponents;
+    private ArrayList<Component> arrayListCreatedEndComponents;
+    private ArrayList<Component> arrayListAllCreatedComponents;
     private ArrayList<Gate> arrayListCreatedGates;
     private ArrayList<Switch> arrayListCreatedSwitches;
     private ArrayList<FlipFlop> arrayListCreatedFlipFlops;
@@ -34,7 +35,8 @@ public class FileOperator {
         this.mwc = mwc;
         this.main = mwc.getMain();
         this.componentCreator = mwc.getComponentCreator();
-        this.arrayListCreatedComponents = mwc.getArrayListCreatedEndComponents();
+        this.arrayListCreatedEndComponents = mwc.getArrayListCreatedEndComponents();
+        this.arrayListAllCreatedComponents = mwc.getArrayListAllCreatedComponents();
         this.arrayListCreatedGates = mwc.getArrayListCreatedGates();
         this.arrayListCreatedSwitches = mwc.getArrayListCreatedSwitches();
         this.arrayListCreatedFlipFlops = mwc.getArrayListCreatedFlipFlops();
@@ -75,9 +77,12 @@ public class FileOperator {
             fileChooser.setTitle("Wybierz miejsce do zapisu");
             fileChooser.setInitialFileName("Schemat1 " + new SimpleDateFormat("hh.mm dd-MM-yyyy").format(new Date()));
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Pliki symulatora układów cyfrowych", "*.kksuc"));
-            saveFile = fileChooser.showSaveDialog(main.getPrimaryStage());
-            saveFile.createNewFile();
-            saveCircuit(saveFile);
+            File file = fileChooser.showSaveDialog(main.getPrimaryStage());
+            if(file != null) {
+                saveFile = file;
+                saveFile.createNewFile();
+                saveCircuit(saveFile);
+            }
         } catch(Exception e){
             e.printStackTrace();
         }
@@ -86,6 +91,22 @@ public class FileOperator {
     public void loadCircuit(File file){
         int i = 0;
         try{
+            arrayListCreatedEndComponents.clear();
+            arrayListAllCreatedComponents.clear();
+            arrayListCreatedGates.clear();
+            arrayListCreatedSwitches.clear();
+            arrayListCreatedFlipFlops.clear();
+            arrayListCreatedBulbs.clear();
+            arrayListCreatedLines.clear();
+            arrayListCreatedConnector.clear();
+            arrayListSeries.clear();
+            componentCreator.setGateCounter(0);
+            componentCreator.setSwitchCounter(0);
+            componentCreator.setFlipFlopCounter(0);
+            componentCreator.setBulbCounter(0);
+            componentCreator.setConnectorCounter(0);
+            componentCreator.setLineCounter(0);
+
             FileInputStream fis = new FileInputStream(file);
             ObjectInputStream ois = new ObjectInputStream(fis);
 
@@ -124,8 +145,8 @@ public class FileOperator {
                     componentCreator.setConnectorCounter(componentCreator.getConnectorCounter() + 1);
                     c.setId(componentCreator.getConnectorCounter());
                 }
-                c.setLife();
-                if(!c.getName().equals(Names.lineName) || !c.getName().equals(Names.connectorName)) {
+                c.revive();
+                if(!c.getName().equals(Names.lineName) && !c.getName().equals(Names.connectorName)) {
                     c.setAddingDataToSeriesEnabled(true);
                     c.setPictures();
                     XYChart.Series<Long, String> newSeries = new XYChart.Series<>();
@@ -138,9 +159,13 @@ public class FileOperator {
                     }
                     c.setSeriesWithTime(newSeries, componentCreator.getTimeStart());
                     arrayListSeries.add(newSeries);
-                    arrayListCreatedComponents.add(c);
+                    arrayListCreatedEndComponents.add(c);
                     lineChartStates.getData().add(newSeries);
                 }
+                if(!c.getName().equals(Names.lineName)){
+                    arrayListAllCreatedComponents.add(c);
+                }
+                mwc.getStackUndoChanges().push(new Change(1, c));
                 i++;
             }
 
@@ -158,7 +183,7 @@ public class FileOperator {
             FileOutputStream fos = new FileOutputStream(file);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
 
-            for(Component c : arrayListCreatedComponents){
+            for(Component c : arrayListAllCreatedComponents){
                 oos.writeObject(c);
             }
             for(Line l : arrayListCreatedLines){

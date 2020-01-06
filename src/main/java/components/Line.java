@@ -25,9 +25,9 @@ public class Line extends Component implements Serializable {
     private boolean lastState = false;
     private Component component1;
     private Component component2;
-    private SerializableColor color;
-    private SerializableColor selectionColor = new SerializableColor(0.459, 0, 0, 1);
-    private SerializableColor onColor = new SerializableColor(0, 0.8, 0.8, 1);
+    private SerializableColor color = new SerializableColor(Color.BLACK);
+    private SerializableColor selectionColor = new SerializableColor(new Color(0.459, 0, 0, 1));
+    private SerializableColor onColor = new SerializableColor(new Color(0, 0.8, 0.8, 1));
     private ArrayList<Component> arrayListDependentComponents = new ArrayList<>();
     private ArrayList<String> arrayListDependentComponentPin = new ArrayList<>();
     private ArrayList<Line> arrayListVisitedLines = new ArrayList<>();
@@ -48,12 +48,14 @@ public class Line extends Component implements Serializable {
     private boolean isUnderX2 = false;
     private boolean isUnderTheLine = false;
 
-    public Line(double x1, double y1, double x2, double y2, Component component1, Component component2, Color color) {
+    public Line(){
+    }
+
+    public Line(double x1, double y1, double x2, double y2, Component component1, Component component2) {
         this.point1 = new Point("Edge 1", x1, y1);
         this.point2 = new Point("Edge 2", x2, y2);
         this.component1 = component1;
         this.component2 = component2;
-        this.color = new SerializableColor(color);
         this.name = Names.lineName;
 
         arrayListBreakPoints.add(point1);
@@ -190,15 +192,6 @@ public class Line extends Component implements Serializable {
                         state.set(dependentComponentsState);
                     }
 
-                    if(state.get() != lastState) {
-                        lastState = state.get();
-                        if (state.get()) {
-                            color = onColor;
-                        } else {
-                            color = new SerializableColor(Color.BLACK);
-                        }
-                    }
-
                     Thread.sleep(Sizes.lineSleepTime);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -211,11 +204,6 @@ public class Line extends Component implements Serializable {
         this.state.set(state);
         if(state != lastState) {
             lastState = state;
-            if (state) {
-                color = new SerializableColor(0, 0.8, 0.8, 1);
-            } else {
-                color = new SerializableColor(Color.BLACK);
-            }
         }
     }
 
@@ -381,6 +369,10 @@ public class Line extends Component implements Serializable {
         if(selected) {
             graphicsContext.setStroke(selectionColor.getFXColor());
             graphicsContext.setFill(selectionColor.getFXColor());
+        }
+        else if(state.get()){
+            graphicsContext.setStroke(onColor.getFXColor());
+            graphicsContext.setFill(onColor.getFXColor());
         }
         else{
             graphicsContext.setStroke(color.getFXColor());

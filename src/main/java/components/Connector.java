@@ -51,7 +51,7 @@ public class Connector extends Component implements Serializable {
     }
 
     public void select(double x, double y) {
-        selected = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseGateXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseGateYShift);
+        selected = (Math.abs(x - this.pointCenter.getX()) <= 3 * Sizes.lineSelectDistance && Math.abs(y - pointCenter.getY()) <= 3 * Sizes.lineSelectDistance);
     }
 
     public void select(double x1, double y1, double x2, double y2){
@@ -59,15 +59,15 @@ public class Connector extends Component implements Serializable {
     }
 
     public boolean checkIfCouldBeSelected(double x, double y){
-        return (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseGateXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseGateYShift);
+        return (Math.abs(x - this.pointCenter.getX()) <= 3 * Sizes.lineSelectDistance && Math.abs(y - pointCenter.getY()) <= 3 * Sizes.lineSelectDistance);
     }
 
     public void selectForDrag(double x, double y){
-        selectedForDrag = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseGateXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseGateYShift);
+        selectedForDrag = (Math.abs(x - this.pointCenter.getX()) <= 3 * Sizes.lineSelectDistance && Math.abs(y - pointCenter.getY()) <= 3 * Sizes.lineSelectDistance);
     }
 
     public boolean inside(double x, double y){
-        return Math.abs(x - this.pointCenter.getX()) <= Sizes.baseGateXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseGateYShift;
+        return Math.abs(x - this.pointCenter.getX()) <= 3 * Sizes.lineSelectDistance && Math.abs(y - pointCenter.getY()) <= 3 * Sizes.lineSelectDistance;
     }
 
     public void draw(GraphicsContext graphicsContext){

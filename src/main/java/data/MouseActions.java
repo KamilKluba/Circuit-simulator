@@ -214,12 +214,12 @@ public class MouseActions {
 
         if(e.getButton() == MouseButton.PRIMARY) {
             for (Component c : arrayListAllCreatedComponents) {
-                if (c.isSelectedForDrag() || (c.isSelected() && !mwc.isDraggedSelectionRectngle())) {
+                if (c.isSelectedForDrag() || (c.isSelected() && !mwc.isDraggedSelectionRectangle())) {
                     c.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY(), fitToCheck);
                 }
             }
             for (Line l : arrayListCreatedLines) {
-                if (l.isSelectedForDrag() || (l.isSelected() && !mwc.isDraggedSelectionRectngle())) {
+                if (l.isSelectedForDrag() || (l.isSelected() && !mwc.isDraggedSelectionRectangle())) {
                     if (shiftDown) {
                         l.breakLine(x, y, fitToCheck);
                     } else {
@@ -320,7 +320,7 @@ public class MouseActions {
         }
 
         mwc.setMouseButton(e.getButton());
-        mwc.setDraggedSelectionRectngle(!couldBeSelected);
+        mwc.setDraggedSelectionRectangle(!couldBeSelected);
         mwc.repaintScreen();
     }
 
@@ -362,7 +362,7 @@ public class MouseActions {
         }
 
         mwc.setMouseButton(null);
-        mwc.setDraggedSelectionRectngle(false);
+        mwc.setDraggedSelectionRectangle(false);
         mwc.repaintScreen();
     }
 

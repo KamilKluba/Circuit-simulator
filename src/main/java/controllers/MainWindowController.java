@@ -37,6 +37,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.Main;
 import components.gates.and.And2;
@@ -99,7 +100,7 @@ public class MainWindowController {
     private boolean waitForComponent2 = false;
     private boolean waitForPlaceComponent = false;
     private boolean coveredError = false;
-    private boolean draggedSelectionRectngle = false;
+    private boolean draggedSelectionRectangle = false;
     private ComboBox<Point> comboBoxNewLineHook;
     private MouseActions mouseActions;
     private ComponentCreator componentCreator;
@@ -110,6 +111,8 @@ public class MainWindowController {
 
     private ZoomableScrollPaneWorkspace zoomableScrollPaneWorkspace;
     private ZoomableScrollPaneChart zoomableScrollPaneChart;
+
+    private Alert informationAlert = new Alert(Alert.AlertType.INFORMATION);
 
     @FXML
     public void initialize(){
@@ -231,6 +234,11 @@ public class MainWindowController {
         Executors.newFixedThreadPool(1).execute(() -> repaintThread());
 
         graphicsContext.setFont(new Font("Arial", 24));
+
+        informationAlert.setTitle(Names.manualTitle);
+        informationAlert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
+                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
+        informationAlert.initModality(Modality.NONE);
     }
 
     public void myInitialize(main.Main main){
@@ -256,15 +264,15 @@ public class MainWindowController {
 //        }).start();
         System.out.println("SWITCHES--------------------");
         for(Switch s : arrayListCreatedSwitches){
-            System.out.println(s.getId() + " " + s.isSignalOutput() + " " + s.isAlive());
+            System.out.println(s.getId() + " " + s.isSignalOutput() + " " + s.isAlive() + " " + s.getImageViewOff() + " " + s.getPointCenter().getX() + " " + s.getPointCenter().getY());
         }
         System.out.println("LINES--------------------");
         for(Line l : arrayListCreatedLines){
-            System.out.println(l.getId() + " " + l.isSignalOutput() + " " + l.isAlive());
+            System.out.println(l.getId() + " " + l.isSignalOutput() + " " + l.isAlive() + " " + l.getImageViewOff());
         }
         System.out.println("BULBS--------------------");
         for(Bulb b : arrayListCreatedBulbs){
-            System.out.println(b.getId() + " " + b.isSignalOutput() + " " + b.isAlive());
+            System.out.println(b.getId() + " " + b.isSignalOutput() + " " + b.isAlive() + " " + b.getImageViewOff() + " " + b.getPointCenter().getX() + " " + b.getPointCenter().getY());
         }
     }
 
@@ -353,7 +361,7 @@ public class MainWindowController {
             if (coveredError) {
                 mouseActions.drawCoverErrorSquares();
             }
-            if (draggedSelectionRectngle && mouseButton == MouseButton.PRIMARY){
+            if (draggedSelectionRectangle && mouseButton == MouseButton.PRIMARY){
                 mouseActions.drawSelectionRectangle();
             }
         });
@@ -503,6 +511,7 @@ public class MainWindowController {
 
     private void actionCanvasKeyTyped(String character){
         int charValue = character.getBytes()[0];
+        System.out.println(charValue);
 
         if(character.matches("[0-9]")){
             int index = Integer.parseInt(character);
@@ -513,11 +522,40 @@ public class MainWindowController {
                 tableViewComponents.getSelectionModel().clearSelection();
             }
         }
+        else if(character.matches("r") || character.matches("R")){
+            for(Component c : arrayListCreatedEndComponents){
+                if(c.isSelected()){
+                    c.rotate();
+                }
+            }
+        }
         else if(charValue == 26){
             componentCreator.revertChange(true);
         }
         else if(charValue == 25){
             componentCreator.revertChange(false);
+        }
+        else if(charValue == 19){
+            fileOperator.actionMenuItemSave();
+        }
+        else if(charValue == 15){
+            fileOperator.actionMenuItemLoad();
+        }
+        else if(charValue == 1){
+            for(Component c : arrayListAllCreatedComponents){
+                c.setSelected(true);
+            }
+            for(Line l : arrayListCreatedLines){
+                l.setSelected(true);
+            }
+        }
+        else if(charValue == 27){
+            for(Component c : arrayListAllCreatedComponents){
+                c.setSelected(false);
+            }
+            for(Line l : arrayListCreatedLines){
+                l.setSelected(false);
+            }
         }
 
         mouseActions.actionCanvasMouseMoved(mouseActions.getPointMouseMoved().getX(), mouseActions.getPointMouseMoved().getY());
@@ -556,7 +594,15 @@ public class MainWindowController {
         System.exit(0);
     }
 
-    public void actionChangeCanvasSize(){
+    public void actionMenuItemUndoChange(){
+        componentCreator.revertChange(true);
+    }
+
+    public void actionMenuItemRedoChange(){
+        componentCreator.revertChange(false);
+    }
+
+    public void actionMenuItemChangeCanvasSize(){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ChangeCanvasSizeWindow.fxml"));
             Pane pane = loader.load();
@@ -577,20 +623,82 @@ public class MainWindowController {
         }
     }
 
-    public void actionMenuItemManual(){
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(Names.manualTitle);
-        alert.setHeaderText(Names.manualHeader);
-        alert.setContentText(Names.manualContent);
-        alert.showAndWait();
-    }
-
     public void actionMenuItemAuthor(){
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(Names.aboutAuthorTitle);
         alert.setHeaderText(Names.aboutAuthorHeader);
         alert.setContentText(Names.aboutAuthorContent);
         alert.showAndWait();
+    }
+
+    public void actionMenuItemComponents(){
+        informationAlert.setHeaderText(Names.manualComponentsHeader);
+        informationAlert.setContentText(Names.manualComponentsContent);
+        informationAlert.show();
+        informationAlert.setWidth(600);
+    }
+
+    public void actionMenuItemGates(){
+        informationAlert.setHeaderText(Names.manualGatesHeader);
+        informationAlert.setContentText(Names.manualGatesContent);
+        informationAlert.show();
+        informationAlert.setWidth(600);
+    }
+
+    public void actionMenuItemSwitches(){
+
+    }
+
+    public void actionMenuItemFlipFlops(){
+
+    }
+
+    public void actionMenuItemBulbs(){
+
+    }
+
+    public void actionMenuItemConnectors(){
+
+    }
+
+    public void actionMenuItemLines(){
+
+    }
+
+    public void actionMenuItemWorkspace(){
+
+    }
+
+    public void actionMenuItemTimeCourses(){
+
+    }
+
+    public void actionMenuItemComponentsFilter(){
+
+    }
+
+    public void actionMenuItemRevertingChanges(){
+
+    }
+
+    public void actionMenuItemSavingCircuit(){
+
+    }
+
+    public void actionMenuItemKeyboardActions(){
+
+    }
+
+    public void actionMenuItemMouseActions(){
+
+    }
+
+    public void actionMenuItemErrors(){
+
+    }
+
+    public void actionMenuItemCreatingComponents(){
+
     }
 
     public void createComponentBuffer(String newComponentName){
@@ -789,12 +897,12 @@ public class MainWindowController {
         return fileOperator;
     }
 
-    public boolean isDraggedSelectionRectngle() {
-        return draggedSelectionRectngle;
+    public boolean isDraggedSelectionRectangle() {
+        return draggedSelectionRectangle;
     }
 
-    public void setDraggedSelectionRectngle(boolean draggedSelectionRectngle) {
-        this.draggedSelectionRectngle = draggedSelectionRectngle;
+    public void setDraggedSelectionRectangle(boolean draggedSelectionRectangle) {
+        this.draggedSelectionRectangle = draggedSelectionRectangle;
     }
 
     public MouseButton getMouseButton() {

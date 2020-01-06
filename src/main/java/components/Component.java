@@ -37,7 +37,8 @@ public abstract class Component implements Serializable {
     private boolean addingDataToSeriesEnabled = true;
     protected int repaintPoints = 0;
 
-    public Component(){}
+    public Component(){
+    }
 
     public Component(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         this.pointCenter = new Point("Center", x, y);
@@ -72,12 +73,10 @@ public abstract class Component implements Serializable {
     }
 
     public void revive() {
+        if(executorService == null){
+            executorService = Executors.newFixedThreadPool(1);
+        }
         alive = true;
-        executorService.execute(this::lifeCycle);
-    }
-
-    public void setLife(){
-        executorService = Executors.newFixedThreadPool(1);
         executorService.execute(this::lifeCycle);
     }
 
@@ -226,6 +225,12 @@ public abstract class Component implements Serializable {
             imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/flipflops/d_on.png").toExternalForm(), Sizes.baseFlipFlopXSize, Sizes.baseFlipFlopYSize, false, false));
             imageViewSelectedOn = new ImageView(new Image(getClass().getResource("/graphics/flipflops/d_selected.png").toExternalForm(), Sizes.baseFlipFlopXSize, Sizes.baseFlipFlopYSize, false, false));
         }
+        else if(name.equals(Names.bulbName)){
+            imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/bulb/bulb_off.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
+            imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/bulb/bulb_on.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
+            imageViewSelectedOn = new ImageView(new Image(getClass().getResource("/graphics/bulb/bulb_selected_on.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
+            imageViewSelectedOff = new ImageView(new Image(getClass().getResource("/graphics/bulb/bulb_selected_off.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
+        }
 
         for(int i = 0; i < rotation; i++){
             SnapshotParameters snapshotParameters = new SnapshotParameters();
@@ -316,6 +321,22 @@ public abstract class Component implements Serializable {
 
     public boolean isAlive() {
         return alive;
+    }
+
+    public ImageView getImageViewOff() {
+        return imageViewOff;
+    }
+
+    public ImageView getImageViewOn() {
+        return imageViewOn;
+    }
+
+    public ImageView getImageViewSelectedOff() {
+        return imageViewSelectedOff;
+    }
+
+    public ImageView getImageViewSelectedOn() {
+        return imageViewSelectedOn;
     }
 }
 

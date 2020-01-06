@@ -125,6 +125,7 @@ public class ComponentCreator {
                         arrayListCreatedConnectors.remove(component);
                         arrayListCreatedEndComponents.remove(component);
                         arrayListAllCreatedComponents.remove(component);
+                        arrayListSeries.remove(component.getSeries());
                     }
                     else{
                         component.revive();
@@ -156,6 +157,7 @@ public class ComponentCreator {
                             arrayListCreatedConnectors.add((Connector)component);
                             arrayListAllCreatedComponents.add(component);
                         }
+                        arrayListSeries.add(component.getSeries());
                         arrayListDeletedComponents.remove(component);
                         component.setSelected(false);
                         component.setSelectedForDrag(false);
@@ -187,6 +189,7 @@ public class ComponentCreator {
                             arrayListCreatedConnectors.add((Connector) component);
                             arrayListAllCreatedComponents.add(component);
                         }
+                        arrayListSeries.add(component.getSeries());
                         arrayListDeletedComponents.remove(component);
                         component.setSelected(false);
                         component.setSelectedForDrag(false);
@@ -204,6 +207,7 @@ public class ComponentCreator {
                         arrayListCreatedConnectors.remove(component);
                         arrayListCreatedEndComponents.remove(component);
                         arrayListAllCreatedComponents.remove(component);
+                        arrayListSeries.remove(component.getSeries());
                     }
                     break;
                 case 3:
@@ -622,17 +626,17 @@ public class ComponentCreator {
 
     private void chooseNewLineHook1(double x, double y, Gate g, Switch s, FlipFlop ff, Bulb b, Connector con, ComboBox<Point> comboBoxNewLineHook){
         if(s != null){
-            mwc.setLineBuffer(new Line(s.getPointLineHook().getX(), s.getPointLineHook().getY(), x, y, s, null, Color.BLACK));
+            mwc.setLineBuffer(new Line(s.getPointLineHook().getX(), s.getPointLineHook().getY(), x, y, s, null));
             s.getArrayListLines().add(mwc.getLineBuffer());
             mwc.getLineBuffer().setInput1IsOutput(true);
         }
         else if(b != null){
-            mwc.setLineBuffer(new Line(b.getPointLineHook().getX(), b.getPointLineHook().getY(), x, y, b, null, Color.BLACK));
+            mwc.setLineBuffer(new Line(b.getPointLineHook().getX(), b.getPointLineHook().getY(), x, y, b, null));
             b.getArrayListLines().add(mwc.getLineBuffer());
             mwc.getLineBuffer().setInput1IsOutput(false);
         }
         else if(con != null){
-            mwc.setLineBuffer(new Line(con.getPointCenter().getX(), con.getPointCenter().getY(), x, y, con, null, Color.BLACK));
+            mwc.setLineBuffer(new Line(con.getPointCenter().getX(), con.getPointCenter().getY(), x, y, con, null));
             con.getArrayListLines().add(mwc.getLineBuffer());
             mwc.getLineBuffer().setInput1IsOutput(false);
         }
@@ -641,7 +645,7 @@ public class ComponentCreator {
             String pointName = p.getName();
 
             if (g != null) {
-                mwc.setLineBuffer(new Line(p.getX(), p.getY(), x, y, g, null, Color.BLACK));
+                mwc.setLineBuffer(new Line(p.getX(), p.getY(), x, y, g, null));
                 if (pointName.contains("Output")) {
                     g.getArrayListLinesOutput().add(mwc.getLineBuffer());
                     mwc.getLineBuffer().setInput1IsOutput(true);
@@ -651,7 +655,7 @@ public class ComponentCreator {
                     mwc.getLineBuffer().setInput1IsOutput(false);
                 }
             } else if (ff != null) {
-                mwc.setLineBuffer(new Line(p.getX(), p.getY(), x, y, ff, null, Color.BLACK));
+                mwc.setLineBuffer(new Line(p.getX(), p.getY(), x, y, ff, null));
                 if (pointName.equals("Input") || pointName.equals("Input J")) {
                     ff.getArrayListLinesInput().add(mwc.getLineBuffer());
                     mwc.getLineBuffer().setInput1IsOutput(false);

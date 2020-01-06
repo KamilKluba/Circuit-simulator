@@ -89,15 +89,36 @@
           </Menu>
             <Menu mnemonicParsing="false" text="Edycja">
                <items>
-                  <MenuItem mnemonicParsing="false" onAction="#actionChangeCanvasSize" text="Zmień rozmiar pola roboczego" />
+                  <MenuItem mnemonicParsing="false" onAction="#actionMenuItemUndoChange" text="Cofnij zmianę" />
+                  <MenuItem mnemonicParsing="false" onAction="#actionMenuItemRedoChange" text="Powtórz zmianę" />
+                  <MenuItem mnemonicParsing="false" onAction="#actionMenuItemChangeCanvasSize" text="Zmień rozmiar pola roboczego" />
                </items>
             </Menu>
           <Menu mnemonicParsing="false" text="O programie">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#actionMenuItemManual" text="Instrukcja obsługi" />
                   <MenuItem fx:id="menuItemAuthor" mnemonicParsing="false" onAction="#actionMenuItemAuthor" text="Autor" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Instrukcja obsługi">
+              <items>
+                  <MenuItem mnemonicParsing="false" onAction="#actionMenuItemComponents" text="Komponenty" />
+                <MenuItem mnemonicParsing="false" onAction="#actionMenuItemGates" text="Bramki" />
+                  <MenuItem mnemonicParsing="false" onAction="#actionMenuItemSwitches" text="Przełączniki" />
+                  <MenuItem mnemonicParsing="false" onAction="#actionMenuItemFlipFlops" text="Przerzutniki" />
+                  <MenuItem mnemonicParsing="false" onAction="#actionMenuItemBulbs" text="Żarówki" />
+                  <MenuItem mnemonicParsing="false" onAction="#actionMenuItemConnectors" text="Łączniki" />
+                  <MenuItem mnemonicParsing="false" onAction="#actionMenuItemLines" text="Linie" />
+                  <MenuItem mnemonicParsing="false" onAction="#actionMenuItemWorkspace" text="Pole robocze" />
+                  <MenuItem mnemonicParsing="false" onAction="#actionMenuItemTimeCourses" text="Przebiegi czasowe" />
+                  <MenuItem mnemonicParsing="false" onAction="#actionMenuItemComponentsFilter" text="Filtrowaie komponetów" />
+                  <MenuItem mnemonicParsing="false" onAction="#actionMenuItemRevertingChanges" text="Cofanie/powtarzanie zmian" />
+                  <MenuItem mnemonicParsing="false" onAction="#actionMenuItemSavingCircuit" text="Zapisywanie/wczytywanie układu" />
+                  <MenuItem mnemonicParsing="false" onAction="#actionMenuItemKeyboardActions" text="Klawiatura" />
+                  <MenuItem mnemonicParsing="false" onAction="#actionMenuItemMouseActions" text="Mysz" />
+                  <MenuItem mnemonicParsing="false" onAction="#actionMenuItemErrors" text="Zgłaszanie błędów" />
+                  <MenuItem mnemonicParsing="false" onAction="#actionMenuItemCreatingComponents" text="Tworzenie komponentów" />
+              </items>
+            </Menu>
         </menus>
       </MenuBar>
    </top>
