@@ -30,9 +30,9 @@ public class Sizes {
     public static final double fitComponentPlace = 100;
     public static final double fitLinePlace = 10;
     public static final int lineSleepTime = 1;
-    public static final int gatePropagationTime = 5;
+    public static final int gatePropagationTime = 25;
     public static final int gateSleepTime = 1;
-    public static final int flipFlopPropagationTime = 10;
+    public static final int flipFlopPropagationTime = 50;
     public static final int flipFlopSleepTime = 1;
     public static final int switchPulseInterval = 500;
 }

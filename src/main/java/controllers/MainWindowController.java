@@ -37,6 +37,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.Main;
@@ -113,6 +114,7 @@ public class MainWindowController {
     private ZoomableScrollPaneChart zoomableScrollPaneChart;
 
     private Alert informationAlert = new Alert(Alert.AlertType.INFORMATION);
+    private Text textAlertContext = new Text();
 
     @FXML
     public void initialize(){
@@ -239,6 +241,7 @@ public class MainWindowController {
         informationAlert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
                 Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
         informationAlert.initModality(Modality.NONE);
+        textAlertContext.setWrappingWidth(500);
     }
 
     public void myInitialize(main.Main main){
@@ -633,20 +636,29 @@ public class MainWindowController {
 
     public void actionMenuItemComponents(){
         informationAlert.setHeaderText(Names.manualComponentsHeader);
-        informationAlert.setContentText(Names.manualComponentsContent);
-        informationAlert.show();
+        textAlertContext.setText(Names.manualComponentsContent);
+        textAlertContext.setWrappingWidth(500);
+        informationAlert.setContentText(textAlertContext.getText());
         informationAlert.setWidth(600);
+        informationAlert.show();
     }
 
     public void actionMenuItemGates(){
         informationAlert.setHeaderText(Names.manualGatesHeader);
-        informationAlert.setContentText(Names.manualGatesContent);
-        informationAlert.show();
+        textAlertContext.setText(Names.manualGatesContent);
+        textAlertContext.setWrappingWidth(500);
+        informationAlert.setContentText(textAlertContext.getText());
         informationAlert.setWidth(600);
+        informationAlert.show();
     }
 
     public void actionMenuItemSwitches(){
-
+        informationAlert.setHeaderText(Names.manualSwitchesHeader);
+        textAlertContext.setText(Names.manualSwitchesContent);
+        textAlertContext.setWrappingWidth(500);
+        informationAlert.setContentText(textAlertContext.getText());
+        informationAlert.setWidth(600);
+        informationAlert.show();
     }
 
     public void actionMenuItemFlipFlops(){
