@@ -220,11 +220,7 @@ public class MouseActions {
             }
             for (Line l : arrayListCreatedLines) {
                 if (l.isSelectedForDrag() || (l.isSelected() && !mwc.isDraggedSelectionRectangle())) {
-                    if (shiftDown) {
-                        l.breakLine(x, y, fitToCheck);
-                    } else {
-                        l.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY(), fitToCheck);
-                    }
+                    l.breakLine(x, y, fitToCheck);
                 }
             }
         }
@@ -286,7 +282,10 @@ public class MouseActions {
             l.selectForDrag(x, y);
             if(l.checkIfCouldBeSelected(x, y)) {
                 couldBeSelected = true;
-                for (Point p : l.getArrayListBreakPoints()) {
+                Point pointHook1 = l.getArrayListBreakPoints().get(0);
+                Point pointHook2 = l.getArrayListBreakPoints().get(l.getArrayListBreakPoints().size() - 1);
+                for (int i = 1; i < l.getArrayListBreakPoints().size() - 1; i++) {
+                    Point p = l.getArrayListBreakPoints().get(i);
                     if (Math.sqrt(Math.pow(p.getX() - x, 2) + Math.pow(p.getY() - y, 2)) < Sizes.lineSelectDistance * 2) {
                         closePoint = p;
                         l.setClosePoint(p);
@@ -295,7 +294,8 @@ public class MouseActions {
                 }
                 if (closePoint != null) {
                     l.setNewBreakPoint(closePoint);
-                } else {
+                } else if(Math.sqrt(Math.pow(pointHook1.getX() - x, 2) + Math.pow(pointHook1.getY() - y, 2)) > Sizes.lineSelectDistance * 4 &&
+                    Math.sqrt(Math.pow(pointHook2.getX() - x, 2) + Math.pow(pointHook2.getY() - y, 2)) > Sizes.lineSelectDistance * 4){
                     Point newBreakPoint = new Point("Break", x, y);
                     int newPointIndex = l.createNewBreakPoint(newBreakPoint);
                     if(newPointIndex > 0) {

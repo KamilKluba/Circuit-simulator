@@ -22,22 +22,6 @@ public abstract class Switch extends Component implements Serializable {
     public Switch(double x, double y, boolean startLife, XYChart.Series<Long, String> series, Long chartMillisCounter){
         super(x, y, startLife, series, chartMillisCounter);
         this.pointLineHook = new Point("Output", x, y - 35);
-        Executors.newFixedThreadPool(1).execute(this::repaintPoints);
-    }
-
-    public void revive(){
-        Executors.newFixedThreadPool(1).execute(this::repaintPoints);
-    }
-
-    public void repaintPoints(){
-        while(alive) {
-                movePoints();
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void select(double x, double y){

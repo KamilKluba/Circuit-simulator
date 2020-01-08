@@ -256,17 +256,25 @@ public class MainWindowController {
 //                }
 //            }
 //        }).start();
-        System.out.println("SWITCHES--------------------");
-        for(Switch s : arrayListCreatedSwitches){
-            System.out.println(s.getId() + " " + s.isSignalOutput() + " " + s.isAlive() + " " + s.getImageViewOff() + " " + s.getPointCenter().getX() + " " + s.getPointCenter().getY());
-        }
-        System.out.println("LINES--------------------");
+//        System.out.println("SWITCHES--------------------");
+//        for(Switch s : arrayListCreatedSwitches){
+//            System.out.println(s.getId() + " " + s.isSignalOutput() + " " + s.isAlive() + " " + s.getImageViewOff() + " " + s.getPointCenter().getX() + " " + s.getPointCenter().getY());
+//        }
+//        System.out.println("LINES--------------------");
+//        for(Line l : arrayListCreatedLines){
+//            System.out.println(l.getId() + " " + l.isSignalOutput() + " " + l.isAlive() + " " + l.getImageViewOff());
+//        }
+//        System.out.println("BULBS--------------------");
+//        for(Bulb b : arrayListCreatedBulbs){
+//            System.out.println(b.getId() + " " + b.isSignalOutput() + " " + b.isAlive() + " " + b.getImageViewOff() + " " + b.getPointCenter().getX() + " " + b.getPointCenter().getY());
+//        }
+        System.out.println("");
+        System.out.println("");
         for(Line l : arrayListCreatedLines){
-            System.out.println(l.getId() + " " + l.isSignalOutput() + " " + l.isAlive() + " " + l.getImageViewOff());
-        }
-        System.out.println("BULBS--------------------");
-        for(Bulb b : arrayListCreatedBulbs){
-            System.out.println(b.getId() + " " + b.isSignalOutput() + " " + b.isAlive() + " " + b.getImageViewOff() + " " + b.getPointCenter().getX() + " " + b.getPointCenter().getY());
+            System.out.println("LINE " + l.getId() + " ---------------------------------------------");
+            for(Point p : l.getArrayListBreakPoints()){
+                System.out.println(p.getName() + " " + (int)p.getX() + " " + (int)p.getY());
+            }
         }
     }
 

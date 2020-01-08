@@ -233,7 +233,6 @@ public class ComponentCreator {
                         component.getPointCenter().setX(change.getNewX());
                         component.getPointCenter().setY(change.getNewY());
                     }
-                    component.movePoints();
                     break;
                 case 4:
                     if(undoChange) {

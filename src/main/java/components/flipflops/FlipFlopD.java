@@ -32,11 +32,6 @@ public class FlipFlopD extends FlipFlop implements Serializable {
 
     public void lifeCycle(){
         while(alive) {
-            repaintPoints++;
-            if(repaintPoints == 100){
-                repaintPoints = 0;
-                movePoints();
-            }
             signalReset = !(arrayListLinesReset.size() > 0 && arrayListLinesReset.get(0).isSignalOutput());
             if (signalReset) {
                 output.set(false);

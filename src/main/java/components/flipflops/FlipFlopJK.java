@@ -88,11 +88,6 @@ public class FlipFlopJK extends FlipFlop implements Serializable {
 
     public void lifeCycle(){
         while(alive) {
-            repaintPoints++;
-            if(repaintPoints == 100){
-                repaintPoints = 0;
-                movePoints();
-            }
             try{
                 signalReset = !(arrayListLinesReset.size() > 0 && arrayListLinesReset.get(0).isSignalOutput());
                 if (signalReset) {

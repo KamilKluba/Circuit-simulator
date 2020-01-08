@@ -91,12 +91,10 @@ public class Names {
     public static String manualLinesHeader = "Linie";
     public static String manualLinesContent = "Linia jest elementem, której zadaniem jest łączenie ze sobą dwóch komponentów, oraz" +
             " przesyłanie między nimi sygnału, jeśli wejście danego komponentu do którego jest ona podłączona wysyła sygnał.\n" +
-            "Linia może zostać \"złamana\" poprzez przyciśnięcie klawisza Shift, a następnie przyciśnięcia LPM gdzieś na linii i" +
-            " przesunięcie myszy. Pozwala to na utrzymanie porządku na schemacie.\nW momencie, gdy chcesz usunąć złamanie na linii," +
-            " klikij na nie, a następnie przytrzymując klawisz Ctrl wciśnij Delete (bez wciśniętego klawisza Ctrl cała linia zostanie usunięta\n." +
-            "Podobnie wygląda sytaucja, gdy chcesz przenieść tylko jeden z punktów złamań: przyciśnij klawisz Shift, a następnie przyciskjaąc" +
-            " LPM na danym punkcie przesuń je myszką w dowolne miejsce (bez przyciśniętego klawisza Shift wszystkie punkty złamań zostaną" +
-            " przesunięte";
+            "Linia może zostać \"złamana\" poprzez przyciśnięcie LPM gdzieś na linii i przesunięcie myszy. Pozwala to na utrzymanie porządku " +
+            "na schemacie.\nW momencie, gdy chcesz usunąć złamanie na linii użyj kombnacji Ctrl + Z (zaraz po utworzeniu złamania), lub" +
+            " klikij na nie, a następnie przytrzymując klawisz Shift wciśnij Delete (bez wciśniętego klawisza Shift cała linia zostanie usunięta.\n" +
+            "Złamania na linii mogą być wyrównane do siatki, gdy podczas przenoszenia lub tworzenia ich przytrzymasz klawisz Ctrl.";
     public static String manualWorkspaceHeader = "Pole robocze";
     public static String manualWorkspaceContent = "Pole robocze jest określonych rozmiarów. Na słabszych komputerach, może powodować to" +
             " spowolnioną pracę programu. Aby temu zapobiec, wielkość pola roboczego może zostać zmieniona. Wystarczy wejść w menu Edycja >" +
@@ -140,7 +138,6 @@ public class Names {
             "Esc - odznaczenie wszystkich komponentów.\n" +
             "Ctrl - przy tworzeniu/przesuwaniu komponentów powoduje wyrównanie do siatki, przy scrollowaniu przebiegów czasowych" +
             " powoduje skalowanie osi X.\n" +
-            "Shift - Przy złamaniach liń powoduje wybranie konkretnego złamania.\n" +
             "Alt - przy scrollowaniu przebiegów czasowuch powoduje skalowanie osi Y.\n" +
             "Delete - usuwanie zaznaczonych komponentów.\n" +
             "R - powoduje obrót komponentu.";
