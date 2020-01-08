@@ -30,6 +30,7 @@ import components.switches.SwitchBistatble;
 import components.switches.SwitchMonostable;
 import components.switches.SwitchPulse;
 import controllers.MainWindowController;
+import javafx.collections.FXCollections;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
@@ -125,7 +126,10 @@ public class ComponentCreator {
                         arrayListCreatedConnectors.remove(component);
                         arrayListCreatedEndComponents.remove(component);
                         arrayListAllCreatedComponents.remove(component);
-                        arrayListSeries.remove(component.getSeries());
+                        if(!componentName.contains(Names.lineName) && !componentName.contains(Names.connectorName)) {
+                            arrayListSeries.remove(component.getSeries());
+                            lineChartStates.getData().remove(component.getSeries());
+                        }
                     }
                     else{
                         component.revive();
@@ -157,7 +161,10 @@ public class ComponentCreator {
                             arrayListCreatedConnectors.add((Connector)component);
                             arrayListAllCreatedComponents.add(component);
                         }
-                        arrayListSeries.add(component.getSeries());
+                        if(!componentName.contains(Names.lineName) && !componentName.contains(Names.connectorName)) {
+                            arrayListSeries.add(component.getSeries());
+                            lineChartStates.getData().add(component.getSeries());
+                        }
                         arrayListDeletedComponents.remove(component);
                         component.setSelected(false);
                         component.setSelectedForDrag(false);
@@ -189,7 +196,10 @@ public class ComponentCreator {
                             arrayListCreatedConnectors.add((Connector) component);
                             arrayListAllCreatedComponents.add(component);
                         }
-                        arrayListSeries.add(component.getSeries());
+                        if(!componentName.contains(Names.lineName) && !componentName.contains(Names.connectorName)) {
+                            arrayListSeries.add(component.getSeries());
+                            lineChartStates.getData().add(component.getSeries());
+                        }
                         arrayListDeletedComponents.remove(component);
                         component.setSelected(false);
                         component.setSelectedForDrag(false);
@@ -207,7 +217,11 @@ public class ComponentCreator {
                         arrayListCreatedConnectors.remove(component);
                         arrayListCreatedEndComponents.remove(component);
                         arrayListAllCreatedComponents.remove(component);
-                        arrayListSeries.remove(component.getSeries());
+
+                        if(!componentName.contains(Names.lineName) && !componentName.contains(Names.connectorName)) {
+                            arrayListSeries.remove(component.getSeries());
+                            lineChartStates.getData().remove(component.getSeries());
+                        }
                     }
                     break;
                 case 3:
@@ -304,6 +318,7 @@ public class ComponentCreator {
         ArrayList<Component> arrayListComponentsToDelete = new ArrayList<>();
         for (Line l : arrayListCreatedLines) {
             if (l.isSelected()) {
+                stackUndoChanges.push(new Change(2, l));
                 if(shiftDown){
                     l.getArrayListBreakPoints().remove(l.getClosePoint());
                     l.setClosePoint(null);
@@ -317,6 +332,7 @@ public class ComponentCreator {
 
         for (Gate g : arrayListCreatedGates) {
             if (g.isSelected()) {
+                stackUndoChanges.push(new Change(2, g));
                 while (g.getArrayListLinesOutput().size() > 0) {
                     arrayListComponentsToDelete.add(g.getArrayListLinesOutput().get(0));
                     g.getArrayListLinesOutput().get(0).delete();
@@ -333,6 +349,7 @@ public class ComponentCreator {
 
         for (Switch s : arrayListCreatedSwitches) {
             if (s.isSelected()) {
+                stackUndoChanges.push(new Change(2, s));
                 while (s.getArrayListLines().size() > 0) {
                     arrayListComponentsToDelete.add(s.getArrayListLines().get(0));
                     s.getArrayListLines().get(0).delete();
@@ -343,6 +360,7 @@ public class ComponentCreator {
 
         for (FlipFlop ff : arrayListCreatedFlipFlops) {
             if (ff.isSelected()) {
+                stackUndoChanges.push(new Change(2, ff));
                 while (ff.getArrayListLinesInput().size() > 0) {
                     arrayListComponentsToDelete.add(ff.getArrayListLinesInput().get(0));
                     ff.getArrayListLinesInput().get(0).delete();
@@ -379,6 +397,7 @@ public class ComponentCreator {
 
         for (Bulb b : arrayListCreatedBulbs) {
             if (b.isSelected()) {
+                stackUndoChanges.push(new Change(2, b));
                 while (b.getArrayListLines().size() > 0) {
                     arrayListComponentsToDelete.add(b.getArrayListLines().get(0));
                     b.getArrayListLines().get(0).delete();
@@ -389,6 +408,7 @@ public class ComponentCreator {
 
         for (Connector con : arrayListCreatedConnectors) {
             if (con.isSelected()) {
+                stackUndoChanges.push(new Change(2, con));
                 while (con.getArrayListLines().size() > 0) {
                     arrayListComponentsToDelete.add(con.getArrayListLines().get(0));
                     con.getArrayListLines().get(0).delete();
@@ -410,7 +430,6 @@ public class ComponentCreator {
             arrayListSeries.remove(c.getSeries());
             lineChartStates.getData().remove(c.getSeries());
             arrayListDeletedComponents.add(c);
-            stackUndoChanges.push(new Change(2, c));
             mwc.getMain().setUnsavedChanges(true);
             c.setSelected(false);
             c.setSelectedForDrag(false);

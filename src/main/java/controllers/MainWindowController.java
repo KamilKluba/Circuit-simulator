@@ -113,9 +113,6 @@ public class MainWindowController {
     private ZoomableScrollPaneWorkspace zoomableScrollPaneWorkspace;
     private ZoomableScrollPaneChart zoomableScrollPaneChart;
 
-    private Alert informationAlert = new Alert(Alert.AlertType.INFORMATION);
-    private Text textAlertContext = new Text();
-
     @FXML
     public void initialize(){
         arrayListPossibleComponents.add(new TableComponent("Line", 2,
@@ -236,12 +233,6 @@ public class MainWindowController {
         Executors.newFixedThreadPool(1).execute(() -> repaintThread());
 
         graphicsContext.setFont(new Font("Arial", 24));
-
-        informationAlert.setTitle(Names.manualTitle);
-        informationAlert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
-                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
-        informationAlert.initModality(Modality.NONE);
-        textAlertContext.setWrappingWidth(500);
     }
 
     public void myInitialize(main.Main main){
@@ -514,7 +505,6 @@ public class MainWindowController {
 
     private void actionCanvasKeyTyped(String character){
         int charValue = character.getBytes()[0];
-        System.out.println(charValue);
 
         if(character.matches("[0-9]")){
             int index = Integer.parseInt(character);
@@ -635,82 +625,195 @@ public class MainWindowController {
     }
 
     public void actionMenuItemComponents(){
-        informationAlert.setHeaderText(Names.manualComponentsHeader);
-        textAlertContext.setText(Names.manualComponentsContent);
-        textAlertContext.setWrappingWidth(500);
-        informationAlert.setContentText(textAlertContext.getText());
-        informationAlert.setWidth(600);
-        informationAlert.show();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Names.manualTitle);
+        alert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
+                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
+        alert.initModality(Modality.NONE);
+        alert.setHeaderText(Names.manualComponentsHeader);
+        alert.setContentText(Names.manualComponentsContent);
+        alert.show();
+        alert.setWidth(600);
     }
 
     public void actionMenuItemGates(){
-        informationAlert.setHeaderText(Names.manualGatesHeader);
-        textAlertContext.setText(Names.manualGatesContent);
-        textAlertContext.setWrappingWidth(500);
-        informationAlert.setContentText(textAlertContext.getText());
-        informationAlert.setWidth(600);
-        informationAlert.show();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Names.manualTitle);
+        alert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
+                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
+        alert.initModality(Modality.NONE);
+        alert.setHeaderText(Names.manualGatesHeader);
+        alert.setContentText(Names.manualGatesContent);
+        alert.show();
+        alert.setWidth(600);
     }
 
     public void actionMenuItemSwitches(){
-        informationAlert.setHeaderText(Names.manualSwitchesHeader);
-        textAlertContext.setText(Names.manualSwitchesContent);
-        textAlertContext.setWrappingWidth(500);
-        informationAlert.setContentText(textAlertContext.getText());
-        informationAlert.setWidth(600);
-        informationAlert.show();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Names.manualTitle);
+        alert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
+                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
+        alert.initModality(Modality.NONE);
+        alert.setHeaderText(Names.manualSwitchesHeader);
+        alert.setContentText(Names.manualSwitchesContent);
+        alert.show();
+        alert.setWidth(600);
     }
 
     public void actionMenuItemFlipFlops(){
-
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Names.manualTitle);
+        alert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
+                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
+        alert.initModality(Modality.NONE);
+        alert.setHeaderText(Names.manualFlipFlopsHeader);
+        alert.setContentText(Names.manualFlipFlopsContent);
+        alert.show();
+        alert.setWidth(600);
     }
 
     public void actionMenuItemBulbs(){
-
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Names.manualTitle);
+        alert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
+                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
+        alert.initModality(Modality.NONE);
+        alert.setHeaderText(Names.manualBulbsHeader);
+        alert.setContentText(Names.manualBulbsContent);
+        alert.show();
+        alert.setWidth(600);
     }
 
     public void actionMenuItemConnectors(){
-
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Names.manualTitle);
+        alert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
+                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
+        alert.initModality(Modality.NONE);
+        alert.setHeaderText(Names.manualConnectorsHeader);
+        alert.setContentText(Names.manualConnectorsContent);
+        alert.show();
+        alert.setWidth(600);
     }
 
     public void actionMenuItemLines(){
-
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Names.manualTitle);
+        alert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
+                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
+        alert.initModality(Modality.NONE);
+        alert.setHeaderText(Names.manualLinesHeader);
+        alert.setContentText(Names.manualLinesContent);
+        alert.show();
+        alert.setWidth(600);
     }
 
     public void actionMenuItemWorkspace(){
-
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Names.manualTitle);
+        alert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
+                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
+        alert.initModality(Modality.NONE);
+        alert.setHeaderText(Names.manualWorkspaceHeader);
+        alert.setContentText(Names.manualWorkspaceContent);
+        alert.show();
+        alert.setWidth(600);
     }
 
     public void actionMenuItemTimeCourses(){
-
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Names.manualTitle);
+        alert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
+                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
+        alert.initModality(Modality.NONE);
+        alert.setHeaderText(Names.manualTimeCoursesHeader);
+        alert.setContentText(Names.manualTimeCoursesContent);
+        alert.show();
+        alert.setWidth(600);
     }
 
     public void actionMenuItemComponentsFilter(){
-
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Names.manualTitle);
+        alert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
+                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
+        alert.initModality(Modality.NONE);
+        alert.setHeaderText(Names.manualComponentsFilterHeader);
+        alert.setContentText(Names.manualComponentsFilterContent);
+        alert.show();
+        alert.setWidth(600);
     }
 
     public void actionMenuItemRevertingChanges(){
-
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Names.manualTitle);
+        alert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
+                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
+        alert.initModality(Modality.NONE);
+        alert.setHeaderText(Names.manualRevertingChangesHeader);
+        alert.setContentText(Names.manualRevertingChangesContent);
+        alert.show();
+        alert.setWidth(600);
     }
 
     public void actionMenuItemSavingCircuit(){
-
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Names.manualTitle);
+        alert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
+                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
+        alert.initModality(Modality.NONE);
+        alert.setHeaderText(Names.manualSavingCircuitHeader);
+        alert.setContentText(Names.manualSavingCircuitContent);
+        alert.show();
+        alert.setWidth(600);
     }
 
     public void actionMenuItemKeyboardActions(){
-
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Names.manualTitle);
+        alert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
+                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
+        alert.initModality(Modality.NONE);
+        alert.setHeaderText(Names.manualKeyboardActionsHeader);
+        alert.setContentText(Names.manualKeyboardActionsContent);
+        alert.show();
+        alert.setWidth(600);
     }
 
     public void actionMenuItemMouseActions(){
-
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Names.manualTitle);
+        alert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
+                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
+        alert.initModality(Modality.NONE);
+        alert.setHeaderText(Names.manualMouseActionsHeader);
+        alert.setContentText(Names.manualMouseActionsContent);
+        alert.show();
+        alert.setWidth(600);
     }
 
     public void actionMenuItemErrors(){
-
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Names.manualTitle);
+        alert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
+                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
+        alert.initModality(Modality.NONE);
+        alert.setHeaderText(Names.manualErrorsHeader);
+        alert.setContentText(Names.manualErrorsContent);
+        alert.show();
+        alert.setWidth(600);
     }
 
     public void actionMenuItemCreatingComponents(){
-
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Names.manualTitle);
+        alert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
+                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
+        alert.initModality(Modality.NONE);
+        alert.setHeaderText(Names.manualCreatingComponentsHeader);
+        alert.setContentText(Names.manualCreatingComponentsContent);
+        alert.show();
+        alert.setWidth(600);
     }
 
     public void createComponentBuffer(String newComponentName){

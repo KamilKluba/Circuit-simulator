@@ -120,7 +120,6 @@ public class Change {
     }
 
     public void checkForArrayGate(Gate gate, int componentNumber, Line line) {
-
         if (gate.getArrayListLinesOutput().contains(line)) {
             if(componentNumber == 1) {
                 arrayListHook1 = gate.getArrayListLinesOutput();

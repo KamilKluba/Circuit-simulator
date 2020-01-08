@@ -173,9 +173,10 @@ public class FileOperator {
             fis.close();
         }
         catch (Exception e){
-            System.out.println("Koniec pliku, zaladowano " + i + " obiektow");
-            e.printStackTrace();
+//            System.out.println("Koniec pliku, zaladowano " + i + " obiektow");
+//            e.printStackTrace();
         }
+        mwc.repaintScreen();
     }
 
     public void saveCircuit(File file){

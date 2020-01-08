@@ -68,7 +68,7 @@ public class Names {
             "Przełącznik pulsacyjny - gdy jest włączony, to jego stan zmienia się określony kwant czasu. Gdy jest wyłączony" +
             " wysyła sygnał niski. Obrócenie przełącznika poprzez naciśnięcie klawisza R lub przycisku \"Obróć\" powoduje zmianę" +
             " położenia punktu, do którego przyczepiane są linie.";
-    public static String manualFipFlopsHeader = "Przerzutniki";
+    public static String manualFlipFlopsHeader = "Przerzutniki";
     public static String manualFlipFlopsContent = "Aplikacja pozwala na utworzenie trzech rodzajów przerzutników: D, T, oraz JK." +
             "Przerzutnik zmienia swój stan w momencie, gdy na wejściu \"Clock\" pojawi się styan wysoki. Stan ten zależy od" +
             "dotychczasowego stanu przerzutnika, oraz wartości sygnału na wejściu \"Input\".\n" +
