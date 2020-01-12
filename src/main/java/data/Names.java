@@ -37,10 +37,20 @@ public class Names {
     public static String pointInputName = "Input";
     public static String aboutAuthorTitle = "O autorze";
     public static String aboutAuthorHeader = "Praca inżynierska o wdzięcznej nazwie: Symulator układów cyfrowych";
-    public static String aboutAuthorContent = "Kamil Kluba 226016";
+    public static String aboutAuthorContent = "Kamil Kluba 226016\nv1.0";
     public static String unsavedChangesTitle = "Niezapisane zmiany";
     public static String unsavedChangesHeader = "Posiadasz niezapisane zmiany. Czy na pewno chcesz wyłączyć?";
     public static String manualTitle = "Instrukcja obsługi";
+    public static String manualCreatingComponentsHeader = "Tworzenie komponentów";
+    public static String manualCreatingComponentsContent = "Aby stworzyć komponent najpierw wybierz go w tabeli komponentów" +
+            " klikając na dany komponent LPM, lub przyciśnij któryś z klawiszy numerycznych, aby wybrać komponent o wartości" +
+            " wciśniętego klawisza (10 dla klawisza 0). Następnie umieść komponent gdzieś na schemacie. Gdy umieścisz go na już" +
+            " istniejącym komponencie komponent nie zostanie umieszczony, a wokół wszystkich komponentów pojawią się kwadraty" +
+            " sygnalizujące gdzie możesz je umieszczać (po umiejscowieniu możesz nasuwać komponenty na siebie, ale nie zaleca się" +
+            " tego robić ze względu na przejrzystość schematu. Dlatego to zabezpieczenie działa tylko przy tworzeniu).\n" +
+            "Utworzony komponent (o ile nie jest łącznikiem lub linią) dostanie swój identyfikator dla danej grupy komponentów," +
+            " a na wykresie przebiegów czasowych pojawi się nowa seria utworzona specjalnie dla niego.\nPodczas tworzenia" +
+            " komponentu możesz także przytrzymać klawisz Ctrl co sprawi, że komponent zostanie wyrównany do siatki.";
     public static String manualComponentsHeader = "Komponenty";
     public static String manualComponentsContent = "Aplikacja pozwala na budowę układów cyfrowych z podstawowych komponentów" +
             " używanych na kursie Logiki Układów Cyfrowych. Wszystkie komponenty (nie licząc liń, które opiszę w osobnym podpunkcie)" +
@@ -150,13 +160,4 @@ public class Names {
     public static String manualErrorsHeader = "Zgłaszanie błędów";
     public static String manualErrorsContent = "Znalazłeś błąd? Napisz do mnie na:\n226016@student.pwr.edu.pl\ntytułując maila" +
             " Symulator Układów Cyfrowych - błąd, a w treści opisz mi co to za błąd i jak do niego doprowadzić.";
-    public static String manualCreatingComponentsHeader = "Tworzenie komponentów";
-    public static String manualCreatingComponentsContent = "Aby stworzyć komponent najpierw wybierz go w tabeli komponentów" +
-            " klikając na dany komponent LPM, lub przyciśnij któryś z klawiszy numerycznych, aby wybrać komponent o wartości" +
-            " wciśniętego klawisza (10 dla klawisza 0). Następnie umieść komponent gdzieś na schemacie. Gdy umieścisz go na już" +
-            " istniejącym komponencie komponent nie zostanie umieszczony, a wokół wszystkich komponentów pojawią się kwadraty" +
-            " sygnalizujące gdzie możesz je umieszczać (po umiejscowieniu możesz nasuwać komponenty na siebie, ale nie zaleca się" +
-            " tego robić ze względu na przejrzystość schematu. Dlatego to zabezpieczenie działa tylko przy tworzeniu).\n" +
-            "Utworzony komponent (o ile nie jest łącznikiem lub linią) dostanie swój identyfikator dla danej grupy komponentów," +
-            " a na wykresie przebiegów czasowych pojawi się nowa seria utworzona specjalnie dla niego.";
 }

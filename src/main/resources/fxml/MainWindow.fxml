@@ -63,7 +63,7 @@
                </children></AnchorPane>
             <ScrollPane fx:id="scrollPaneChart" prefHeight="150.0" vbarPolicy="ALWAYS">
                <content>
-                  <LineChart fx:id="lineChartStates" prefHeight="500.0" prefWidth="1024.0" stylesheets="@../css/styles.css">
+                  <LineChart fx:id="lineChartStates" animated="false" createSymbols="false" legendVisible="false" prefHeight="500.0" prefWidth="1024.0" stylesheets="@../css/styles.css">
                     <xAxis>
                       <NumberAxis side="BOTTOM" />
                     </xAxis>
@@ -101,6 +101,7 @@
           </Menu>
             <Menu mnemonicParsing="false" text="Instrukcja obsługi">
               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#actionMenuItemCreatingComponents" text="Tworzenie komponentów" />
                   <MenuItem mnemonicParsing="false" onAction="#actionMenuItemComponents" text="Komponenty" />
                 <MenuItem mnemonicParsing="false" onAction="#actionMenuItemGates" text="Bramki" />
                   <MenuItem mnemonicParsing="false" onAction="#actionMenuItemSwitches" text="Przełączniki" />
@@ -116,7 +117,6 @@
                   <MenuItem mnemonicParsing="false" onAction="#actionMenuItemKeyboardActions" text="Klawiatura" />
                   <MenuItem mnemonicParsing="false" onAction="#actionMenuItemMouseActions" text="Mysz" />
                   <MenuItem mnemonicParsing="false" onAction="#actionMenuItemErrors" text="Zgłaszanie błędów" />
-                  <MenuItem mnemonicParsing="false" onAction="#actionMenuItemCreatingComponents" text="Tworzenie komponentów" />
               </items>
             </Menu>
         </menus>

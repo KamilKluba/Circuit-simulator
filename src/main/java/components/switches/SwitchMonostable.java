@@ -29,7 +29,8 @@ public class SwitchMonostable extends Switch implements Serializable {
             rotation = 0;
         }
 
-       movePoints();
+        movePoints();
+        stateChanged.set(true);
     }
 
     public void movePoints(){

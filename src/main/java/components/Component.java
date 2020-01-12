@@ -54,15 +54,11 @@ public abstract class Component implements Serializable {
         if(addingDataToSeriesEnabled) {
             Platform.runLater(() -> {
                 if (output.get()) {
-                    series.getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - chartMillisCounter, name + " " + id + ": 0"));
-                    if (series.getData().size() > 3) {
-                        series.getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - chartMillisCounter, name + " " + id + ": 1"));
-                    }
+                    series.getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - chartMillisCounter, name + "   " + id + ":   0"));
+                    series.getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - chartMillisCounter, name + "   " + id + ":   1"));
                 } else {
-                    series.getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - chartMillisCounter, name + " " + id + ": 1"));
-                    if (series.getData().size() > 3) {
-                        series.getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - chartMillisCounter, name + " " + id + ": 0"));
-                    }
+                    series.getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - chartMillisCounter, name + "   " + id + ":   1"));
+                    series.getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - chartMillisCounter, name + "   " + id + ":   0"));
                 }
             });
         }
@@ -254,9 +250,6 @@ public abstract class Component implements Serializable {
     }
     public void draw(GraphicsContext graphicsContext){}
     public void selectForDrag(double x, double y){}
-    public boolean inside(double x, double y){
-        return false;
-    }
     public void rotate(){}
     public void move(double x, double y, double mousePressX, double mousePressY, boolean fitToCheck){};
     public void movePoints(){};

@@ -160,15 +160,21 @@ public class MouseActions {
             }
 
             if(button == MouseButton.PRIMARY) {
-                for (Component c : arrayListCreatedEndComponents) {
+                for (Component c : arrayListAllCreatedComponents) {
+                    boolean selected = c.isSelected();
                     c.select(x, y);
+                    if(shiftDown && selected){
+                        c.setSelected(true);
+                    }
                 }
                 for (Line l : arrayListCreatedLines) {
+                    boolean selected = l.isSelected();
                     l.select(x, y);
+                    if(shiftDown && selected){
+                        l.setSelected(true);
+                    }
                 }
-                for (Connector con : arrayListCreatedConnectors){
-                    con.select(x, y);
-                }
+
             }
             mwc.setCoveredError(false);
         }
@@ -178,13 +184,13 @@ public class MouseActions {
                 System.out.println("Turning on switch monostable");
             }
             for(Component c : arrayListAllCreatedComponents) {
-                if (c.getName().equals(Names.switchPulseName) && event.getButton() == MouseButton.SECONDARY && c.inside(x, y)) {
+                if (c.getName().equals(Names.switchPulseName) && event.getButton() == MouseButton.SECONDARY && c.checkIfCouldBeSelected(x, y)) {
                     ((SwitchPulse) c).setTurnedOn(!((SwitchPulse) c).isTurnedOn());
                     stackRedoChanges.clear();
                     stackUndoChanges.push(new Change(4, c, !c.isSignalOutput(), c.isSignalOutput()));
                     mwc.getMain().setUnsavedChanges(true);
                 }
-                else if(c.getName().equals(Names.switchBistableName) && c.inside(x, y)){
+                else if(c.getName().equals(Names.switchBistableName) && c.checkIfCouldBeSelected(x, y)){
                     ((Switch)c).invertState();
                     stackRedoChanges.clear();
                     stackUndoChanges.push(new Change(4, c, !c.isSignalOutput(), c.isSignalOutput()));
@@ -203,6 +209,7 @@ public class MouseActions {
             mwc.setLineBuffer(null);
             mwc.setWaitForComponent2(false);
             mwc.setWaitForPlaceComponent(false);
+            mwc.setRotationCounter(0);
             tableViewComponents.getSelectionModel().clearSelection();
         }
         mwc.repaintScreen();
@@ -245,10 +252,18 @@ public class MouseActions {
             }
 
             for (Line l : arrayListCreatedLines) {
+                boolean selected = l.isSelected();
                 l.select(x1, y1, x2, y2);
+                if(shiftDown && selected){
+                    l.setSelected(true);
+                }
             }
             for (Component c : arrayListAllCreatedComponents) {
+                boolean selected = c.isSelected();
                 c.select(x1, y1, x2, y2);
+                if(shiftDown && selected){
+                    c.setSelected(true);
+                }
             }
         }
         mwc.repaintScreen();
@@ -309,7 +324,7 @@ public class MouseActions {
             if(c.checkIfCouldBeSelected(x, y)){
                 couldBeSelected = true;
             }
-            if(c.inside(x, y)){
+            if(c.checkIfCouldBeSelected(x, y)){
                 c.selectForDrag(x, y);
                 if(c.getName().equals(Names.switchMonostableName) && e.getButton() == MouseButton.SECONDARY){
                     ((Switch)c).setState(true);
@@ -335,7 +350,7 @@ public class MouseActions {
 
         for(Component c : arrayListAllCreatedComponents){
             c.setSelectedForDrag(false);
-            if(c.getName().equals(Names.switchMonostableName)){
+            if(c.getName().equals(Names.switchMonostableName) && c.isSignalOutput()){
                 ((Switch)c).setState(false);
             }
             for(MovePoint mp : arrayListPointsCenter){

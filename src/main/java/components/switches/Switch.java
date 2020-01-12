@@ -25,11 +25,11 @@ public abstract class Switch extends Component implements Serializable {
     }
 
     public void select(double x, double y){
-        selected = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseSwitchXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseSwitchYShift);
+        selected = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseSwitchSelect && Math.abs(y - pointCenter.getY()) <= Sizes.baseSwitchSelect);
     }
 
     public boolean checkIfCouldBeSelected(double x, double y){
-        return (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseSwitchXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseSwitchYShift);
+        return (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseSwitchSelect && Math.abs(y - pointCenter.getY()) <= Sizes.baseSwitchSelect);
     }
 
     public void select(double x1, double y1, double x2, double y2){
@@ -57,11 +57,7 @@ public abstract class Switch extends Component implements Serializable {
     }
 
     public void selectForDrag(double x, double y){
-        selectedForDrag = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseGateXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseGateYShift);
-    }
-
-    public boolean inside(double x, double y){
-        return Math.abs(x - this.pointCenter.getX()) <= Sizes.baseSwitchXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseSwitchYShift;
+        selectedForDrag = checkIfCouldBeSelected(x, y);
     }
 
     public void rotate(){

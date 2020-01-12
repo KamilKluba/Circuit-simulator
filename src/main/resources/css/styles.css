@@ -37,3 +37,11 @@
 .chart-series-line{
     -fx-stroke: #000000;
 }
+
+.combo-box{
+    -fx-font-size: 30;
+}
+
+.combo-box-popup{
+    -fx-font-size: 15;
+}

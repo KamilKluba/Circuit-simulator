@@ -4,6 +4,7 @@ import components.flipflops.FlipFlop;
 import components.flipflops.FlipFlopJK;
 import components.gates.Gate;
 import components.switches.Switch;
+import data.DependentFlipFlopOutput;
 import data.Names;
 import data.SerializableColor;
 import data.Sizes;
@@ -31,6 +32,7 @@ public class Line extends Component implements Serializable {
     private ArrayList<Component> arrayListDependentComponents = new ArrayList<>();
     private ArrayList<String> arrayListDependentComponentPin = new ArrayList<>();
     private ArrayList<Line> arrayListVisitedLines = new ArrayList<>();
+    private ArrayList<DependentFlipFlopOutput> arrayListDependentFlipFlopOutput = new ArrayList<>();
     private ArrayList<Point> arrayListBreakPoints = new ArrayList<>();
     private Point point1ToBreak;
     private Point point2ToBreak;
@@ -62,47 +64,47 @@ public class Line extends Component implements Serializable {
         arrayListBreakPoints.add(point2);
     }
 
-    public void checkForSignals(ArrayList<Component> arrayListDependentComponents, ArrayList<Line> arrayListVisitedLines) {
+    public void checkForSignals(Line line, ArrayList<Component> arrayListDependentComponents, ArrayList<Line> arrayListVisitedLines) {
         if (!arrayListVisitedLines.contains(this)) { //2
             arrayListVisitedLines.add(this);
             if (component1.getName().contains(Names.gateSearchName)) {
-                checkForSignalsGate((Gate) component1, arrayListDependentComponents, arrayListVisitedLines);
+                checkForSignalsGate(line, (Gate) component1, arrayListDependentComponents, arrayListVisitedLines);
             } else if (component1.getName().contains(Names.switchSearchName)) {
-                checkForSignalsSwitch((Switch) component1, arrayListDependentComponents, arrayListVisitedLines);
+                checkForSignalsSwitch(line, (Switch) component1, arrayListDependentComponents, arrayListVisitedLines);
             } else if (component1.getName().contains(Names.flipFlopSearchName)) {
-                checkForSignalsFlipFlop((FlipFlop) component1, arrayListDependentComponents, arrayListVisitedLines);
+                checkForSignalsFlipFlop(line, (FlipFlop) component1, arrayListDependentComponents, arrayListVisitedLines);
             } else if (component1.getName().contains(Names.bulbName)) {
-                checkForSignalsBulb((Bulb) component1, arrayListDependentComponents, arrayListVisitedLines);
+                checkForSignalsBulb(line, (Bulb) component1, arrayListDependentComponents, arrayListVisitedLines);
             } else if (component1.getName().contains(Names.connectorName)) {
-                checkForSignalsConnector((Connector) component1, arrayListDependentComponents, arrayListVisitedLines);
+                checkForSignalsConnector(line, (Connector) component1, arrayListDependentComponents, arrayListVisitedLines);
             }
             if (component2.getName().contains(Names.gateSearchName)) {
-                checkForSignalsGate((Gate) component2, arrayListDependentComponents, arrayListVisitedLines);
+                checkForSignalsGate(line, (Gate) component2, arrayListDependentComponents, arrayListVisitedLines);
             } else if (component2.getName().contains(Names.switchSearchName)) {
-                checkForSignalsSwitch((Switch) component2, arrayListDependentComponents, arrayListVisitedLines);
+                checkForSignalsSwitch(line, (Switch) component2, arrayListDependentComponents, arrayListVisitedLines);
             } else if (component2.getName().contains(Names.flipFlopSearchName)) {
-                checkForSignalsFlipFlop((FlipFlop) component2, arrayListDependentComponents, arrayListVisitedLines);
+                checkForSignalsFlipFlop(line, (FlipFlop) component2, arrayListDependentComponents, arrayListVisitedLines);
             } else if (component2.getName().contains(Names.bulbName)) {
-                checkForSignalsBulb((Bulb) component2, arrayListDependentComponents, arrayListVisitedLines);
+                checkForSignalsBulb(line, (Bulb) component2, arrayListDependentComponents, arrayListVisitedLines);
             } else if (component2.getName().contains(Names.connectorName)) {
-                checkForSignalsConnector((Connector) component2, arrayListDependentComponents, arrayListVisitedLines);
+                checkForSignalsConnector(line, (Connector) component2, arrayListDependentComponents, arrayListVisitedLines);
             }
         }
     }
 
-    public void checkForSignalsGate(Gate gate, ArrayList<Component> arrayListDependentComponents, ArrayList<Line> arrayListVisitedLines) {
+    public void checkForSignalsGate(Line line, Gate gate, ArrayList<Component> arrayListDependentComponents, ArrayList<Line> arrayListVisitedLines) {
         if (gate.getArrayListLinesOutput().contains(this)) {
             if(!arrayListDependentComponents.contains(gate)) {
                 arrayListDependentComponents.add(gate);
             }
             for (Line l : gate.getArrayListLinesOutput()) { //3
-                l.checkForSignals(arrayListDependentComponents, arrayListVisitedLines);
+                l.checkForSignals(line, arrayListDependentComponents, arrayListVisitedLines);
             }
         } else {
             for (int i = 0; i < gate.getArrayArrayListLines().length; i++) {
                 if (gate.getArrayArrayListLines()[i].contains(this)) {
                     for (Line l : gate.getArrayArrayListLines()[i]) { //3
-                        l.checkForSignals(arrayListDependentComponents, arrayListVisitedLines);
+                        l.checkForSignals(line, arrayListDependentComponents, arrayListVisitedLines);
                     }
                     break;
                 }
@@ -110,63 +112,69 @@ public class Line extends Component implements Serializable {
         }
     }
 
-    public void checkForSignalsSwitch(Switch sw, ArrayList<Component> arrayListDependentComponents, ArrayList<Line> arrayListVisitedLines) {
+    public void checkForSignalsSwitch(Line line, Switch sw, ArrayList<Component> arrayListDependentComponents, ArrayList<Line> arrayListVisitedLines) {
         if(!arrayListDependentComponents.contains(sw)) {
             arrayListDependentComponents.add(sw);
         }
         for(Line l : sw.getArrayListLines()){
-            l.checkForSignals(arrayListDependentComponents, arrayListVisitedLines);
+            l.checkForSignals(line, arrayListDependentComponents, arrayListVisitedLines);
         }
     }
 
-    public void checkForSignalsFlipFlop(FlipFlop flipFlop, ArrayList<Component> arrayListDependentComponents, ArrayList<Line> arrayListVisitedLines) {
+    public void checkForSignalsFlipFlop(Line line, FlipFlop flipFlop, ArrayList<Component> arrayListDependentComponents, ArrayList<Line> arrayListVisitedLines) {
         if(flipFlop.getArrayListLinesOutput().contains(this)){
             if(!arrayListDependentComponents.contains(flipFlop)) {
                 arrayListDependentComponents.add(flipFlop);
             }
             for(Line l : flipFlop.getArrayListLinesOutput()){
-                l.checkForSignals(arrayListDependentComponents, arrayListVisitedLines);
+                if(flipFlop.getArrayListLinesOutput().contains(this)){
+                    line.getArrayListDependentFlipFlopOutput().add(new DependentFlipFlopOutput(flipFlop.getId(), true));
+                }
+                l.checkForSignals(line, arrayListDependentComponents, arrayListVisitedLines);
             }
         }
-        if(flipFlop.getArrayListLinesOutputReverted().contains(this)){
+        else if(flipFlop.getArrayListLinesOutputReverted().contains(this)){
             if(!arrayListDependentComponents.contains(flipFlop)) {
                 arrayListDependentComponents.add(flipFlop);
             }
             for(Line l : flipFlop.getArrayListLinesOutputReverted()){
-                l.checkForSignals(arrayListDependentComponents, arrayListVisitedLines);
+                if(flipFlop.getArrayListLinesOutputReverted().contains(this)){
+                    line.getArrayListDependentFlipFlopOutput().add(new DependentFlipFlopOutput(flipFlop.getId(), false));
+                }
+                l.checkForSignals(line, arrayListDependentComponents, arrayListVisitedLines);
             }
         }
-        if(flipFlop.getArrayListLinesReset().contains(this)){
+        else if(flipFlop.getArrayListLinesReset().contains(this)){
             for(Line l : flipFlop.getArrayListLinesReset()){
-                l.checkForSignals(arrayListDependentComponents, arrayListVisitedLines);
+                l.checkForSignals(line, arrayListDependentComponents, arrayListVisitedLines);
             }
         }
-        if(flipFlop.getArrayListLinesClock().contains(this)){
+        else if(flipFlop.getArrayListLinesClock().contains(this)){
             for(Line l : flipFlop.getArrayListLinesClock()){
-                l.checkForSignals(arrayListDependentComponents, arrayListVisitedLines);
+                l.checkForSignals(line, arrayListDependentComponents, arrayListVisitedLines);
             }
         }
-        if(flipFlop.getArrayListLinesInput().contains(this)){
+        else if(flipFlop.getArrayListLinesInput().contains(this)){
             for(Line l : flipFlop.getArrayListLinesInput()){
-                l.checkForSignals(arrayListDependentComponents, arrayListVisitedLines);
+                l.checkForSignals(line, arrayListDependentComponents, arrayListVisitedLines);
             }
         }
-        if(flipFlop.getName().equals(Names.flipFlopJK) && ((FlipFlopJK) flipFlop).getArrayListLinesInputK().contains(this)){
+        else if(flipFlop.getName().equals(Names.flipFlopJK) && ((FlipFlopJK) flipFlop).getArrayListLinesInputK().contains(this)){
             for(Line l : ((FlipFlopJK) flipFlop).getArrayListLinesInputK()){
-                l.checkForSignals(arrayListDependentComponents, arrayListVisitedLines);
+                l.checkForSignals(line, arrayListDependentComponents, arrayListVisitedLines);
             }
         }
     }
 
-    public void checkForSignalsConnector(Connector con, ArrayList<Component> arrayListDependentComponents, ArrayList<Line> arrayListVisitedLines) {
+    public void checkForSignalsConnector(Line line, Connector con, ArrayList<Component> arrayListDependentComponents, ArrayList<Line> arrayListVisitedLines) {
         for(Line l : con.getArrayListLines()){
-            l.checkForSignals(arrayListDependentComponents, arrayListVisitedLines);
+            l.checkForSignals(line, arrayListDependentComponents, arrayListVisitedLines);
         }
     }
 
-    public void checkForSignalsBulb(Bulb b, ArrayList<Component> arrayListDependentComponents, ArrayList<Line> arrayListVisitedLines) {
+    public void checkForSignalsBulb(Line line, Bulb b, ArrayList<Component> arrayListDependentComponents, ArrayList<Line> arrayListVisitedLines) {
         for(Line l : b.getArrayListLines()){
-            l.checkForSignals(arrayListDependentComponents, arrayListVisitedLines);
+            l.checkForSignals(line, arrayListDependentComponents, arrayListVisitedLines);
         }
     }
 
@@ -180,16 +188,25 @@ public class Line extends Component implements Serializable {
                             dependentComponentsState = true;
                             break;
                         }
-                        else if(c.getName().contains(Names.flipFlopSearchName) && (((FlipFlop)c).getArrayListLinesOutputReverted().contains(this) &&
-                                ((FlipFlop)c).isSignalReversedOutput() || ((FlipFlop)c).getArrayListLinesOutput().contains(this) &&
-                                ((FlipFlop)c).isSignalOutput())){
-                            dependentComponentsState = true;
+                        else if(c.getName().contains(Names.flipFlopSearchName)){
+                            for(DependentFlipFlopOutput dffo : arrayListDependentFlipFlopOutput){
+                                if(c.getId() == dffo.getId() && dffo.isMainOutput() && ((FlipFlop)c).isSignalOutput()){
+                                    dependentComponentsState = true;
+                                }
+                                else if(c.getId() == dffo.getId() && !dffo.isMainOutput() && ((FlipFlop)c).isSignalReversedOutput()){
+                                    dependentComponentsState = true;
+                                }
+                            }
                             break;
                         }
                     }
+//                    if(id == 1){
+//                        System.out.println(dependentComponentsState);
+//                    }
 
                     if(state.get() != dependentComponentsState){
                         state.set(dependentComponentsState);
+                        stateChanged.set(true);
                     }
 
                     Thread.sleep(Sizes.lineSleepTime);
@@ -520,6 +537,10 @@ public class Line extends Component implements Serializable {
 
     public ArrayList<Line> getArrayListVisitedLines() {
         return arrayListVisitedLines;
+    }
+
+    public ArrayList<DependentFlipFlopOutput> getArrayListDependentFlipFlopOutput() {
+        return arrayListDependentFlipFlopOutput;
     }
 
     public ArrayList<Point> getArrayListBreakPoints() {

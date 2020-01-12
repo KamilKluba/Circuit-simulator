@@ -109,9 +109,12 @@ public class MainWindowController {
     private Component componentBuffer = null;
     private MouseButton mouseButton = null;
     private int chartExtension = 0;
+    private int rotationCounter = 0;
 
     private ZoomableScrollPaneWorkspace zoomableScrollPaneWorkspace;
     private ZoomableScrollPaneChart zoomableScrollPaneChart;
+
+    private boolean shiftDown = false;
 
     @FXML
     public void initialize(){
@@ -268,18 +271,49 @@ public class MainWindowController {
 //        for(Bulb b : arrayListCreatedBulbs){
 //            System.out.println(b.getId() + " " + b.isSignalOutput() + " " + b.isAlive() + " " + b.getImageViewOff() + " " + b.getPointCenter().getX() + " " + b.getPointCenter().getY());
 //        }
-        System.out.println("");
-        System.out.println("");
+//        System.out.println("");
+//        System.out.println("");
+//        for(Line l : arrayListCreatedLines){
+//            System.out.println("LINE " + l.getId() + " ---------------------------------------------");
+//            for(Point p : l.getArrayListBreakPoints()){
+//                System.out.println(p.getName() + " " + (int)p.getX() + " " + (int)p.getY());
+//            }
+//        }
+//        System.out.println("");
+//        System.out.println("");
+//        System.out.println("Gates:       " + arrayListCreatedGates.size());
+//        System.out.println("Switches:    " + arrayListCreatedSwitches.size());
+//        System.out.println("FlipFlops:   " + arrayListCreatedFlipFlops.size());
+//        System.out.println("Connectors:  " + arrayListCreatedConnectors.size());
+//        System.out.println("Bulbs:       " + arrayListCreatedBulbs.size());
+//        System.out.println("All:         " + arrayListAllCreatedComponents.size());
+//        System.out.println("End:         " + arrayListCreatedEndComponents.size());
+//        System.out.println("alSeries:    " + arrayListSeries.size());
+//        System.out.println("lCS.gD:      " + lineChartStates.getData().size());\
+//        System.out.println("");
+//        System.out.println("");
+//        if(shiftDown){
+//            for(Connector con : arrayListCreatedConnectors){
+//                for(Line l : con.getArrayListLines()){
+//                    System.out.println(l.getId() + " " + l.isSignalOutput());
+//                }
+//            }
+//        }
+//        else {
+//            for (Line l : arrayListCreatedLines) {
+//                for (Component c : l.getArrayListDependentComponents()) {
+//                    System.out.println(l.getId() + "   " + c.getName() + " " + c.getId() + " " + c.isSignalOutput());
+//                }
+//            }
+//        }
         for(Line l : arrayListCreatedLines){
-            System.out.println("LINE " + l.getId() + " ---------------------------------------------");
-            for(Point p : l.getArrayListBreakPoints()){
-                System.out.println(p.getName() + " " + (int)p.getX() + " " + (int)p.getY());
+            for(DependentFlipFlopOutput dffo : l.getArrayListDependentFlipFlopOutput()){
+                System.out.println(l.getId() + " " + dffo.getId() + " " + dffo.isMainOutput());
             }
         }
     }
 
     private void setChart(){
-        lineChartStates.setCreateSymbols(false);
         zoomableScrollPaneChart.setPrefHeight(150);
         zoomableScrollPaneChart.setPrefWidth(3000);
         new Thread(() -> {
@@ -381,10 +415,10 @@ public class MainWindowController {
             XYChart.Data<Long, String> data = c.getSeries().getData().get(c.getSeries().getData().size() - 1);
             c.getSeries().getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - c.getChartMillisCounter(), data.getYValue()));
             if(c.isSignalOutput()) {
-                c.getSeries().getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - c.getChartMillisCounter(), c.getName() + " " + c.getId() + ": 1"));
+                c.getSeries().getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - c.getChartMillisCounter(), c.getName() + "   " + c.getId() + ":   1"));
             }
             else{
-                c.getSeries().getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - c.getChartMillisCounter(), c.getName() + " " + c.getId() + ": 0"));
+                c.getSeries().getData().add(new XYChart.Data<Long, String>(System.currentTimeMillis() - c.getChartMillisCounter(), c.getName() + "   " + c.getId() + ":   0"));
             }
         }
         if(chartAlive){
@@ -400,14 +434,14 @@ public class MainWindowController {
         arrayListSeries.clear();
         for(Component c : arrayListCreatedEndComponents){
             XYChart.Series<Long, String> s = new XYChart.Series<>();
-            s.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 0"));
-            s.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 1"));
-            s.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 0"));
+            s.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + "   " + c.getId() + ":   0"));
+            s.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + "   " + c.getId() + ":   1"));
+            s.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + "   " + c.getId() + ":   0"));
             if(c.isSignalOutput()) {
-                c.getSeries().getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 1"));
+                c.getSeries().getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ":   1"));
             }
             else{
-                c.getSeries().getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 0"));
+                c.getSeries().getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ":   0"));
             }
             c.resetSeries(s);
             arrayListSeries.add(s);
@@ -483,6 +517,10 @@ public class MainWindowController {
                 c.rotate();
             }
         }
+        if(componentBuffer != null){
+            componentBuffer.rotate();
+            rotationCounter++;
+        }
     }
 
     private void actionCanvasKeyPressed(KeyCode code){
@@ -503,6 +541,7 @@ public class MainWindowController {
         else if(code == KeyCode.SHIFT){
             componentCreator.setShiftDown(true);
             mouseActions.setShiftDown(true);
+            shiftDown = !shiftDown;
         }
         else if(code == KeyCode.ALT){
             zoomableScrollPaneChart.setAltDown(true);
@@ -528,6 +567,10 @@ public class MainWindowController {
                 if(c.isSelected()){
                     c.rotate();
                 }
+            }
+            if(componentBuffer != null){
+                componentBuffer.rotate();
+                rotationCounter++;
             }
         }
         else if(charValue == 26){
@@ -625,11 +668,24 @@ public class MainWindowController {
     }
 
     public void actionMenuItemAuthor(){
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION); alert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
+                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
         alert.setTitle(Names.aboutAuthorTitle);
         alert.setHeaderText(Names.aboutAuthorHeader);
         alert.setContentText(Names.aboutAuthorContent);
         alert.showAndWait();
+    }
+
+    public void actionMenuItemCreatingComponents(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Names.manualTitle);
+        alert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
+                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
+        alert.initModality(Modality.NONE);
+        alert.setHeaderText(Names.manualCreatingComponentsHeader);
+        alert.setContentText(Names.manualCreatingComponentsContent);
+        alert.show();
+        alert.setWidth(600);
     }
 
     public void actionMenuItemComponents(){
@@ -808,18 +864,6 @@ public class MainWindowController {
         alert.initModality(Modality.NONE);
         alert.setHeaderText(Names.manualErrorsHeader);
         alert.setContentText(Names.manualErrorsContent);
-        alert.show();
-        alert.setWidth(600);
-    }
-
-    public void actionMenuItemCreatingComponents(){
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(Names.manualTitle);
-        alert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
-                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
-        alert.initModality(Modality.NONE);
-        alert.setHeaderText(Names.manualCreatingComponentsHeader);
-        alert.setContentText(Names.manualCreatingComponentsContent);
         alert.show();
         alert.setWidth(600);
     }
@@ -1038,6 +1082,14 @@ public class MainWindowController {
 
     public ComponentCreator getComponentCreator() {
         return componentCreator;
+    }
+
+    public int getRotationCounter() {
+        return rotationCounter;
+    }
+
+    public void setRotationCounter(int rotationCounter) {
+        this.rotationCounter = rotationCounter;
     }
 }
 

@@ -31,6 +31,7 @@ import components.switches.SwitchMonostable;
 import components.switches.SwitchPulse;
 import controllers.MainWindowController;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
@@ -38,7 +39,10 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
+import java.awt.font.TextAttribute;
+import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -114,114 +118,17 @@ public class ComponentCreator {
             switch (change.getDescription()) {
                 case 1:
                     if(undoChange) {
-                        if(componentName.contains(Names.lineName)) {
-                            ((Line)component).delete();
-                        }
-                        component.kill();
-                        arrayListDeletedComponents.add(component);
-                        arrayListCreatedLines.remove(component);
-                        arrayListCreatedGates.remove(component);
-                        arrayListCreatedSwitches.remove(component);
-                        arrayListCreatedFlipFlops.remove(component);
-                        arrayListCreatedConnectors.remove(component);
-                        arrayListCreatedEndComponents.remove(component);
-                        arrayListAllCreatedComponents.remove(component);
-                        if(!componentName.contains(Names.lineName) && !componentName.contains(Names.connectorName)) {
-                            arrayListSeries.remove(component.getSeries());
-                            lineChartStates.getData().remove(component.getSeries());
-                        }
+                        createComponentAsChange(component, change);
                     }
                     else{
-                        component.revive();
-                        if(component.getName().contains(Names.lineName)) {
-                            arrayListCreatedLines.add((Line) component);
-                            change.restoreLine();
-                        }
-                        else if(component.getName().contains(Names.gateSearchName)){
-                            arrayListCreatedGates.add((Gate)component);
-                            arrayListCreatedEndComponents.add(component);
-                            arrayListAllCreatedComponents.add(component);
-                        }
-                        else if(component.getName().contains(Names.switchSearchName)){
-                            arrayListCreatedSwitches.add((Switch)component);
-                            arrayListCreatedEndComponents.add(component);
-                            arrayListAllCreatedComponents.add(component);
-                        }
-                        else if(component.getName().contains(Names.flipFlopSearchName)){
-                            arrayListCreatedFlipFlops.add((FlipFlop)component);
-                            arrayListCreatedEndComponents.add(component);
-                            arrayListAllCreatedComponents.add(component);
-                        }
-                        else if(component.getName().contains(Names.bulbName)){
-                            arrayListCreatedBulbs.add((Bulb)component);
-                            arrayListCreatedEndComponents.add(component);
-                            arrayListAllCreatedComponents.add(component);
-                        }
-                        else if(component.getName().contains(Names.connectorName)){
-                            arrayListCreatedConnectors.add((Connector)component);
-                            arrayListAllCreatedComponents.add(component);
-                        }
-                        if(!componentName.contains(Names.lineName) && !componentName.contains(Names.connectorName)) {
-                            arrayListSeries.add(component.getSeries());
-                            lineChartStates.getData().add(component.getSeries());
-                        }
-                        arrayListDeletedComponents.remove(component);
-                        component.setSelected(false);
-                        component.setSelectedForDrag(false);
+                        deleteComponentAsChange(component, change);
                     }
                     break;
                 case 2:
                     if(undoChange) {
-                        component.revive();
-                        if (component.getName().contains(Names.lineName)) {
-                            arrayListCreatedLines.add((Line) component);
-                            change.restoreLine();
-                        } else if (component.getName().contains(Names.gateSearchName)) {
-                            arrayListCreatedGates.add((Gate) component);
-                            arrayListCreatedEndComponents.add(component);
-                            arrayListAllCreatedComponents.add(component);
-                        } else if (component.getName().contains(Names.switchSearchName)) {
-                            arrayListCreatedSwitches.add((Switch) component);
-                            arrayListAllCreatedComponents.add(component);
-                            arrayListCreatedEndComponents.add(component);
-                        } else if (component.getName().contains(Names.flipFlopSearchName)) {
-                            arrayListCreatedFlipFlops.add((FlipFlop) component);
-                            arrayListCreatedEndComponents.add(component);
-                            arrayListAllCreatedComponents.add(component);
-                        } else if (component.getName().contains(Names.bulbName)) {
-                            arrayListCreatedBulbs.add((Bulb) component);
-                            arrayListCreatedEndComponents.add(component);
-                            arrayListAllCreatedComponents.add(component);
-                        } else if (component.getName().contains(Names.connectorName)) {
-                            arrayListCreatedConnectors.add((Connector) component);
-                            arrayListAllCreatedComponents.add(component);
-                        }
-                        if(!componentName.contains(Names.lineName) && !componentName.contains(Names.connectorName)) {
-                            arrayListSeries.add(component.getSeries());
-                            lineChartStates.getData().add(component.getSeries());
-                        }
-                        arrayListDeletedComponents.remove(component);
-                        component.setSelected(false);
-                        component.setSelectedForDrag(false);
+                        deleteComponentAsChange(component, change);
                     }
                     else{
-                        if(componentName.contains(Names.lineName)) {
-                            ((Line)component).delete();
-                        }
-                        component.kill();
-                        arrayListDeletedComponents.add(component);
-                        arrayListCreatedLines.remove(component);
-                        arrayListCreatedGates.remove(component);
-                        arrayListCreatedSwitches.remove(component);
-                        arrayListCreatedFlipFlops.remove(component);
-                        arrayListCreatedConnectors.remove(component);
-                        arrayListCreatedEndComponents.remove(component);
-                        arrayListAllCreatedComponents.remove(component);
-
-                        if(!componentName.contains(Names.lineName) && !componentName.contains(Names.connectorName)) {
-                            arrayListSeries.remove(component.getSeries());
-                            lineChartStates.getData().remove(component.getSeries());
-                        }
                     }
                     break;
                 case 3:
@@ -437,9 +344,10 @@ public class ComponentCreator {
         for(Line l : arrayListCreatedLines){
             l.getArrayListVisitedLines().clear();
             l.getArrayListDependentComponents().clear();
+            l.getArrayListDependentFlipFlopOutput().clear();
         }
         for(Line l : arrayListCreatedLines){
-            l.checkForSignals(l.getArrayListDependentComponents(), l.getArrayListVisitedLines());
+            l.checkForSignals(l, l.getArrayListDependentComponents(), l.getArrayListVisitedLines());
         }
         for(Line l : arrayListCreatedLines){
             l.lifeCycle();
@@ -539,45 +447,47 @@ public class ComponentCreator {
                     arrayListCreatedGates.add((Gate)newComponent);
                     gateCounter++;
                     newComponent.setId(gateCounter);
+                    newSeries.setName(newComponentName + " " + gateCounter);
                 }
                 else if(newComponent.getName().contains(Names.switchSearchName)){
                     arrayListCreatedSwitches.add((Switch)newComponent);
                     switchCounter++;
                     newComponent.setId(switchCounter);
+                    newSeries.setName(newComponentName + " " + switchCounter);
                 }
                 else if(newComponent.getName().contains(Names.flipFlopSearchName)){
                     arrayListCreatedFlipFlops.add((FlipFlop)newComponent);
                     flipFlopCounter++;
                     newComponent.setId(flipFlopCounter);
+                    newSeries.setName(newComponentName + " " + flipFlopCounter);
                 }
                 else if(newComponent.getName().contains(Names.bulbName)){
                     arrayListCreatedBulbs.add((Bulb)newComponent);
                     bulbCounter++;
                     newComponent.setId(bulbCounter);
+                    newSeries.setName(newComponentName + " " + bulbCounter);
                 }
                 else if(newComponent.getName().contains(Names.connectorName)){
                     arrayListCreatedConnectors.add((Connector)newComponent);
                     connectorCounter++;
                     newComponent.setId(connectorCounter);
+                    newSeries.setName(newComponentName + " " + connectorCounter);
                 }
 
                 if(!newComponent.getName().equals(Names.connectorName)) {
                     arrayListCreatedEndComponents.add(newComponent);
-                    newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 0"));
-                    newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 1"));
-                    if (newComponent.isSignalOutput()) {
-                        newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 1"));
-                    } else {
-                        newSeries.getData().add(new XYChart.Data<Long, String>(0L, newComponent.getName() + " " + newComponent.getId() + ": 0"));
-                    }
-                    arrayListSeries.add(newSeries);
-                    lineChartStates.getData().add(newSeries);
+                    createNewSeriesForComponent(newComponent);
                 }
 
                 arrayListAllCreatedComponents.add(newComponent);
 
                 stackUndoChanges.add(new Change(1, newComponent));
                 mwc.getMain().setUnsavedChanges(true);
+
+                for(int i = 0; i < mwc.getRotationCounter(); i++){
+                    newComponent.rotate();
+                }
+                mwc.setRotationCounter(0);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -605,7 +515,7 @@ public class ComponentCreator {
             comboBoxNewLineHook = new ComboBox<>();
             comboBoxNewLineHook.setLayoutX(x - 75);
             comboBoxNewLineHook.setLayoutY(y);
-            comboBoxNewLineHook.promptTextProperty().setValue("Wybierz pin");
+            comboBoxNewLineHook.setPromptText("Wybierz pin:");
             if (g != null) {
                 comboBoxNewLineHook.getItems().add(g.getPointOutput());
                 for (Point p : g.getArrayPointsInputs()) {
@@ -784,9 +694,10 @@ public class ComponentCreator {
             for (Line l : arrayListCreatedLines) {
                 l.getArrayListVisitedLines().clear();
                 l.getArrayListDependentComponents().clear();
+                l.getArrayListDependentFlipFlopOutput().clear();
             }
             for (Line l : arrayListCreatedLines) {
-                l.checkForSignals(l.getArrayListDependentComponents(), l.getArrayListVisitedLines());
+                l.checkForSignals(l, l.getArrayListDependentComponents(), l.getArrayListVisitedLines());
             }
             for (Line l : arrayListCreatedLines) {
                 l.lifeCycle();
@@ -841,6 +752,75 @@ public class ComponentCreator {
             }
             mwc.setLineBuffer(null);
         }
+    }
+
+    public void createNewSeriesForComponent(Component component){
+        XYChart.Series<Long, String> series = component.getSeries();
+        series.getData().add(new XYChart.Data<Long, String>(0L, component.getName() + "   " + component.getId() + ":   0"));
+        series.getData().add(new XYChart.Data<Long, String>(0L, component.getName() + "   " + component.getId() + ":   1"));
+        if (component.isSignalOutput()) {
+            series.getData().add(new XYChart.Data<Long, String>(0L, component.getName() + "   " + component.getId() + ":   1"));
+        } else {
+            series.getData().add(new XYChart.Data<Long, String>(0L, component.getName() + "   " + component.getId() + ":   0"));
+        }
+        arrayListSeries.add(series);
+        lineChartStates.getData().add(series);
+    }
+
+    private void deleteComponentAsChange(Component component, Change change){
+        String componentName = component.getName();
+
+        component.revive();
+        if (component.getName().contains(Names.lineName)) {
+            arrayListCreatedLines.add((Line) component);
+            change.restoreLine();
+        } else if (component.getName().contains(Names.gateSearchName)) {
+            arrayListCreatedGates.add((Gate) component);
+            arrayListCreatedEndComponents.add(component);
+            arrayListAllCreatedComponents.add(component);
+        } else if (component.getName().contains(Names.switchSearchName)) {
+            arrayListCreatedSwitches.add((Switch) component);
+            arrayListAllCreatedComponents.add(component);
+            arrayListCreatedEndComponents.add(component);
+        } else if (component.getName().contains(Names.flipFlopSearchName)) {
+            arrayListCreatedFlipFlops.add((FlipFlop) component);
+            arrayListCreatedEndComponents.add(component);
+            arrayListAllCreatedComponents.add(component);
+        } else if (component.getName().contains(Names.bulbName)) {
+            arrayListCreatedBulbs.add((Bulb) component);
+            arrayListCreatedEndComponents.add(component);
+            arrayListAllCreatedComponents.add(component);
+        } else if (component.getName().contains(Names.connectorName)) {
+            arrayListCreatedConnectors.add((Connector) component);
+            arrayListAllCreatedComponents.add(component);
+        }
+
+        if(!componentName.contains(Names.lineName) && !componentName.contains(Names.connectorName)) {
+            createNewSeriesForComponent(component);
+        }
+        arrayListDeletedComponents.remove(component);
+        component.setSelected(false);
+        component.setSelectedForDrag(false);
+    }
+
+    private void createComponentAsChange(Component component, Change change){
+        String componentName = component.getName();
+
+        if(componentName.contains(Names.lineName)) {
+            ((Line)component).delete();
+        }
+        component.kill();
+        arrayListDeletedComponents.add(component);
+        arrayListCreatedLines.remove(component);
+        arrayListCreatedGates.remove(component);
+        arrayListCreatedSwitches.remove(component);
+        arrayListCreatedFlipFlops.remove(component);
+        arrayListCreatedConnectors.remove(component);
+        arrayListCreatedBulbs.remove(component);
+        arrayListCreatedEndComponents.remove(component);
+        arrayListAllCreatedComponents.remove(component);
+        arrayListSeries.remove(component.getSeries());
+        lineChartStates.getData().remove(component.getSeries());
     }
 
     public void setMouseActions(MouseActions mouseActions) {

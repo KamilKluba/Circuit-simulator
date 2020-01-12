@@ -66,10 +66,6 @@ public class Connector extends Component implements Serializable {
         selectedForDrag = (Math.abs(x - this.pointCenter.getX()) <= 3 * Sizes.lineSelectDistance && Math.abs(y - pointCenter.getY()) <= 3 * Sizes.lineSelectDistance);
     }
 
-    public boolean inside(double x, double y){
-        return Math.abs(x - this.pointCenter.getX()) <= 3 * Sizes.lineSelectDistance && Math.abs(y - pointCenter.getY()) <= 3 * Sizes.lineSelectDistance;
-    }
-
     public void draw(GraphicsContext graphicsContext){
         if(selected){
             graphicsContext.setFill(selectionColor.getFXColor());
@@ -83,7 +79,7 @@ public class Connector extends Component implements Serializable {
         graphicsContext.fillOval(pointCenter.getX() - Sizes.lineSelectDistance, pointCenter.getY() - Sizes.lineSelectDistance
                 , 2 * Sizes.lineSelectDistance, 2 * Sizes.lineSelectDistance);
         graphicsContext.setFill(Color.BLACK);
-        graphicsContext.fillText("" + id, pointCenter.getX() - 50, pointCenter.getY() + 50);
+        graphicsContext.fillText("" + id, pointCenter.getX() - 35, pointCenter.getY() + 35);
     }
 
     public ArrayList<Line> getArrayListLines() {

@@ -64,11 +64,11 @@ public abstract class FlipFlop extends Component implements Serializable {
     }
 
     public void select(double x, double y){
-        selected = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseFlipFlopXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseFlipFlopYShift);
+        selected = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseFlipFlopSelect && Math.abs(y - pointCenter.getY()) <= Sizes.baseFlipFlopSelect);
     }
 
     public boolean checkIfCouldBeSelected(double x, double y){
-        return (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseFlipFlopXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseFlipFlopYShift);
+        return Math.abs(x - this.pointCenter.getX()) <= Sizes.baseFlipFlopSelect && Math.abs(y - pointCenter.getY()) <= Sizes.baseFlipFlopSelect;
     }
 
     public void select(double x1, double y1, double x2, double y2){
@@ -77,10 +77,6 @@ public abstract class FlipFlop extends Component implements Serializable {
 
     public void selectForDrag(double x, double y){
         selectedForDrag = checkIfCouldBeSelected(x, y);
-    }
-
-    public boolean inside(double x, double y){
-        return Math.abs(x - this.pointCenter.getX()) <= Sizes.baseFlipFlopXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseFlipFlopYShift;
     }
 
     public void move(double x, double y, double mousePressX, double mousePressY, boolean fitToCheck) {

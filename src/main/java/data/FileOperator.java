@@ -150,12 +150,12 @@ public class FileOperator {
                     c.setAddingDataToSeriesEnabled(true);
                     c.setPictures();
                     XYChart.Series<Long, String> newSeries = new XYChart.Series<>();
-                    newSeries.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 0"));
-                    newSeries.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 1"));
+                    newSeries.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + "   " + c.getId() + ":   0"));
+                    newSeries.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + "   " + c.getId() + ":   1"));
                     if (c.isSignalOutput()) {
-                        newSeries.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 1"));
+                        newSeries.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + "   " + c.getId() + ":   1"));
                     } else {
-                        newSeries.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + " " + c.getId() + ": 0"));
+                        newSeries.getData().add(new XYChart.Data<Long, String>(0L, c.getName() + "   " + c.getId() + ":   0"));
                     }
                     c.setSeriesWithTime(newSeries, componentCreator.getTimeStart());
                     arrayListSeries.add(newSeries);

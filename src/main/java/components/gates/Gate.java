@@ -45,7 +45,7 @@ public abstract class Gate extends Component {
     }
 
     public void select(double x, double y) {
-        selected = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseGateXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseGateYShift);
+        selected = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseGateSelect && Math.abs(y - pointCenter.getY()) <= Sizes.baseGateSelect);
     }
 
     public void select(double x1, double y1, double x2, double y2){
@@ -53,15 +53,11 @@ public abstract class Gate extends Component {
     }
 
     public boolean checkIfCouldBeSelected(double x, double y){
-        return (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseGateXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseGateYShift);
+        return (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseGateSelect && Math.abs(y - pointCenter.getY()) <= Sizes.baseGateSelect);
     }
 
     public void selectForDrag(double x, double y){
-        selectedForDrag = (Math.abs(x - this.pointCenter.getX()) <= Sizes.baseGateXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseGateYShift);
-    }
-
-    public boolean inside(double x, double y){
-        return Math.abs(x - this.pointCenter.getX()) <= Sizes.baseGateXShift && Math.abs(y - pointCenter.getY()) <= Sizes.baseGateYShift;
+        selectedForDrag = checkIfCouldBeSelected(x, y);
     }
 
     public void rotate(){

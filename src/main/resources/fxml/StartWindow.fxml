@@ -19,7 +19,6 @@
             <Font size="34.0" />
          </font>
       </Text>
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Praca inżynierka Kamil Kluba" />
       <Pane maxHeight="150.0" maxWidth="300.0" minHeight="150.0" minWidth="300.0" prefHeight="150.0" prefWidth="300.0">
          <children>
             <Canvas fx:id="canvas" height="150.0" width="300.0" />
