@@ -200,9 +200,6 @@ public class Line extends Component implements Serializable {
                             break;
                         }
                     }
-//                    if(id == 1){
-//                        System.out.println(dependentComponentsState);
-//                    }
 
                     if(state.get() != dependentComponentsState){
                         state.set(dependentComponentsState);
@@ -285,6 +282,10 @@ public class Line extends Component implements Serializable {
     }
 
     public boolean checkIfCouldBeSelected(double x, double y) {
+        boolean farFromHook1 = Math.sqrt(Math.pow(x - arrayListBreakPoints.get(0).getX(), 2) +
+                Math.pow(y - arrayListBreakPoints.get(0).getY(), 2)) > Sizes.lineSelectDistance * 2;
+        boolean farFromHook2 = Math.sqrt(Math.pow(x - arrayListBreakPoints.get(arrayListBreakPoints.size() - 1).getX(), 2) +
+                Math.pow(y - arrayListBreakPoints.get(arrayListBreakPoints.size() - 1).getY(), 2)) > Sizes.lineSelectDistance * 2;
         for(int i = 0; i < arrayListBreakPoints.size() - 1; i++){
             point1ToBreak = arrayListBreakPoints.get(i);
             point2ToBreak = arrayListBreakPoints.get(i + 1);
@@ -303,7 +304,7 @@ public class Line extends Component implements Serializable {
                 if (horizontal)
                     isUnderTheLine = Math.abs(y - point1ToBreak.getY()) < Sizes.lineSelectDistance;
             }
-            if(isUnderX1 || isUnderX2 || isUnderTheLine) {
+            if((isUnderX1 || isUnderX2 || isUnderTheLine) && farFromHook1 && farFromHook2) {
                 return true;
             }
         }
@@ -375,7 +376,7 @@ public class Line extends Component implements Serializable {
         }
     }
 
-    public void move(double x, double y, double mousePressX, double mousePressY, boolean fitToCheck) {
+    public void move(double x, double y, double mousePressX, double mousePressY) {
         for(int i = 1; i < arrayListBreakPoints.size() - 1; i++){
             arrayListBreakPoints.get(i).setX(arrayListBreakPoints.get(i).getX() + x - mousePressX);
             arrayListBreakPoints.get(i).setY(arrayListBreakPoints.get(i).getY() + y - mousePressY);

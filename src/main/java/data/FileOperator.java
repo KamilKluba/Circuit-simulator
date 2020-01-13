@@ -145,7 +145,6 @@ public class FileOperator {
                     componentCreator.setConnectorCounter(componentCreator.getConnectorCounter() + 1);
                     c.setId(componentCreator.getConnectorCounter());
                 }
-                c.revive();
                 if(!c.getName().equals(Names.lineName) && !c.getName().equals(Names.connectorName)) {
                     c.setAddingDataToSeriesEnabled(true);
                     c.setPictures();
@@ -167,6 +166,20 @@ public class FileOperator {
                 }
                 mwc.getStackUndoChanges().push(new Change(1, c));
                 i++;
+            }
+            for(Line l : arrayListCreatedLines){
+                l.getArrayListVisitedLines().clear();
+                l.getArrayListDependentComponents().clear();
+                l.getArrayListDependentFlipFlopOutput().clear();
+            }
+            for(Line l : arrayListCreatedLines){
+                l.checkForSignals(l, l.getArrayListDependentComponents(), l.getArrayListVisitedLines());
+            }
+            for(Component c : arrayListAllCreatedComponents){
+                c.revive();
+            }
+            for(Line l : arrayListCreatedLines){
+                l.revive();
             }
 
             ois.close();

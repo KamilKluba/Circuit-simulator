@@ -102,6 +102,7 @@
             <Menu mnemonicParsing="false" text="Instrukcja obsługi">
               <items>
                   <MenuItem mnemonicParsing="false" onAction="#actionMenuItemCreatingComponents" text="Tworzenie komponentów" />
+                  <MenuItem mnemonicParsing="false" onAction="#actionMenuItemConnectingComponents" text="Łączenie komponentów" />
                   <MenuItem mnemonicParsing="false" onAction="#actionMenuItemComponents" text="Komponenty" />
                 <MenuItem mnemonicParsing="false" onAction="#actionMenuItemGates" text="Bramki" />
                   <MenuItem mnemonicParsing="false" onAction="#actionMenuItemSwitches" text="Przełączniki" />

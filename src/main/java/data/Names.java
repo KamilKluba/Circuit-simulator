@@ -51,6 +51,13 @@ public class Names {
             "Utworzony komponent (o ile nie jest łącznikiem lub linią) dostanie swój identyfikator dla danej grupy komponentów," +
             " a na wykresie przebiegów czasowych pojawi się nowa seria utworzona specjalnie dla niego.\nPodczas tworzenia" +
             " komponentu możesz także przytrzymać klawisz Ctrl co sprawi, że komponent zostanie wyrównany do siatki.";
+    public static String manualConnectingComponentsHeader = "Łączenie komponentów";
+    public static String manualConnectingComponentsContent = "Aby połączyć komponenty utwórz na początku co najmniej w komponenty (które nie są" +
+            " linią), a następnie wybierz w tabeli komponentów (poprzez kliknięcie, lub naciśnięcie klawisza 1) linię. Po tym kliknij na komponent" +
+            " który chcesz połączyć. Jeśli komponent ma tylko jedno wejście linia zostanie do niego podłączona automatycznie, natomiast jeśli" +
+            " komponent ma więcej niż jedno wejście, pojawi się combo box ze wszystkimi dostępnymi wejściami. Klikajac na jedno z nich" +
+            " sprawisz, że linia zostanie przyłączona do danego komponentu w wybranym przez Ciebie punkcie. Następnie zrób to samo z druigm" +
+            " lub przyciśnij Esc.";
     public static String manualComponentsHeader = "Komponenty";
     public static String manualComponentsContent = "Aplikacja pozwala na budowę układów cyfrowych z podstawowych komponentów" +
             " używanych na kursie Logiki Układów Cyfrowych. Wszystkie komponenty (nie licząc liń, które opiszę w osobnym podpunkcie)" +

@@ -86,38 +86,17 @@ public class Connector extends Component implements Serializable {
         return arrayListLines;
     }
 
-    public void move(double x, double y, double mousePressX, double mousePressY, boolean fitToCheck){
-        if(fitToCheck){
-            double x1 = x % Sizes.fitComponentPlace > Sizes.fitComponentPlace / 2 ? Sizes.fitComponentPlace : 0;
-            double y1 = y % Sizes.fitComponentPlace > Sizes.fitComponentPlace / 2 ? Sizes.fitComponentPlace : 0;
-            double fitXValue = x - x % Sizes.fitComponentPlace + x1;
-            double fitYValue = y - y % Sizes.fitComponentPlace + y1;
+    public void move(double x, double y, double mousePressX, double mousePressY){
+        pointCenter.setX(pointCenter.getX() + x - mousePressX);
+        pointCenter.setY(pointCenter.getY() + y - mousePressY);
 
-            pointCenter.setX(fitXValue);
-            pointCenter.setY(fitYValue);
-
-            for (Line l : arrayListLines) {
-                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
-                    l.setX1(fitXValue);
-                    l.setY1(fitYValue);
-                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
-                    l.setX2(fitXValue);
-                    l.setY2(fitYValue);
-                }
-            }
-        }
-        else {
-            pointCenter.setX(pointCenter.getX() + x - mousePressX);
-            pointCenter.setY(pointCenter.getY() + y - mousePressY);
-
-            for (Line l : arrayListLines) {
-                if (l.getComponent1() != null && l.getComponent1().equals(this)) {
-                    l.setX1(pointCenter.getX() + x - mousePressX);
-                    l.setY1(pointCenter.getY() + y - mousePressY);
-                } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
-                    l.setX2(pointCenter.getX() + x - mousePressX);
-                    l.setY2(pointCenter.getY() + y - mousePressY);
-                }
+        for (Line l : arrayListLines) {
+            if (l.getComponent1() != null && l.getComponent1().equals(this)) {
+                l.setX1(pointCenter.getX() + x - mousePressX);
+                l.setY1(pointCenter.getY() + y - mousePressY);
+            } else if (l.getComponent2() != null && l.getComponent2().equals(this)) {
+                l.setX2(pointCenter.getX() + x - mousePressX);
+                l.setY2(pointCenter.getY() + y - mousePressY);
             }
         }
     }

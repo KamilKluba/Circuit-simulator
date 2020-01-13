@@ -36,6 +36,7 @@ public class MouseActions {
     private Stack<Change> stackUndoChanges;
     private Stack<Change> stackRedoChanges;
     private Point pointMousePressed = new Point();
+    private Point pointMousePressedFitted = new Point();
     private Point pointMouseMoved = new Point();
     private Point pointMouseReleased = new Point();
     private Point pointMousePressedToDrag = new Point();
@@ -47,6 +48,7 @@ public class MouseActions {
     private boolean shiftDown = false;
     private Point pointBreak;
     private Point closePoint = null;
+    private boolean draggingLine = false;
     
 
     public MouseActions(MainWindowController mwc){
@@ -160,21 +162,29 @@ public class MouseActions {
             }
 
             if(button == MouseButton.PRIMARY) {
-                for (Component c : arrayListAllCreatedComponents) {
-                    boolean selected = c.isSelected();
-                    c.select(x, y);
-                    if(shiftDown && selected){
-                        c.setSelected(true);
-                    }
-                }
+                boolean lineSelected = false;
                 for (Line l : arrayListCreatedLines) {
                     boolean selected = l.isSelected();
                     l.select(x, y);
                     if(shiftDown && selected){
                         l.setSelected(true);
                     }
+                    if(l.isSelected()){
+                        lineSelected = true;
+                    }
                 }
-
+                for (Component c : arrayListAllCreatedComponents) {
+                    if(!lineSelected || shiftDown) {
+                        boolean selected = c.isSelected();
+                        c.select(x, y);
+                        if (shiftDown && selected) {
+                            c.setSelected(true);
+                        }
+                    }
+                    else{
+                        c.setSelected(false);
+                    }
+                }
             }
             mwc.setCoveredError(false);
         }
@@ -215,19 +225,136 @@ public class MouseActions {
         mwc.repaintScreen();
     }
 
+    public void actionCanvasMousePressed(MouseEvent e){
+        double x = e.getX();
+        double y = e.getY();
+
+        if(Accesses.logMouseActions) {
+            System.out.println("Mouse pressed");
+        }
+
+        if(e.getButton() == MouseButton.SECONDARY){
+            mwc.getZoomableScrollPaneWorkspace().setPannable(true);
+        }
+        else{
+            mwc.getZoomableScrollPaneWorkspace().setPannable(false);
+        }
+
+        pointMousePressed.setX(x);
+        pointMousePressed.setY(y);
+        pointMousePressedFitted.setX(x);
+        pointMousePressedFitted.setY(y);
+
+        pointMousePressedToDrag.setX(x);
+        pointMousePressedToDrag.setY(y);
+
+        arrayListPointsCenter.clear();
+
+        couldBeSelected = false;
+        draggingLine = false;
+        boolean pressedOnLine = false;
+        for (Line l : arrayListCreatedLines) {
+            l.selectForDrag(x, y);
+            if(l.checkIfCouldBeSelected(x, y)) {
+                draggingLine = true;
+                pressedOnLine = true;
+                couldBeSelected = true;
+                Point pointHook1 = l.getArrayListBreakPoints().get(0);
+                Point pointHook2 = l.getArrayListBreakPoints().get(l.getArrayListBreakPoints().size() - 1);
+                for (int i = 1; i < l.getArrayListBreakPoints().size() - 1; i++) {
+                    Point p = l.getArrayListBreakPoints().get(i);
+                    if (Math.sqrt(Math.pow(p.getX() - x, 2) + Math.pow(p.getY() - y, 2)) < Sizes.lineSelectDistance * 2) {
+                        closePoint = p;
+                        l.setClosePoint(p);
+                        pointBreak = new Point("Break", p.getX(), p.getY());
+                    }
+                }
+                if (closePoint != null) {
+                    l.setNewBreakPoint(closePoint);
+                } else if(Math.sqrt(Math.pow(pointHook1.getX() - x, 2) + Math.pow(pointHook1.getY() - y, 2)) > Sizes.lineSelectDistance * 4 &&
+                        Math.sqrt(Math.pow(pointHook2.getX() - x, 2) + Math.pow(pointHook2.getY() - y, 2)) > Sizes.lineSelectDistance * 4){
+                    Point newBreakPoint = new Point("Break", x, y);
+                    int newPointIndex = l.createNewBreakPoint(newBreakPoint);
+                    if(newPointIndex > 0) {
+                        stackUndoChanges.push(new Change(5, l, newBreakPoint, newPointIndex));
+                        mwc.getMain().setUnsavedChanges(true);
+                    }
+                }
+            }
+        }
+        if(!pressedOnLine) {
+            for (Component c : arrayListAllCreatedComponents) {
+                if (c.checkIfCouldBeSelected(x, y)) {
+                    couldBeSelected = true;
+                    c.selectForDrag(x, y);
+                    if (c.getName().equals(Names.switchMonostableName) && e.getButton() == MouseButton.SECONDARY) {
+                        ((Switch) c).setState(true);
+                    }
+                }
+                arrayListPointsCenter.add(new MovePoint(c.getName(), c.getId(),
+                        new Point("Center", c.getPointCenter().getX(), c.getPointCenter().getY())));
+            }
+        }
+
+        mwc.setMouseButton(e.getButton());
+        mwc.setDraggedSelectionRectangle(!couldBeSelected);
+        mwc.repaintScreen();
+    }
+
     public void actionCanvasMouseDragged(MouseEvent e){
         double x = e.getX();
         double y = e.getY();
 
+        double xFitted = (x - pointMousePressedFitted.getX()) % Sizes.fitComponentPlace > Sizes.fitComponentPlace / 2 ? Sizes.fitComponentPlace :
+                (x - pointMousePressedFitted.getX()) % Sizes.fitComponentPlace < Sizes.fitComponentPlace / (-2) ? Sizes.fitComponentPlace * (-1) : 0;
+        double yFitted = (y - pointMousePressedFitted.getY()) % Sizes.fitComponentPlace > Sizes.fitComponentPlace / 2 ? Sizes.fitComponentPlace :
+                (y - pointMousePressedFitted.getY()) % Sizes.fitComponentPlace < Sizes.fitComponentPlace / (-2) ? Sizes.fitComponentPlace * (-1) : 0;
+        if(xFitted == Sizes.fitComponentPlace || xFitted == Sizes.fitComponentPlace * (-1)){
+            pointMousePressedFitted.setX(x);
+        }
+        if(yFitted == Sizes.fitComponentPlace || yFitted == Sizes.fitComponentPlace * (-1)){
+            pointMousePressedFitted.setY(y);
+        }
+
+        System.out.println((int)xFitted + " " + (int)yFitted);
+
         if(e.getButton() == MouseButton.PRIMARY) {
-            for (Component c : arrayListAllCreatedComponents) {
-                if (c.isSelectedForDrag() || (c.isSelected() && !mwc.isDraggedSelectionRectangle())) {
-                    c.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY(), fitToCheck);
-                }
-            }
+            boolean moveSingleUnselected = false;
             for (Line l : arrayListCreatedLines) {
                 if (l.isSelectedForDrag() || (l.isSelected() && !mwc.isDraggedSelectionRectangle())) {
                     l.breakLine(x, y, fitToCheck);
+                }
+                if (l.getComponent1().isSelected() && l.getComponent2().isSelected() && !mwc.isDraggedSelectionRectangle()){
+                    if(fitToCheck){
+                        l.move(xFitted, yFitted, 0 ,0 );
+                    }
+                    else {
+                        l.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY());
+                    }
+                }
+            }
+            for (Component c : arrayListAllCreatedComponents) {
+                if (c.isSelectedForDrag() && !c.isSelected()) {
+                    moveSingleUnselected = true;
+                    if(fitToCheck){
+                        c.move(xFitted, yFitted, 0 ,0 );
+                    }
+                    else {
+                        c.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY());
+                    }
+                    break;
+                }
+            }
+            if (!moveSingleUnselected) {
+                for (Component c : arrayListAllCreatedComponents) {
+                    if (c.isSelectedForDrag() || (c.isSelected() && !mwc.isDraggedSelectionRectangle() && !draggingLine)) {
+                        if(fitToCheck){
+                            c.move(xFitted, yFitted, 0 ,0 );
+                        }
+                        else {
+                            c.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY());
+                        }
+                    }
                 }
             }
         }
@@ -266,76 +393,6 @@ public class MouseActions {
                 }
             }
         }
-        mwc.repaintScreen();
-    }
-
-    public void actionCanvasMousePressed(MouseEvent e){
-        double x = e.getX();
-        double y = e.getY();
-
-        if(Accesses.logMouseActions) {
-            System.out.println("Mouse pressed");
-        }
-
-        if(e.getButton() == MouseButton.SECONDARY){
-            mwc.getZoomableScrollPaneWorkspace().setPannable(true);
-        }
-        else{
-            mwc.getZoomableScrollPaneWorkspace().setPannable(false);
-        }
-
-        pointMousePressed.setX(x);
-        pointMousePressed.setY(y);
-
-        pointMousePressedToDrag.setX(x);
-        pointMousePressedToDrag.setY(y);
-
-        arrayListPointsCenter.clear();
-
-        couldBeSelected = false;
-        for (Line l : arrayListCreatedLines) {
-            l.selectForDrag(x, y);
-            if(l.checkIfCouldBeSelected(x, y)) {
-                couldBeSelected = true;
-                Point pointHook1 = l.getArrayListBreakPoints().get(0);
-                Point pointHook2 = l.getArrayListBreakPoints().get(l.getArrayListBreakPoints().size() - 1);
-                for (int i = 1; i < l.getArrayListBreakPoints().size() - 1; i++) {
-                    Point p = l.getArrayListBreakPoints().get(i);
-                    if (Math.sqrt(Math.pow(p.getX() - x, 2) + Math.pow(p.getY() - y, 2)) < Sizes.lineSelectDistance * 2) {
-                        closePoint = p;
-                        l.setClosePoint(p);
-                        pointBreak = new Point("Break", p.getX(), p.getY());
-                    }
-                }
-                if (closePoint != null) {
-                    l.setNewBreakPoint(closePoint);
-                } else if(Math.sqrt(Math.pow(pointHook1.getX() - x, 2) + Math.pow(pointHook1.getY() - y, 2)) > Sizes.lineSelectDistance * 4 &&
-                    Math.sqrt(Math.pow(pointHook2.getX() - x, 2) + Math.pow(pointHook2.getY() - y, 2)) > Sizes.lineSelectDistance * 4){
-                    Point newBreakPoint = new Point("Break", x, y);
-                    int newPointIndex = l.createNewBreakPoint(newBreakPoint);
-                    if(newPointIndex > 0) {
-                        stackUndoChanges.push(new Change(5, l, newBreakPoint, newPointIndex));
-                        mwc.getMain().setUnsavedChanges(true);
-                    }
-                }
-            }
-        }
-        for (Component c : arrayListAllCreatedComponents) {
-            if(c.checkIfCouldBeSelected(x, y)){
-                couldBeSelected = true;
-            }
-            if(c.checkIfCouldBeSelected(x, y)){
-                c.selectForDrag(x, y);
-                if(c.getName().equals(Names.switchMonostableName) && e.getButton() == MouseButton.SECONDARY){
-                    ((Switch)c).setState(true);
-                }
-            }
-            arrayListPointsCenter.add(new MovePoint(c.getName(), c.getId(),
-                    new Point("Center", c.getPointCenter().getX(), c.getPointCenter().getY())));
-        }
-
-        mwc.setMouseButton(e.getButton());
-        mwc.setDraggedSelectionRectangle(!couldBeSelected);
         mwc.repaintScreen();
     }
 

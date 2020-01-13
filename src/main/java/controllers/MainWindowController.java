@@ -307,9 +307,12 @@ public class MainWindowController {
 //            }
 //        }
         for(Line l : arrayListCreatedLines){
-            for(DependentFlipFlopOutput dffo : l.getArrayListDependentFlipFlopOutput()){
-                System.out.println(l.getId() + " " + dffo.getId() + " " + dffo.isMainOutput());
-            }
+            System.out.println(l.getId() + " " + l.isSignalOutput() + "   " + l.getComponent1().getName() + " " + l.getComponent1().getId() + " " +
+                    l.getComponent1().isSignalOutput() + "   " + l.getComponent2().getName() + " " + l.getComponent2().getId() + " " +
+                    l.getComponent2().isSignalOutput() + "   " + l.getArrayListDependentComponents().size());
+        }
+        for(FlipFlop ff : arrayListCreatedFlipFlops){
+            System.out.println(ff.getId() + " " + ff.isSignalOutput() + " " + ff.isSignalReversedOutput());
         }
     }
 
@@ -696,6 +699,18 @@ public class MainWindowController {
         alert.initModality(Modality.NONE);
         alert.setHeaderText(Names.manualComponentsHeader);
         alert.setContentText(Names.manualComponentsContent);
+        alert.show();
+        alert.setWidth(600);
+    }
+
+    public void actionMenuItemConnectingComponents(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(Names.manualTitle);
+        alert.setGraphic(new ImageView(new Image(getClass().getResource("/graphics/happy_gate.png").toExternalForm(),
+                Sizes.baseSwitchXSize, Sizes.baseSwitchYSize, false, false)));
+        alert.initModality(Modality.NONE);
+        alert.setHeaderText(Names.manualConnectingComponentsHeader);
+        alert.setContentText(Names.manualConnectingComponentsContent);
         alert.show();
         alert.setWidth(600);
     }

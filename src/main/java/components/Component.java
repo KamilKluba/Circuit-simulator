@@ -251,7 +251,7 @@ public abstract class Component implements Serializable {
     public void draw(GraphicsContext graphicsContext){}
     public void selectForDrag(double x, double y){}
     public void rotate(){}
-    public void move(double x, double y, double mousePressX, double mousePressY, boolean fitToCheck){};
+    public void move(double x, double y, double mousePressX, double mousePressY){};
     public void movePoints(){};
 
     public int getId() {
