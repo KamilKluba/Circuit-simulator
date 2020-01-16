@@ -69,10 +69,10 @@ public abstract class Component implements Serializable {
     }
 
     public void revive() {
+        alive = true;
         if(executorService == null){
             executorService = Executors.newFixedThreadPool(1);
         }
-        alive = true;
         executorService.execute(this::lifeCycle);
     }
 

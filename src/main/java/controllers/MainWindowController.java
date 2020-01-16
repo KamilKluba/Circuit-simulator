@@ -300,20 +300,41 @@ public class MainWindowController {
 //            }
 //        }
 //        else {
-//            for (Line l : arrayListCreatedLines) {
-//                for (Component c : l.getArrayListDependentComponents()) {
-//                    System.out.println(l.getId() + "   " + c.getName() + " " + c.getId() + " " + c.isSignalOutput());
-//                }
-//            }
-//        }
+        for (Line l : arrayListCreatedLines) {
+            for (Component c : l.getArrayListDependentComponents()) {
+                System.out.println(l.getId() + "   " + c.getName() + " " + c.getId() + " " + c.isSignalOutput());
+            }
+        }
+
         for(Line l : arrayListCreatedLines){
             System.out.println(l.getId() + " " + l.isSignalOutput() + "   " + l.getComponent1().getName() + " " + l.getComponent1().getId() + " " +
                     l.getComponent1().isSignalOutput() + "   " + l.getComponent2().getName() + " " + l.getComponent2().getId() + " " +
                     l.getComponent2().isSignalOutput() + "   " + l.getArrayListDependentComponents().size());
         }
-        for(FlipFlop ff : arrayListCreatedFlipFlops){
-            System.out.println(ff.getId() + " " + ff.isSignalOutput() + " " + ff.isSignalReversedOutput());
-        }
+//        for(FlipFlop ff : arrayListCreatedFlipFlops){
+//            System.out.println(ff.getId() + " " + ff.isSignalOutput() + " " + ff.isSignalReversedOutput());
+//        }
+//        new Thread(() -> {
+////        while(true) {
+////            for (Line l : arrayListCreatedLines) {
+////                System.out.println(l.getId() + " " + l.isAlive() + " " + l.isSignalOutput());
+////                try {
+////                    Thread.sleep(50);
+////                } catch (InterruptedException e) {
+////                    e.printStackTrace();
+////                }
+////            }
+////            for (Component c : arrayListAllCreatedComponents) {
+////                System.out.println(c.getId() + " " + c.isAlive() + " " + c.isSignalOutput());
+////                try {
+////                    Thread.sleep(50);
+////                } catch (InterruptedException e) {
+////                    e.printStackTrace();
+////                }
+////            }
+////        }
+////        }).start();
+        System.out.println(arrayListCreatedLines.size() + " " + arrayListAllCreatedComponents.size());
     }
 
     private void setChart(){

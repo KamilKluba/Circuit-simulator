@@ -316,8 +316,6 @@ public class MouseActions {
             pointMousePressedFitted.setY(y);
         }
 
-        System.out.println((int)xFitted + " " + (int)yFitted);
-
         if(e.getButton() == MouseButton.PRIMARY) {
             boolean moveSingleUnselected = false;
             for (Line l : arrayListCreatedLines) {

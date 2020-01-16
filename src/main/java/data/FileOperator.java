@@ -167,27 +167,26 @@ public class FileOperator {
                 mwc.getStackUndoChanges().push(new Change(1, c));
                 i++;
             }
-            for(Line l : arrayListCreatedLines){
-                l.getArrayListVisitedLines().clear();
-                l.getArrayListDependentComponents().clear();
-                l.getArrayListDependentFlipFlopOutput().clear();
-            }
-            for(Line l : arrayListCreatedLines){
-                l.checkForSignals(l, l.getArrayListDependentComponents(), l.getArrayListVisitedLines());
-            }
-            for(Component c : arrayListAllCreatedComponents){
-                c.revive();
-            }
-            for(Line l : arrayListCreatedLines){
-                l.revive();
-            }
-
             ois.close();
             fis.close();
         }
         catch (Exception e){
-//            System.out.println("Koniec pliku, zaladowano " + i + " obiektow");
-//            e.printStackTrace();
+            System.out.println("Koniec pliku, zaladowano " + i + " obiektow");
+            e.printStackTrace();
+        }
+        for(Line l : arrayListCreatedLines){
+            l.getArrayListVisitedLines().clear();
+            l.getArrayListDependentComponents().clear();
+            l.getArrayListDependentFlipFlopOutput().clear();
+        }
+        for(Line l : arrayListCreatedLines){
+            l.checkForSignals(l, l.getArrayListDependentComponents(), l.getArrayListVisitedLines());
+        }
+        for(Component c : arrayListAllCreatedComponents){
+            c.revive();
+        }
+        for(Line l : arrayListCreatedLines){
+            l.revive();
         }
         mwc.repaintScreen();
     }
@@ -203,6 +202,7 @@ public class FileOperator {
             for(Line l : arrayListCreatedLines){
                 oos.writeObject(l);
             }
+            oos.writeObject(null);
 
             oos.close();
             fos.close();

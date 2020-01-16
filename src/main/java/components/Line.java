@@ -179,39 +179,37 @@ public class Line extends Component implements Serializable {
     }
 
     public void lifeCycle(){
-        executorService.execute(() -> {
-            while(alive){
-                try{
-                    boolean dependentComponentsState = false;
-                    for(Component c : arrayListDependentComponents){
-                        if(!c.getName().contains(Names.flipFlopSearchName) && c.isSignalOutput()){
-                            dependentComponentsState = true;
-                            break;
-                        }
-                        else if(c.getName().contains(Names.flipFlopSearchName)){
-                            for(DependentFlipFlopOutput dffo : arrayListDependentFlipFlopOutput){
-                                if(c.getId() == dffo.getId() && dffo.isMainOutput() && ((FlipFlop)c).isSignalOutput()){
-                                    dependentComponentsState = true;
-                                }
-                                else if(c.getId() == dffo.getId() && !dffo.isMainOutput() && ((FlipFlop)c).isSignalReversedOutput()){
-                                    dependentComponentsState = true;
-                                }
+        while(alive){
+            try{
+                boolean dependentComponentsState = false;
+                for(Component c : arrayListDependentComponents){
+                    if(!c.getName().contains(Names.flipFlopSearchName) && c.isSignalOutput()){
+                        dependentComponentsState = true;
+                        break;
+                    }
+                    else if(c.getName().contains(Names.flipFlopSearchName)){
+                        for(DependentFlipFlopOutput dffo : arrayListDependentFlipFlopOutput){
+                            if(c.getId() == dffo.getId() && dffo.isMainOutput() && ((FlipFlop)c).isSignalOutput()){
+                                dependentComponentsState = true;
                             }
-                            break;
+                            else if(c.getId() == dffo.getId() && !dffo.isMainOutput() && ((FlipFlop)c).isSignalReversedOutput()){
+                                dependentComponentsState = true;
+                            }
                         }
+                        break;
                     }
-
-                    if(state.get() != dependentComponentsState){
-                        state.set(dependentComponentsState);
-                        stateChanged.set(true);
-                    }
-
-                    Thread.sleep(Sizes.lineSleepTime);
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
+
+                if(state.get() != dependentComponentsState){
+                    state.set(dependentComponentsState);
+                    stateChanged.set(true);
+                }
+
+                Thread.sleep(Sizes.lineSleepTime);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        });
+        }
     }
 
     public void setState(boolean state) {

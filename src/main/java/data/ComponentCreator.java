@@ -350,9 +350,6 @@ public class ComponentCreator {
         for(Line l : arrayListCreatedLines){
             l.checkForSignals(l, l.getArrayListDependentComponents(), l.getArrayListVisitedLines());
         }
-        for(Line l : arrayListCreatedLines){
-            l.lifeCycle();
-        }
     }
 
     public void createNewComponent(double x, double y, String newComponentName){
@@ -699,9 +696,6 @@ public class ComponentCreator {
             }
             for (Line l : arrayListCreatedLines) {
                 l.checkForSignals(l, l.getArrayListDependentComponents(), l.getArrayListVisitedLines());
-            }
-            for (Line l : arrayListCreatedLines) {
-                l.lifeCycle();
             }
         }
         else {
