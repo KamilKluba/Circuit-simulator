@@ -4,10 +4,7 @@ import components.flipflops.FlipFlop;
 import components.flipflops.FlipFlopJK;
 import components.gates.Gate;
 import components.switches.Switch;
-import data.DependentFlipFlopOutput;
-import data.Names;
-import data.SerializableColor;
-import data.Sizes;
+import data.*;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -62,6 +59,8 @@ public class Line extends Component implements Serializable {
 
         arrayListBreakPoints.add(point1);
         arrayListBreakPoints.add(point2);
+
+        executorService.execute(() -> lifeCycle());
     }
 
     public void checkForSignals(Line line, ArrayList<Component> arrayListDependentComponents, ArrayList<Line> arrayListVisitedLines) {
@@ -399,11 +398,11 @@ public class Line extends Component implements Serializable {
             Point p2 = arrayListBreakPoints.get(i + 1);
 
             graphicsContext.strokeLine(p1.getX(), p1.getY(), p2.getX(), p2.getY());
-            graphicsContext.fillOval(p1.getX() - Sizes.lineSelectDistance / 2, p1.getY() - Sizes.lineSelectDistance / 2,
-                    Sizes.lineSelectDistance, Sizes.lineSelectDistance);
+            graphicsContext.fillOval(p1.getX() - Sizes.lineSelectDistance / 4, p1.getY() - Sizes.lineSelectDistance / 4,
+                    Sizes.lineSelectDistance / 2, Sizes.lineSelectDistance / 2);
         }
-        graphicsContext.fillOval(point2.getX() - Sizes.lineSelectDistance / 2, point2.getY() - Sizes.lineSelectDistance / 2,
-                Sizes.lineSelectDistance, Sizes.lineSelectDistance);
+        graphicsContext.fillOval(point2.getX() - Sizes.lineSelectDistance / 4, point2.getY() - Sizes.lineSelectDistance / 4,
+                Sizes.lineSelectDistance / 2, Sizes.lineSelectDistance / 2);
     }
     
     public void delete(){

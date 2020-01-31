@@ -4,6 +4,7 @@ import components.*;
 import components.flipflops.FlipFlop;
 import components.gates.Gate;
 import components.switches.Switch;
+import components.switches.SwitchBistatble;
 import components.switches.SwitchPulse;
 import controllers.MainWindowController;
 import javafx.scene.canvas.GraphicsContext;
@@ -201,7 +202,7 @@ public class MouseActions {
                     mwc.getMain().setUnsavedChanges(true);
                 }
                 else if(c.getName().equals(Names.switchBistableName) && c.checkIfCouldBeSelected(x, y)){
-                    ((Switch)c).invertState();
+                    ((SwitchBistatble)c).invertState();
                     stackRedoChanges.clear();
                     stackUndoChanges.push(new Change(4, c, !c.isSignalOutput(), c.isSignalOutput()));
                     mwc.getMain().setUnsavedChanges(true);
@@ -324,7 +325,7 @@ public class MouseActions {
                 }
                 if (l.getComponent1().isSelected() && l.getComponent2().isSelected() && !mwc.isDraggedSelectionRectangle()){
                     if(fitToCheck){
-                        l.move(xFitted, yFitted, 0 ,0 );
+                        l.move(xFitted - xFitted % Sizes.fitComponentPlace, yFitted - yFitted % Sizes.fitComponentPlace, 0 ,0 );
                     }
                     else {
                         l.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY());
@@ -335,7 +336,7 @@ public class MouseActions {
                 if (c.isSelectedForDrag() && !c.isSelected()) {
                     moveSingleUnselected = true;
                     if(fitToCheck){
-                        c.move(xFitted, yFitted, 0 ,0 );
+                        c.move(xFitted - xFitted % Sizes.fitComponentPlace, yFitted - yFitted % Sizes.fitComponentPlace, 0 ,0 );
                     }
                     else {
                         c.move(x, y, pointMousePressedToDrag.getX(), pointMousePressedToDrag.getY());

@@ -1,7 +1,7 @@
 package components.flipflops;
 
 import components.Line;
-import components.Point;
+import data.Point;
 import data.Names;
 import data.Sizes;
 import javafx.scene.chart.XYChart;
@@ -10,7 +10,6 @@ import javafx.scene.image.ImageView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class FlipFlopJK extends FlipFlop implements Serializable {
     private static final long serialVersionUID = 30200000000L;
@@ -49,6 +48,7 @@ public class FlipFlopJK extends FlipFlop implements Serializable {
         }
     }
 
+    @Override
     public void movePoints(){
         super.movePoints();
         pointInputK.setX(pointCenter.getX() - 145);

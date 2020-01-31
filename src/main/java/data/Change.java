@@ -6,7 +6,6 @@ import components.flipflops.FlipFlopJK;
 import components.gates.Gate;
 import components.switches.Switch;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 public class Change {

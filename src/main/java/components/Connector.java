@@ -29,18 +29,8 @@ public class Connector extends Component implements Serializable {
             boolean nextState = arrayListLines.size() > 0 && arrayListLines.get(0).isSignalOutput();
 
             if(output.get() != nextState){
-                try {
-                    Thread.sleep(Sizes.lineSleepTime);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                boolean nextState2 = arrayListLines.size() > 0 && arrayListLines.get(0).isSignalOutput();
-
-                if(nextState == nextState2){
-                    output.set(nextState);
-                    stateChanged.set(true);
-                }
+                output.set(nextState);
+                stateChanged.set(true);
             }
             try {
                 Thread.sleep(Sizes.gateSleepTime);

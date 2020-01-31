@@ -1,8 +1,6 @@
 package components.gates.or;
 
-import components.Line;
-import components.Point;
-import components.gates.Gate;
+import data.Point;
 import data.Names;
 import data.Sizes;
 import javafx.scene.chart.XYChart;
@@ -11,7 +9,6 @@ import javafx.scene.image.ImageView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Or3 extends Or implements Serializable {
     private static final long serialVersionUID = 10402000000L;

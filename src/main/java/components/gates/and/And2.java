@@ -1,8 +1,6 @@
 package components.gates.and;
 
-import components.Line;
-import components.Point;
-import components.gates.Gate;
+import data.Point;
 import data.Names;
 import data.Sizes;
 import javafx.scene.chart.XYChart;
@@ -11,7 +9,6 @@ import javafx.scene.image.ImageView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class And2 extends And implements Serializable {
     private static final long serialVersionUID = 10101000000L;
@@ -29,9 +26,11 @@ public class And2 extends And implements Serializable {
         arraySignalsInputs = new boolean[2];
         name = Names.gateAnd2Name;
 
-        imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/and/and2_gate_off.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
-        imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/and/and2_gate_on.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
-        imageViewSelectedOn = new ImageView(new Image(getClass().getResource("/graphics/and/and2_gate_selected.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
+        try {
+            imageViewOff = new ImageView(new Image(getClass().getResource("/graphics/and/and2_gate_off.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
+            imageViewOn = new ImageView(new Image(getClass().getResource("/graphics/and/and2_gate_on.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
+            imageViewSelectedOn = new ImageView(new Image(getClass().getResource("/graphics/and/and2_gate_selected.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
+        }catch(Exception e){}
     }
 
     public ArrayList[] getArrayArrayListLines() {

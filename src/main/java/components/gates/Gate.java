@@ -2,9 +2,8 @@ package components.gates;
 
 import components.Component;
 import components.Line;
-import components.Point;
+import data.Point;
 import data.Names;
-import data.SerializableColor;
 import data.Sizes;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
@@ -13,8 +12,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Gate extends Component {
     private static final long serialVersionUID = 10000000000L;

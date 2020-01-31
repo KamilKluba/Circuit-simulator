@@ -1,7 +1,5 @@
 package data;
 
-import components.Point;
-
 public class MovePoint {
     private String componentName;
     private int componentId;

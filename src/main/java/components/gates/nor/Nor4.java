@@ -1,8 +1,6 @@
 package components.gates.nor;
 
-import components.Line;
-import components.Point;
-import components.gates.Gate;
+import data.Point;
 import data.Names;
 import data.Sizes;
 import javafx.scene.chart.XYChart;
@@ -11,7 +9,6 @@ import javafx.scene.image.ImageView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Nor4 extends Nor implements Serializable {
     private static final long serialVersionUID = 10303000000L;

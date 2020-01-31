@@ -36,8 +36,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        javafx.scene.text.Font.loadFont(Main.class.getResourceAsStream("/fonts/Bank Gothic Medium BT.ttf"), 0);
-
         FXMLLoader loaderStartWindow = new FXMLLoader(getClass().getResource("/fxml/StartWindow.fxml"));
         flowPane = loaderStartWindow.load();
         startWindowController = loaderStartWindow.getController();
@@ -49,7 +47,6 @@ public class Main extends Application {
         Canvas canvas = mainWindowController.getCanvas();
 
         scene = new Scene(flowPane);
-//        scene = new Scene(borderPane);
 
         startWindowController.myInitialize(this);
         mainWindowController.myInitialize(this);

@@ -36,4 +36,10 @@ public class SwitchBistatble extends Switch implements Serializable {
         addDataToSeries();
         stateChanged.set(true);
     }
+
+    public void invertState(){
+        boolean bufferValue = output.get();
+        output.set(!bufferValue);
+        addDataToSeries();
+    }
 }

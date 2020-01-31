@@ -30,19 +30,13 @@ import components.switches.SwitchBistatble;
 import components.switches.SwitchMonostable;
 import components.switches.SwitchPulse;
 import controllers.MainWindowController;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
-import java.awt.font.TextAttribute;
-import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -118,15 +112,15 @@ public class ComponentCreator {
             switch (change.getDescription()) {
                 case 1:
                     if(undoChange) {
-                        createComponentAsChange(component, change);
+                        deleteComponentAsChange(component, change);
                     }
                     else{
-                        deleteComponentAsChange(component, change);
+                        createComponentAsChange(component, change);
                     }
                     break;
                 case 2:
                     if(undoChange) {
-                        deleteComponentAsChange(component, change);
+                        createComponentAsChange(component, change);
                     }
                     else{
                     }
@@ -762,7 +756,7 @@ public class ComponentCreator {
         lineChartStates.getData().add(series);
     }
 
-    private void deleteComponentAsChange(Component component, Change change){
+    private void createComponentAsChange(Component component, Change change){
         String componentName = component.getName();
 
         component.revive();
@@ -798,7 +792,7 @@ public class ComponentCreator {
         component.setSelectedForDrag(false);
     }
 
-    private void createComponentAsChange(Component component, Change change){
+    private void deleteComponentAsChange(Component component, Change change){
         String componentName = component.getName();
 
         if(componentName.contains(Names.lineName)) {

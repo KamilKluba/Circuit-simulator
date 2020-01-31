@@ -37,7 +37,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import main.Main;
@@ -67,7 +66,7 @@ public class MainWindowController {
     @FXML private TextField textFieldFilterComponents;
     @FXML private TableView<TableComponent> tableViewComponents;
     @FXML private TableColumn<TableComponent, ImageView> tableColumnComponentsPictures;
-    @FXML private TableColumn<TableComponent, Integer> tableColumnComponentInputsNumber;
+    @FXML private TableColumn<TableComponent, Integer> tableColumnComponentName;
     @FXML private Button buttonDelete;
     @FXML private Button buttonRotate;
     @FXML private ScrollPane scrollPaneWorkspace;
@@ -207,7 +206,7 @@ public class MainWindowController {
         tableViewComponents.setItems(ol);
         tableViewComponents.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> actionSelectionChanged());
         tableColumnComponentsPictures.setCellValueFactory(new PropertyValueFactory<>("imageView"));
-        tableColumnComponentInputsNumber.setCellValueFactory(new PropertyValueFactory<>("InputsNumber"));
+        tableColumnComponentName.setCellValueFactory(new PropertyValueFactory<>("name"));
 
         graphicsContext = canvas.getGraphicsContext2D();
 

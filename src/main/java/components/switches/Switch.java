@@ -2,7 +2,7 @@ package components.switches;
 
 import components.Component;
 import components.Line;
-import components.Point;
+import data.Point;
 import data.Sizes;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.XYChart;
@@ -10,7 +10,6 @@ import javafx.scene.paint.Color;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.concurrent.Executors;
 
 public abstract class Switch extends Component implements Serializable {
     private static final long serialVersionUID = 20000000000L;
@@ -125,12 +124,6 @@ public abstract class Switch extends Component implements Serializable {
                 l.setY2(pointLineHook.getY());
             }
         }
-    }
-
-    public void invertState(){
-        boolean bufferValue = output.get();
-        output.set(!bufferValue);
-        addDataToSeries();
     }
 
     public String getName() {

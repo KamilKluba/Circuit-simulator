@@ -1,6 +1,7 @@
 package components;
 
 import data.Names;
+import data.Point;
 import data.Sizes;
 import javafx.application.Platform;
 import javafx.scene.SnapshotParameters;
@@ -85,6 +86,18 @@ public abstract class Component implements Serializable {
         chartMillisCounter = System.currentTimeMillis();
         this.series = series;
     }
+
+    protected void lifeCycle(){};
+    public void select(double x, double y){}
+    public void select(double x1, double y1, double x2, double y2){}
+    public boolean checkIfCouldBeSelected(double x, double y){
+        return false;
+    }
+    public void draw(GraphicsContext graphicsContext){}
+    public void selectForDrag(double x, double y){}
+    public void rotate(){}
+    public void move(double x, double y, double mousePressX, double mousePressY){};
+    public void movePoints(){};
 
     public void setPictures(){
         if(name.equals(Names.gateNotName)){
@@ -228,31 +241,19 @@ public abstract class Component implements Serializable {
             imageViewSelectedOff = new ImageView(new Image(getClass().getResource("/graphics/bulb/bulb_selected_off.png").toExternalForm(), Sizes.baseGateXSize, Sizes.baseGateYSize, false, false));
         }
 
-        for(int i = 0; i < rotation; i++){
-            SnapshotParameters snapshotParameters = new SnapshotParameters();
-            snapshotParameters.setFill(Color.TRANSPARENT);
-            imageViewOff.setRotate(90);
-            imageViewOff.setImage(imageViewOff.snapshot(snapshotParameters, null));
-            imageViewOn.setRotate(90);
-            imageViewOn.setImage(imageViewOn.snapshot(snapshotParameters, null));
-            imageViewSelectedOn.setRotate(90);
-            imageViewSelectedOn.setImage(imageViewSelectedOn.snapshot(snapshotParameters, null));
+        if(name.contains(Names.gateSearchName)) {
+            for (int i = 0; i < rotation; i++) {
+                SnapshotParameters snapshotParameters = new SnapshotParameters();
+                snapshotParameters.setFill(Color.TRANSPARENT);
+                imageViewOff.setRotate(90);
+                imageViewOff.setImage(imageViewOff.snapshot(snapshotParameters, null));
+                imageViewOn.setRotate(90);
+                imageViewOn.setImage(imageViewOn.snapshot(snapshotParameters, null));
+                imageViewSelectedOn.setRotate(90);
+                imageViewSelectedOn.setImage(imageViewSelectedOn.snapshot(snapshotParameters, null));
+            }
         }
     }
-
-    protected void lifeCycle(){};
-    public void searchForSignals(Line line, ArrayList<Line> arrayListDependentComponents,
-                                 ArrayList<String> arrayListDependentComponentsPin, ArrayList<Line> arayListVisitedComponents){}
-    public void select(double x, double y){}
-    public void select(double x1, double y1, double x2, double y2){}
-    public boolean checkIfCouldBeSelected(double x, double y){
-        return false;
-    }
-    public void draw(GraphicsContext graphicsContext){}
-    public void selectForDrag(double x, double y){}
-    public void rotate(){}
-    public void move(double x, double y, double mousePressX, double mousePressY){};
-    public void movePoints(){};
 
     public int getId() {
         return id;

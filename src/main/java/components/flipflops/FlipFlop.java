@@ -2,17 +2,15 @@ package components.flipflops;
 
 import components.Component;
 import components.Line;
-import components.Point;
+import data.Point;
 import data.Sizes;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.XYChart;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class FlipFlop extends Component implements Serializable {
     private static final long serialVersionUID = 30000000000L;

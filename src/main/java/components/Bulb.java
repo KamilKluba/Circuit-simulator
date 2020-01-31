@@ -1,6 +1,7 @@
 package components;
 
 import data.Names;
+import data.Point;
 import data.Sizes;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;

@@ -1,7 +1,6 @@
 package components.gates;
 
-import components.Line;
-import components.Point;
+import data.Point;
 import data.Names;
 import data.Sizes;
 import javafx.scene.chart.XYChart;
@@ -10,7 +9,6 @@ import javafx.scene.image.ImageView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Not extends Gate implements Serializable {
     private static final long serialVersionUID = 190000000000L;
