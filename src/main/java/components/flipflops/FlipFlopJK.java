@@ -85,7 +85,7 @@ public class FlipFlopJK extends FlipFlop implements Serializable {
                             boolean nextStateJ = arrayListLinesInput.size() > 0 && arrayListLinesInput.get(0).isSignalOutput();
                             boolean nextStateK = arrayListLinesInputK.size() > 0 && arrayListLinesInputK.get(0).isSignalOutput();
                             risingEdge = false;
-                            if(!nextStateJ && !nextStateK){
+                            if(!nextStateJ && nextStateK){
                                 try {
                                     Thread.sleep(Sizes.flipFlopPropagationTime);
                                 } catch (InterruptedException e) {
@@ -96,27 +96,12 @@ public class FlipFlopJK extends FlipFlop implements Serializable {
                                 boolean nextStateK2 = arrayListLinesInputK.size() > 0 && arrayListLinesInputK.get(0).isSignalOutput();
 
                                 if (nextStateJ == nextStateJ2 && nextStateK == nextStateK2 && signalClock == signalClock2) {
-                                    boolean signalBuffer = output.get();
-                                    output.set(signalBuffer);
-                                    signalReversedOutput.set(!signalBuffer);
-                                    addDataToSeries();
-                                    stateChanged.set(true);
-                                }
-                            }
-                            else if(!nextStateJ && nextStateK){
-                                try {
-                                    Thread.sleep(Sizes.flipFlopPropagationTime);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                boolean signalClock2 = arrayListLinesClock.size() > 0 && arrayListLinesClock.get(0).isSignalOutput();
-                                boolean nextStateJ2 = arrayListLinesInput.size() > 0 && arrayListLinesInput.get(0).isSignalOutput();
-                                boolean nextStateK2 = arrayListLinesInputK.size() > 0 && arrayListLinesInputK.get(0).isSignalOutput();
-
-                                if (nextStateJ == nextStateJ2 && nextStateK == nextStateK2 && signalClock == signalClock2) {
+                                    boolean buffer = output.get();
                                     output.set(false);
                                     signalReversedOutput.set(true);
-                                    addDataToSeries();
+                                    if(buffer != output.get()) {
+                                        addDataToSeries();
+                                    }
                                     stateChanged.set(true);
                                 }
                             }
@@ -131,13 +116,14 @@ public class FlipFlopJK extends FlipFlop implements Serializable {
                                 boolean nextStateK2 = arrayListLinesInputK.size() > 0 && arrayListLinesInputK.get(0).isSignalOutput();
 
                                 if (nextStateJ == nextStateJ2 && nextStateK == nextStateK2 && signalClock == signalClock2) {
+                                    boolean buffer = output.get();
                                     output.set(true);
                                     signalReversedOutput.set(false);
-                                    addDataToSeries();
+                                    boolean signalBuffer = output.get();
                                     stateChanged.set(true);
                                 }
                             }
-                            else {
+                            else if(nextStateJ){
                                 try {
                                     Thread.sleep(Sizes.flipFlopPropagationTime);
                                 } catch (InterruptedException e) {

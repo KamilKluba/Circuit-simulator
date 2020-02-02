@@ -80,11 +80,21 @@ public abstract class Component implements Serializable {
     public void setSeriesWithTime(XYChart.Series<Long, String> series, long chartMillisCounter){
         this.chartMillisCounter = chartMillisCounter;
         this.series = series;
+
     }
 
     public void resetSeries(XYChart.Series<Long, String> series){
         chartMillisCounter = System.currentTimeMillis();
         this.series = series;
+        Platform.runLater(() -> {
+            if (output.get()) {
+                //series.getData().add(new XYChart.Data<Long, String>(0L, name + "   " + id + ":   0"));
+                series.getData().add(new XYChart.Data<Long, String>(0L, name + "   " + id + ":   1"));
+            } else {
+                // series.getData().add(new XYChart.Data<Long, String>(0L, name + "   " + id + ":   1"));
+                series.getData().add(new XYChart.Data<Long, String>(0L, name + "   " + id + ":   0"));
+            }
+        });
     }
 
     protected void lifeCycle(){};
